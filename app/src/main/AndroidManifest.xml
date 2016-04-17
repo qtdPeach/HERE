@@ -9,7 +9,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
 
-        <activity android:name="com.example.user.wase.View.SplashActivity">
+        <activity android:name=".view.activity.SplashActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -18,18 +18,18 @@
         </activity>
 
         <activity
-            android:name="com.example.user.wase.View.MainActivity"
+            android:name=".view.activity.MainActivity"
             android:label="@string/app_name"
             android:theme="@style/AppTheme.NoActionBar">
         </activity>
 
-        <activity android:name="com.example.user.wase.View.MyEquipmentsActivity"/>
-        <activity android:name="com.example.user.wase.View.MyRecordsActivity"/>
-        <activity android:name="com.example.user.wase.View.MyRoutinesActivity"/>
-        <activity android:name="com.example.user.wase.View.SettingAppInfoActivity"/>
-        <activity android:name="com.example.user.wase.View.SettingMyInfoActivity"/>
-        <activity android:name="com.example.user.wase.View.SupportAppInfoActivity"/>
-        <activity android:name="com.example.user.wase.View.SupportHelpActivity"/>
+        <activity android:name=".view.activity.MyEquipmentsActivity"/>
+        <activity android:name=".view.activity.MyRecordsActivity"/>
+        <activity android:name=".view.activity.MyRoutinesActivity"/>
+        <activity android:name=".view.activity.SettingAppInfoActivity"/>
+        <activity android:name=".view.activity.SettingMyInfoActivity"/>
+        <activity android:name=".view.activity.SupportAppInfoActivity"/>
+        <activity android:name=".view.activity.SupportHelpActivity"/>
 
     </application>
 
