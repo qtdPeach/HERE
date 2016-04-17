@@ -12,6 +12,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.Toast;
 
 import com.example.user.wase.R;
 
@@ -85,19 +86,65 @@ public class MainActivity extends AppCompatActivity
         // Handle navigation view item clicks here.
         int id = item.getItemId();
 
-        if (id == R.id.nav_camera) {
-            // Handle the camera action
-        } else if (id == R.id.nav_gallery) {
-
-        } else if (id == R.id.nav_slideshow) {
-
-        } else if (id == R.id.nav_manage) {
-
-        } else if (id == R.id.nav_share) {
-
-        } else if (id == R.id.nav_send) {
-
+        switch (item.getItemId()) {
+            //My exercise equipments
+            case R.id.nav_myequipments:
+                Toast.makeText(getApplicationContext(), "MY EXERCISE EQUIPMENTS", Toast.LENGTH_SHORT).show();
+                //TODO: Activity transition (EquipmentsActivity)
+                break;
+            //My exercise routines
+            case R.id.nav_myroutine:
+                Toast.makeText(getApplicationContext(), "MY EXERCISE ROUTINES", Toast.LENGTH_SHORT).show();
+                //TODO: Activity transition (RoutinesActivity)
+                break;
+            //My exercise record
+            case R.id.nav_myrecord:
+                Toast.makeText(getApplicationContext(), "MY EXERCISE RECORDS", Toast.LENGTH_SHORT).show();
+                //TODO: Activity transition (RecordActivity)
+                break;
+            //My alarm
+            case R.id.nav_alarm_myalarm:
+                Toast.makeText(getApplicationContext(), "MY ALARM LIST", Toast.LENGTH_SHORT).show();
+                //TODO: Activity transition (AlarmActivity)
+                break;
+            //My information setting
+            case R.id.nav_mng_myinfo:
+                Toast.makeText(getApplicationContext(), "MY INFORMATION SETTING", Toast.LENGTH_SHORT).show();
+                //TODO: Activity transition (MyInfoActivity)
+                break;
+            //App setting
+            case R.id.nav_mng_appsetting:
+                Toast.makeText(getApplicationContext(), "APPLICATION SETTING", Toast.LENGTH_SHORT).show();
+                //TODO: Activity transition (AppSettingActivity)
+                break;
+            //Help
+            case R.id.nav_mng_showhelp:
+                Toast.makeText(getApplicationContext(), "SHOW HELP DIALOG", Toast.LENGTH_SHORT).show();
+                //TODO: Dialog (HelpDialog)
+                break;
+            //Application information
+            case R.id.nav_mng_showappinfo:
+                Toast.makeText(getApplicationContext(), "SHOW APP INFO DIALOG", Toast.LENGTH_SHORT).show();
+                //TODO: Dialog (AppInfoDialog)
+                break;
         }
+
+
+
+//
+//        if (id == R.id.nav_camera) {
+//            // Handle the camera action
+//        } else if (id == R.id.nav_gallery) {
+//
+//        } else if (id == R.id.nav_slideshow) {
+//
+//        } else if (id == R.id.nav_manage) {
+//
+//        } else if (id == R.id.nav_share) {
+//
+//        } else if (id == R.id.nav_send) {
+//
+//        }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
