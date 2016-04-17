@@ -1,50 +1,38 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <!--<group android:checkableBehavior="single">-->
-        <!--<item-->
-            <!--android:id="@+id/nav_camera"-->
-            <!--android:icon="@drawable/ic_menu_camera"-->
-            <!--android:title="Import" />-->
-        <!--<item-->
-            <!--android:id="@+id/nav_gallery"-->
-            <!--android:icon="@drawable/ic_menu_gallery"-->
-            <!--android:title="Gallery" />-->
-        <!--<item-->
-            <!--android:id="@+id/nav_slideshow"-->
-            <!--android:icon="@drawable/ic_menu_slideshow"-->
-            <!--android:title="Slideshow" />-->
-        <!--<item-->
-            <!--android:id="@+id/nav_manage"-->
-            <!--android:icon="@drawable/ic_menu_manage"-->
-            <!--android:title="Tools" />-->
-    <!--</group>-->
+    <group android:checkableBehavior="single">
+        <item
+            android:id="@+id/nav_testpage"
+            android:icon="@drawable/ic_menu_manage"
+            android:title="테스트용(지영)" />
+    </group>
 
-    <item android:title="나의 운동관리">
+    <item android:title="나의 운동 관리">
         <menu>
             <item
                 android:id="@+id/nav_myequipments"
                 android:icon="@drawable/ic_menu_share"
-                android:title="내 운동 기구" />
+                android:title="내 운동 기구 관리" />
             <item
                 android:id="@+id/nav_myroutine"
                 android:icon="@drawable/ic_menu_share"
-                android:title="내 운동 루틴" />
+                android:title="내 운동 루틴 관리" />
             <item
                 android:id="@+id/nav_myrecord"
                 android:icon="@drawable/ic_menu_share"
-                android:title="내 운동 기록" />
+                android:title="내 운동 기록 관리" />
         </menu>
     </item>
 
-    <item android:title="운동 알람">
-        <menu>
-            <item
-                android:id="@+id/nav_alarm_myalarm"
-                android:icon="@drawable/ic_menu_share"
-                android:title="내 알람" />
-        </menu>
-    </item>
+    <!--<item android:title="운동 알람">-->
+        <!--<menu>-->
+            <!--<item-->
+                <!--android:id="@+id/nav_alarm_myalarm"-->
+                <!--android:icon="@drawable/ic_menu_share"-->
+                <!--android:title="내 알람 수정" />-->
+        <!--</menu>-->
+    <!--</item>-->
 
     <item android:title="설정">
         <menu>
@@ -56,6 +44,10 @@
                 android:id="@+id/nav_mng_appsetting"
                 android:icon="@drawable/ic_menu_share"
                 android:title="어플리케이션 관리" />
+            </menu>
+    </item>
+    <item android:title="지원">
+        <menu>
             <item
                 android:id="@+id/nav_mng_showhelp"
                 android:icon="@drawable/ic_menu_share"

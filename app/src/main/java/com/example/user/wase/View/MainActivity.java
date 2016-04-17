@@ -1,5 +1,6 @@
 package com.example.user.wase.View;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -87,45 +88,70 @@ public class MainActivity extends AppCompatActivity
         int id = item.getItemId();
 
         switch (item.getItemId()) {
+            //Test page
+            case R.id.nav_testpage:
+                //TODO: Bluetooth test activity
+                break;
             //My exercise equipments
             case R.id.nav_myequipments:
                 Toast.makeText(getApplicationContext(), "MY EXERCISE EQUIPMENTS", Toast.LENGTH_SHORT).show();
                 //TODO: Activity transition (EquipmentsActivity)
+
+                Intent intent_myequipments = new Intent(getApplicationContext(), MyEquipmentsActivity.class);
+                startActivity(intent_myequipments);
                 break;
             //My exercise routines
             case R.id.nav_myroutine:
                 Toast.makeText(getApplicationContext(), "MY EXERCISE ROUTINES", Toast.LENGTH_SHORT).show();
                 //TODO: Activity transition (RoutinesActivity)
+
+                Intent intent_myroutines = new Intent(getApplicationContext(), MyRoutinesActivity.class);
+                startActivity(intent_myroutines);
                 break;
             //My exercise record
             case R.id.nav_myrecord:
                 Toast.makeText(getApplicationContext(), "MY EXERCISE RECORDS", Toast.LENGTH_SHORT).show();
                 //TODO: Activity transition (RecordActivity)
+
+                Intent intent_myrecords = new Intent(getApplicationContext(), MyRecordsActivity.class);
+                startActivity(intent_myrecords);
                 break;
-            //My alarm
-            case R.id.nav_alarm_myalarm:
-                Toast.makeText(getApplicationContext(), "MY ALARM LIST", Toast.LENGTH_SHORT).show();
-                //TODO: Activity transition (AlarmActivity)
-                break;
+//            //My alarm
+//            case R.id.nav_alarm_myalarm:
+//                Toast.makeText(getApplicationContext(), "MY ALARM LIST", Toast.LENGTH_SHORT).show();
+//                //TODO: Activity transition (AlarmActivity)
+//                break;
             //My information setting
             case R.id.nav_mng_myinfo:
                 Toast.makeText(getApplicationContext(), "MY INFORMATION SETTING", Toast.LENGTH_SHORT).show();
                 //TODO: Activity transition (MyInfoActivity)
+
+                Intent intent_settingmyinfo = new Intent(getApplicationContext(), SettingMyInfoActivity.class);
+                startActivity(intent_settingmyinfo);
                 break;
             //App setting
             case R.id.nav_mng_appsetting:
                 Toast.makeText(getApplicationContext(), "APPLICATION SETTING", Toast.LENGTH_SHORT).show();
                 //TODO: Activity transition (AppSettingActivity)
+
+                Intent intent_settingappinfo = new Intent(getApplicationContext(), SettingAppInfoActivity.class);
+                startActivity(intent_settingappinfo);
                 break;
             //Help
             case R.id.nav_mng_showhelp:
                 Toast.makeText(getApplicationContext(), "SHOW HELP DIALOG", Toast.LENGTH_SHORT).show();
                 //TODO: Dialog (HelpDialog)
+
+                Intent intent_supporthelp = new Intent(getApplicationContext(), SupportHelpActivity.class);
+                startActivity(intent_supporthelp);
                 break;
             //Application information
             case R.id.nav_mng_showappinfo:
                 Toast.makeText(getApplicationContext(), "SHOW APP INFO DIALOG", Toast.LENGTH_SHORT).show();
                 //TODO: Dialog (AppInfoDialog)
+
+                Intent intent_supportappinfo = new Intent(getApplicationContext(), SupportAppInfoActivity.class);
+                startActivity(intent_supportappinfo);
                 break;
         }
 
