@@ -163,6 +163,9 @@ public class CommService {
         // Start the thread to manage the connection and perform transmissions
         mConnectedThread = new ConnectedThread(socket);
         mConnectedThread.start();
+        String message = "connected!!";
+        byte[] send = message.getBytes();
+        mConnectedThread.write(send);
         // Add each connected thread to an array
         // mConnThreads.set(selectedPosition, mConnectedThread);
         mConnThreads.add(mConnectedThread);
@@ -195,6 +198,29 @@ public class CommService {
 //        }
 
         setState(STATE_NONE);
+    }
+
+    /**
+     * Write to the ConnectedThread in an unsynchronized manner
+     * @param out The bytes to write
+     * @see ConnectedThread#write(byte[])
+     */
+    public void write(byte[] out) {
+        // When writing, try to write out to all connected threads
+        for (int i = 0; i < mConnThreads.size(); i++) {
+            try {
+                // Create temporary object
+                ConnectedThread r;
+                // Synchronize a copy of the ConnectedThread
+                synchronized (this) {
+                    if (mState != STATE_CONNECTED) return;
+                    r = mConnThreads.get(i);
+                }
+                // Perform the write unsynchronized
+                r.write(out);
+            } catch (Exception e) {
+            }
+        }
     }
 
     private void connectionFailed(int i) {
@@ -453,6 +479,18 @@ public class CommService {
                     connectionLost();//mmSocket.getRemoteDevice());
                     break;
                 }
+            }
+        }
+
+        public void write(byte[] buffer) {
+            try {
+                mmOutStream.write(buffer);
+
+                // Share the sent message back to the UI Activity
+//                mHandler.obtainMessage(BluetoothChat.MESSAGE_WRITE, -1, -1, buffer)
+//                        .sendToTarget();
+            } catch (IOException e) {
+                Log.e(TAG, "Exception during write", e);
             }
         }
 

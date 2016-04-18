@@ -35,6 +35,7 @@ public class BluetoothComm extends AppCompatActivity {
     public static final int MESSAGE_READ = 2;
     public static final int MESSAGE_DEVICE_NAME = 3;
     public static final int MESSAGE_TOAST = 4;
+    public static final int MESSAGE_WRITE = 5;
 
     private static final int REQUEST_CONNECT_DEVICE = 1;
     private static final int REQUEST_ENABLE_BT = 2;
@@ -129,6 +130,8 @@ public class BluetoothComm extends AppCompatActivity {
                             //state.append(mConnectedDeviceName);
                             mConversationArrayAdapter.clear();
                             mConversationArrayAdapter.add(mConnectedDeviceName + " is connected" );
+                            //commService.write();
+                            //this.sendMessage("connected!");
                             break;
                         case CommService.STATE_CONNECTING:
                             //state.setText(R.string.title_connecting);

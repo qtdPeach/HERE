@@ -25,6 +25,8 @@
             android:label="@string/app_name"
             android:theme="@style/AppTheme.NoActionBar">
         </activity>
+        <activity android:name=".testpage.BluetoothComm">
+        </activity>
 
         <activity android:name=".view.activity.MyEquipmentsActivity"/>
         <activity android:name=".view.activity.MyRecordsActivity"/>
