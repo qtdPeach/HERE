@@ -16,6 +16,7 @@ public class MyEquipmentsActivity extends AppCompatActivity {
 
     public static final String TAG = "MyEquipmentsActivity";
 
+    //Toolbar
     private Toolbar toolbar;
 
     @Override
