@@ -1,4 +1,4 @@
-package com.example.user.wase.View;
+package com.example.user.wase.viewtemp.activity;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -10,7 +10,7 @@ import com.example.user.wase.R;
 /**
  * Created by ymbae on 2016-04-18.
  */
-public class SplashActivity extends Activity {
+public class SplashActivityTemp extends Activity {
 
     public static final int SPLASH_TIMEOUT_MILLIS = 2000;
 
@@ -22,7 +22,7 @@ public class SplashActivity extends Activity {
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
-                Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+                Intent intent = new Intent(getApplicationContext(), MainActivityTemp.class);
 
                 startActivity(intent);
                 finish();

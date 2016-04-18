@@ -1,6 +1,5 @@
-package com.example.user.wase.View;
+package com.example.user.wase.viewtemp.activity;
 
-import android.app.Activity;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
@@ -13,20 +12,20 @@ import com.example.user.wase.R;
 /**
  * Created by ymbae on 2016-04-18.
  */
-public class MyRoutinesActivity extends AppCompatActivity {
+public class SettingAppInfoActivityTemp extends AppCompatActivity {
 
-    public static final String TAG = "MyRoutinesActivity";
+    public static final String TAG = "SettingAppInfoActivityTemp";
 
     private Toolbar toolbar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_myroutines);
+        setContentView(R.layout.activity_setting_appinfo);
 
         toolbar = (Toolbar) findViewById(R.id.toolbar);
 
-        toolbar.setTitle("내 운동 루틴");
+        toolbar.setTitle("앱 설정");
         toolbar.setNavigationIcon(R.mipmap.ic_menu_arrow_back);
         toolbar.setTitleTextColor(Color.WHITE);
 
@@ -34,7 +33,7 @@ public class MyRoutinesActivity extends AppCompatActivity {
 
         final ActionBar actionBar = getSupportActionBar();
 
-        actionBar.setTitle("내 운동 루틴");
+        actionBar.setTitle("앱 설정");
         actionBar.setDefaultDisplayHomeAsUpEnabled(true);
     }
 

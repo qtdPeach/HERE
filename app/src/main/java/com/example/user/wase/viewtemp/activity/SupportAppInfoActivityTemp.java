@@ -1,6 +1,5 @@
-package com.example.user.wase.View;
+package com.example.user.wase.viewtemp.activity;
 
-import android.app.Activity;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
@@ -13,20 +12,20 @@ import com.example.user.wase.R;
 /**
  * Created by ymbae on 2016-04-18.
  */
-public class SupportHelpActivity extends AppCompatActivity {
+public class SupportAppInfoActivityTemp extends AppCompatActivity {
 
-    public static final String TAG = "SupportHelpActivity";
+    public static final String TAG = "SupportAppInfoActivityTemp";
 
     private Toolbar toolbar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_support_help);
+        setContentView(R.layout.activity_support_appinfo);
 
         toolbar = (Toolbar) findViewById(R.id.toolbar);
 
-        toolbar.setTitle("도움말");
+        toolbar.setTitle("앱 정보");
         toolbar.setNavigationIcon(R.mipmap.ic_menu_arrow_back);
         toolbar.setTitleTextColor(Color.WHITE);
 
@@ -34,7 +33,7 @@ public class SupportHelpActivity extends AppCompatActivity {
 
         final ActionBar actionBar = getSupportActionBar();
 
-        actionBar.setTitle("도움말");
+        actionBar.setTitle("앱 정보");
         actionBar.setDefaultDisplayHomeAsUpEnabled(true);
     }
 

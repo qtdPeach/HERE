@@ -1,9 +1,11 @@
-package com.example.user.wase.View;
+package com.example.user.wase.viewtemp.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.support.design.widget.TabLayout;
+import android.support.v4.view.ViewPager;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -16,9 +18,13 @@ import android.view.MenuItem;
 import android.widget.Toast;
 
 import com.example.user.wase.R;
+import com.example.user.wase.controller.PagerAdapter;
 
-public class MainActivity extends AppCompatActivity
+public class MainActivityTemp extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
+
+    private TabLayout tabLayout;
+    private ViewPager viewPager;
 
     // Test comment
 
@@ -28,6 +34,46 @@ public class MainActivity extends AppCompatActivity
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
+
+        tabLayout = (TabLayout) findViewById(R.id.main_tablayout);
+
+        tabLayout.addTab(tabLayout.newTab().setText("연결 기기"));
+        tabLayout.addTab(tabLayout.newTab().setText("운동 설정"));
+        tabLayout.addTab(tabLayout.newTab().setText("운동 기록"));
+        tabLayout.setTabGravity(TabLayout.GRAVITY_FILL);
+
+        viewPager = (ViewPager) findViewById(R.id.main_viewpager);
+        final PagerAdapter pagerAdapter = new PagerAdapter(
+                getSupportFragmentManager(), tabLayout.getTabCount());
+
+        viewPager.setAdapter(pagerAdapter);
+        viewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
+
+        tabLayout.setOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
+            @Override
+            public void onTabSelected(TabLayout.Tab tab) {
+                viewPager.setCurrentItem(tab.getPosition());
+            }
+
+            @Override
+            public void onTabUnselected(TabLayout.Tab tab) {
+
+            }
+
+            @Override
+            public void onTabReselected(TabLayout.Tab tab) {
+
+            }
+        });
+
+
+
+
+
+
+
+
         System.out.print("GOOD");
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
@@ -97,7 +143,7 @@ public class MainActivity extends AppCompatActivity
                 Toast.makeText(getApplicationContext(), "MY EXERCISE EQUIPMENTS", Toast.LENGTH_SHORT).show();
                 //TODO: Activity transition (EquipmentsActivity)
 
-                Intent intent_myequipments = new Intent(getApplicationContext(), MyEquipmentsActivity.class);
+                Intent intent_myequipments = new Intent(getApplicationContext(), MyEquipmentsActivityTemp.class);
                 startActivity(intent_myequipments);
                 break;
             //My exercise routines
@@ -105,7 +151,7 @@ public class MainActivity extends AppCompatActivity
                 Toast.makeText(getApplicationContext(), "MY EXERCISE ROUTINES", Toast.LENGTH_SHORT).show();
                 //TODO: Activity transition (RoutinesActivity)
 
-                Intent intent_myroutines = new Intent(getApplicationContext(), MyRoutinesActivity.class);
+                Intent intent_myroutines = new Intent(getApplicationContext(), MyRoutinesActivityTemp.class);
                 startActivity(intent_myroutines);
                 break;
             //My exercise record
@@ -113,7 +159,7 @@ public class MainActivity extends AppCompatActivity
                 Toast.makeText(getApplicationContext(), "MY EXERCISE RECORDS", Toast.LENGTH_SHORT).show();
                 //TODO: Activity transition (RecordActivity)
 
-                Intent intent_myrecords = new Intent(getApplicationContext(), MyRecordsActivity.class);
+                Intent intent_myrecords = new Intent(getApplicationContext(), MyRecordsActivityTemp.class);
                 startActivity(intent_myrecords);
                 break;
 //            //My alarm
@@ -126,7 +172,7 @@ public class MainActivity extends AppCompatActivity
                 Toast.makeText(getApplicationContext(), "MY INFORMATION SETTING", Toast.LENGTH_SHORT).show();
                 //TODO: Activity transition (MyInfoActivity)
 
-                Intent intent_settingmyinfo = new Intent(getApplicationContext(), SettingMyInfoActivity.class);
+                Intent intent_settingmyinfo = new Intent(getApplicationContext(), SettingMyInfoActivityTemp.class);
                 startActivity(intent_settingmyinfo);
                 break;
             //App setting
@@ -134,7 +180,7 @@ public class MainActivity extends AppCompatActivity
                 Toast.makeText(getApplicationContext(), "APPLICATION SETTING", Toast.LENGTH_SHORT).show();
                 //TODO: Activity transition (AppSettingActivity)
 
-                Intent intent_settingappinfo = new Intent(getApplicationContext(), SettingAppInfoActivity.class);
+                Intent intent_settingappinfo = new Intent(getApplicationContext(), SettingAppInfoActivityTemp.class);
                 startActivity(intent_settingappinfo);
                 break;
             //Help
@@ -142,7 +188,7 @@ public class MainActivity extends AppCompatActivity
                 Toast.makeText(getApplicationContext(), "SHOW HELP DIALOG", Toast.LENGTH_SHORT).show();
                 //TODO: Dialog (HelpDialog)
 
-                Intent intent_supporthelp = new Intent(getApplicationContext(), SupportHelpActivity.class);
+                Intent intent_supporthelp = new Intent(getApplicationContext(), SupportHelpActivityTemp.class);
                 startActivity(intent_supporthelp);
                 break;
             //Application information
@@ -150,7 +196,7 @@ public class MainActivity extends AppCompatActivity
                 Toast.makeText(getApplicationContext(), "SHOW APP INFO DIALOG", Toast.LENGTH_SHORT).show();
                 //TODO: Dialog (AppInfoDialog)
 
-                Intent intent_supportappinfo = new Intent(getApplicationContext(), SupportAppInfoActivity.class);
+                Intent intent_supportappinfo = new Intent(getApplicationContext(), SupportAppInfoActivityTemp.class);
                 startActivity(intent_supportappinfo);
                 break;
         }

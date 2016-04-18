@@ -9,7 +9,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
 
-        <activity android:name=".view.activity.SplashActivity">
+        <activity android:name=".viewtemp.activity.SplashActivityTemp">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -18,18 +18,18 @@
         </activity>
 
         <activity
-            android:name=".view.activity.MainActivity"
+            android:name=".viewtemp.activity.MainActivityTemp"
             android:label="@string/app_name"
             android:theme="@style/AppTheme.NoActionBar">
         </activity>
 
-        <activity android:name=".view.activity.MyEquipmentsActivity"/>
-        <activity android:name=".view.activity.MyRecordsActivity"/>
-        <activity android:name=".view.activity.MyRoutinesActivity"/>
-        <activity android:name=".view.activity.SettingAppInfoActivity"/>
-        <activity android:name=".view.activity.SettingMyInfoActivity"/>
-        <activity android:name=".view.activity.SupportAppInfoActivity"/>
-        <activity android:name=".view.activity.SupportHelpActivity"/>
+        <activity android:name=".viewtemp.activity.MyEquipmentsActivityTemp"/>
+        <activity android:name=".viewtemp.activity.MyRecordsActivityTemp"/>
+        <activity android:name=".viewtemp.activity.MyRoutinesActivityTemp"/>
+        <activity android:name=".viewtemp.activity.SettingAppInfoActivityTemp"/>
+        <activity android:name=".viewtemp.activity.SettingMyInfoActivityTemp"/>
+        <activity android:name=".viewtemp.activity.SupportAppInfoActivityTemp"/>
+        <activity android:name=".viewtemp.activity.SupportHelpActivityTemp"/>
 
     </application>
 

@@ -1,6 +1,5 @@
-package com.example.user.wase.View;
+package com.example.user.wase.viewtemp.activity;
 
-import android.app.Activity;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
@@ -13,9 +12,9 @@ import com.example.user.wase.R;
 /**
  * Created by ymbae on 2016-04-18.
  */
-public class MyRecordsActivity extends AppCompatActivity {
+public class MyRecordsActivityTemp extends AppCompatActivity {
 
-    public static final String TAG = "MyRecordsActivity";
+    public static final String TAG = "MyRecordsActivityTemp";
 
     private Toolbar toolbar;
 

@@ -1,6 +1,5 @@
-package com.example.user.wase.View;
+package com.example.user.wase.viewtemp.activity;
 
-import android.app.Activity;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
@@ -13,20 +12,20 @@ import com.example.user.wase.R;
 /**
  * Created by ymbae on 2016-04-18.
  */
-public class SettingMyInfoActivity extends AppCompatActivity {
+public class MyEquipmentsActivityTemp extends AppCompatActivity {
 
-    public static final String TAG = "SettingMyInfoActivity";
+    public static final String TAG = "MyEquipmentsActivity";
 
     private Toolbar toolbar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_setting_myinfo);
+        setContentView(R.layout.activity_myequipments);
 
         toolbar = (Toolbar) findViewById(R.id.toolbar);
 
-        toolbar.setTitle("내 정보 설정");
+        toolbar.setTitle("내 운동 기구");
         toolbar.setNavigationIcon(R.mipmap.ic_menu_arrow_back);
         toolbar.setTitleTextColor(Color.WHITE);
 
@@ -34,8 +33,9 @@ public class SettingMyInfoActivity extends AppCompatActivity {
 
         final ActionBar actionBar = getSupportActionBar();
 
-        actionBar.setTitle("내 정보 설정");
+        actionBar.setTitle("내 운동 기구");
         actionBar.setDefaultDisplayHomeAsUpEnabled(true);
+
     }
 
     @Override
