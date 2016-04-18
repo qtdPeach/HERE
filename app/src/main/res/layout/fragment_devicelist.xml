@@ -4,13 +4,21 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <TextView
+    <!--<TextView-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="match_parent"-->
+        <!--android:gravity="center"-->
+        <!--android:text="Connected device list"-->
+        <!--android:textSize="25dp"-->
+        <!--android:textStyle="bold"-->
+        <!--android:textColor="@color/colorPrimary"/>-->
+
+    <ListView
+        android:id="@+id/fragment1_equiplist"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:gravity="center"
-        android:text="Connected device list"
-        android:textSize="25dp"
-        android:textStyle="bold"
-        android:textColor="@color/colorPrimary"/>
+        android:paddingLeft="20sp"
+        android:paddingRight="20sp"
+        ></ListView>
 
 </LinearLayout>
