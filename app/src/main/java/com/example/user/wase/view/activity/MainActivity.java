@@ -20,6 +20,7 @@ import android.widget.Toast;
 import com.example.user.wase.R;
 import com.example.user.wase.controller.PagerAdapter;
 import com.example.user.wase.model.Equipment;
+import com.example.user.wase.testpage.BluetoothComm;
 
 import java.util.ArrayList;
 
@@ -141,6 +142,9 @@ public class MainActivity extends AppCompatActivity
             //Test page
             case R.id.nav_testpage:
                 //TODO: Bluetooth test activity
+                //Move to test page
+                Intent testIntent = new Intent(this, BluetoothComm.class);
+                startActivity(testIntent);
                 break;
             //My exercise equipments
             case R.id.nav_myequipments:
