@@ -64,6 +64,14 @@ public class BluetoothComm extends AppCompatActivity {
 
         mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
 
+        Button start = (Button)findViewById(R.id.start);
+        start.setOnClickListener(new Button.OnClickListener(){
+            public void onClick(View v) {
+                Intent discoveringIntent = new Intent(BluetoothComm.this, DiscoverDevice.class);
+                startActivityForResult(discoveringIntent, REQUEST_CONNECT_DEVICE);
+            }
+        });
+
         if (mBluetoothAdapter == null) {
             Toast.makeText(this, "Bluetooth is not available", Toast.LENGTH_LONG).show();
             finish();
