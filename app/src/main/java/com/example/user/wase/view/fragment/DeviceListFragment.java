@@ -1,4 +1,4 @@
-package com.example.user.wase.viewtemp.fragment;
+package com.example.user.wase.view.fragment;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -12,12 +12,12 @@ import com.example.user.wase.R;
 /**
  * Created by ymbae on 2016-04-18.
  */
-public class ExerciseFragment extends Fragment{
+public class DeviceListFragment extends Fragment{
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_exercise, container, false);
+        return inflater.inflate(R.layout.fragment_devicelist, container, false);
         //return super.onCreateView(inflater, container, savedInstanceState);
     }
 }

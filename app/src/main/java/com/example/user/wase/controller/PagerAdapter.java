@@ -4,9 +4,9 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 
-import com.example.user.wase.viewtemp.fragment.DeviceListFragment;
-import com.example.user.wase.viewtemp.fragment.ExerciseFragment;
-import com.example.user.wase.viewtemp.fragment.MyRecordsFragment;
+import com.example.user.wase.view.fragment.DeviceListFragment;
+import com.example.user.wase.view.fragment.ExerciseFragment;
+import com.example.user.wase.view.fragment.MyRecordsFragment;
 
 /**
  * Created by ymbae on 2016-04-18.

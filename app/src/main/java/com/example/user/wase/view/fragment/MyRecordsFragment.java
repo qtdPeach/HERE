@@ -1,4 +1,4 @@
-package com.example.user.wase.viewtemp.fragment;
+package com.example.user.wase.view.fragment;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
