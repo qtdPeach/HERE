@@ -44,7 +44,6 @@ public class DiscoverDevice extends Activity {
         scanButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 doDiscovery();
-                //v.setVisibility(View.GONE);
             }
         });
 
@@ -56,12 +55,10 @@ public class DiscoverDevice extends Activity {
         // Find and set up the ListView for paired devices
         final ListView pairedListView = (ListView) findViewById(R.id.paired_devices);
         pairedListView.setAdapter(mPairedDevicesArrayAdapter);
-        //pairedListView.setOnItemClickListener(mDeviceClickListener);
 
         // Find and set up the ListView for newly discovered devices
         final ListView newDevicesListView = (ListView) findViewById(R.id.new_devices);
         newDevicesListView.setAdapter(mNewDevicesArrayAdapter);
-        //newDevicesListView.setOnItemClickListener(mDeviceClickListener);
 
         Button connectButton = (Button) findViewById(R.id.connect_device);
         connectButton.setOnClickListener(new View.OnClickListener() {
@@ -119,7 +116,6 @@ public class DiscoverDevice extends Activity {
 
         // If there are paired devices, add each one to the ArrayAdapter
         if (pairedDevices.size() > 0) {
-            //findViewById(R.id.title_paired_devices).setVisibility(View.VISIBLE);
             for (BluetoothDevice device : pairedDevices) {
                 mPairedDevicesArrayAdapter.add(device.getName() + "\n" + device.getAddress());
             }
@@ -153,8 +149,6 @@ public class DiscoverDevice extends Activity {
             list_new.remove(i);
 
         mNewDevicesArrayAdapter.notifyDataSetChanged();
-        // Turn on sub-title for new devices
-        //findViewById(R.id.title_new_devices).setVisibility(View.VISIBLE);
 
         // If we're already discovering, stop it
         if (mBtAdapter.isDiscovering()) {
@@ -176,7 +170,6 @@ public class DiscoverDevice extends Activity {
                 BluetoothDevice device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
                 // If it's already paired, skip it, because it's been listed already
                 if (device.getBondState() != BluetoothDevice.BOND_BONDED) {
-                    //mNewDevicesArrayAdapter.add(device.getName() + "\n" + device.getAddress());
                     list_new.add(device.getName() + "\n" + device.getAddress());
                     mNewDevicesArrayAdapter.notifyDataSetChanged();
                 }

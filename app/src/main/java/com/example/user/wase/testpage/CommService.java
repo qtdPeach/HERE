@@ -32,7 +32,6 @@ public class CommService {
 
     // Unique UUID for this application
     private ArrayList<UUID> mUuids;
-    //private static UUID MY_UUID; //= UUID.fromString("fa87c0d0-afac-11de-8a39-0800200c9a66");
 
     // Member fields
     private final BluetoothAdapter mAdapter;
@@ -43,7 +42,6 @@ public class CommService {
     private int mState;
 
     private ArrayList<String> mDeviceAddresses;
-    private ArrayList<String> mDeviceNames;
     private ArrayList<ConnectedThread> mConnThreads;
     private ArrayList<BluetoothSocket> mSockets;
 
@@ -104,9 +102,6 @@ public class CommService {
             mConnectThread = null;
         }
 
-//        // Cancel any thread currently running a connection
-//        if (mConnectedThread != null) {mConnectedThread.cancel(); mConnectedThread = null;}
-
         // Start the thread to listen on a BluetoothServerSocket
         if (mAcceptThread == null) {
             mAcceptThread = new AcceptThread();
@@ -117,8 +112,6 @@ public class CommService {
 
     public synchronized void connect(BluetoothDevice device) {//, int selectedPosition) {
 
-        //if (getPositionIndexOfDevice(device) == -1) {
-        // Cancel any thread attempting to make a connection
         if (mState == STATE_CONNECTING) {
             if (mConnectThread != null) {
                 mConnectThread.cancel();
@@ -126,12 +119,7 @@ public class CommService {
             }
         }
 
-//    aaa    // Cancel any thread currently running a connection
-//        if (mConnectedThread != null) {
-//            mConnectedThread.cancel();
-//            mConnectedThread = null;
-//        }
-
+        // Cancel any thread currently running a connection
         for (int i = 0; i < 1; i++) {
             try {
                 mConnectThread = new ConnectThread(device, mUuids.get(i),i);
@@ -151,24 +139,13 @@ public class CommService {
     public synchronized void connected(BluetoothSocket socket, BluetoothDevice device){//, int selectedPosition) {
         if (D) Log.d(TAG, "connected");
 
-//        // Cancel the thread that completed the connection
-//        if (mConnectThread != null) {mConnectThread.cancel(); mConnectThread = null;}
-//
-//        // Cancel any thread currently running a connection
-//        if (mConnectedThread != null) {mConnectedThread.cancel(); mConnectedThread = null;}
-//
-//        // Cancel the accept thread because we only want to connect to one device
-//        if (mAcceptThread != null) {mAcceptThread.cancel(); mAcceptThread = null;}
-
         // Start the thread to manage the connection and perform transmissions
         mConnectedThread = new ConnectedThread(socket);
         mConnectedThread.start();
         String message = device.getName();
         byte[] send = message.getBytes();
 
-        System.out.println("sent it!");
         // Add each connected thread to an array
-        // mConnThreads.set(selectedPosition, mConnectedThread);
         mConnThreads.add(mConnectedThread);
 
         // Send the name of the connected device back to the UI Activity
@@ -181,8 +158,6 @@ public class CommService {
         setState(STATE_CONNECTED);
 
         write(send);
-
-        System.out.println("stateconnected");
     }
 
     public synchronized void stop() {
@@ -190,16 +165,6 @@ public class CommService {
         if (mConnectThread != null) {mConnectThread.cancel(); mConnectThread = null;}
         if (mConnectedThread != null) {mConnectedThread.cancel(); mConnectedThread = null;}
         if (mAcceptThread != null) {mAcceptThread.cancel(); mAcceptThread = null;}
-
-//        for (int i = 0; i < 5; i++) {
-//            mDeviceNames.set(i, null);
-//            mDeviceAddresses.set(i, null);
-//            mSockets.set(i, null);
-//            if (mConnThreads.get(i) != null) {
-//                mConnThreads.get(i).cancel();
-//                mConnThreads.set(i, null);
-//            }
-//        }
 
         setState(STATE_NONE);
     }
@@ -216,22 +181,18 @@ public class CommService {
                 // Create temporary object
                 ConnectedThread r;
                 // Synchronize a copy of the ConnectedThread
-                System.out.println("in here");
                 synchronized (this) {
-                    if (mState != STATE_CONNECTED) {System.out.println("state not connected");return;}
+                    if (mState != STATE_CONNECTED) return;
                     r = mConnThreads.get(i);
                 }
                 // Perform the write unsynchronized
-                System.out.println("write before");
                 r.write(out);
-                System.out.println("write after");
             } catch (Exception e) {
             }
         }
     }
 
     private void connectionFailed(int i) {
-        System.out.println("Thread: "+i);
         setState(STATE_LISTEN);
 
         // Send a failure message back to the Activity
@@ -247,13 +208,6 @@ public class CommService {
      */
     private void connectionLost(){//BluetoothDevice device) {
         setState(STATE_LISTEN);
-//        int positionIndex = getPositionIndexOfDevice(device);
-//        if (positionIndex != -1) {
-//            Log.i(TAG, "getPositionIndexOfDevice(device) ==="
-//                    + mDeviceAddresses.get(getPositionIndexOfDevice(device)));
-//            mDeviceAddresses.set(positionIndex, null);
-//            mDeviceNames.set(positionIndex, null);
-//            mConnThreads.set(positionIndex, null);
 
         // Send a failure message back to the Activity
         Message msg = mHandler.obtainMessage(BluetoothComm.MESSAGE_TOAST);
@@ -269,67 +223,12 @@ public class CommService {
 
         public AcceptThread() {
         }
-//        public AcceptThread() {
-//            BluetoothServerSocket tmp = null;
-//
-//            // Create a new listening server socket
-//            try {
-//                if (mAdapter.isEnabled()) {
-//                    CommService.setMY_UUID(UUID
-//                            .fromString("00000003-0000-1000-8000-"
-//                                    + mAdapter.getAddress().replace(":", "")));
-//                }
-//                Log.i(TAG, "MY_UUID.toString()=="
-//                        + CommService.getMY_UUID().toString());
-//
-//                tmp = mAdapter.listenUsingRfcommWithServiceRecord(NAME,
-//                        CommService.getMY_UUID());
-//                //tmp = mAdapter.listenUsingRfcommWithServiceRecord(NAME, MY_UUID);
-//            } catch (IOException e) {
-//                Log.e(TAG, "listen() failed", e);
-//            }
-//            mmServerSocket = tmp;
-//        }
 
         public void run() {
             if (D) Log.d(TAG, "BEGIN mAcceptThread" + this);
             setName("AcceptThread");
             BluetoothSocket socket = null;
 
-//            // Listen to the server socket if we're not connected
-//            while (mState != STATE_CONNECTED) {
-//                try {
-//                    // This is a blocking call and will only return on a
-//                    // successful connection or an exception
-//                    socket = mmServerSocket.accept();
-//                } catch (IOException e) {
-//                    Log.e(TAG, "accept() failed", e);
-//                    break;
-//                }
-//
-//                // If a connection was accepted
-//                if (socket != null) {
-//                    synchronized (CommService.this) {
-//                        switch (mState) {
-//                            case STATE_LISTEN:
-//                            case STATE_CONNECTING:
-//                                // Situation normal. Start the connected thread.
-//                                connected(socket, socket.getRemoteDevice(),getAvailablePositionIndexForNewConnection(socket.getRemoteDevice()));
-//                                break;
-//                            case STATE_NONE:
-//                            case STATE_CONNECTED:
-//                                // Either not ready or already connected. Terminate new socket.
-//                                try {
-//                                    socket.close();
-//                                } catch (IOException e) {
-//                                    Log.e(TAG, "Could not close unwanted socket", e);
-//                                }
-//                                break;
-//                        }
-//                    }
-//                }
-//            }
-//            if (D) Log.i(TAG, "END mAcceptThread");
             try {
                 // Listen for all 7 UUIDs
                 for (int i = 0; i < 1; i++) {
@@ -374,15 +273,11 @@ public class CommService {
             BluetoothSocket tmp = null;
             tempUuid = uuid;
             thread =i;
-            //this.selectedPosition = selectedPosition;
 
             // Get a BluetoothSocket for a connection with the
             // given BluetoothDevice
             try {
                 tmp = device.createRfcommSocketToServiceRecord(uuid);
-                if(tmp == null)
-                    System.out.println("socket null");
-                System.out.println("UUID: "+uuid);
             } catch (IOException e) {
                 Log.e(TAG, "create() failed", e);
             }
@@ -396,7 +291,6 @@ public class CommService {
 
             // Always cancel discovery because it will slow down a connection
             mAdapter.cancelDiscovery();
-            System.out.println("4444444444");
             // Make a connection to the BluetoothSocket
             try {
                 // This is a blocking call and will only return on a
@@ -421,12 +315,8 @@ public class CommService {
             synchronized (CommService.this) {
                 mConnectThread = null;
             }
-            System.out.println("55555555");
-//            // Start the connected thread
-//            mDeviceAddresses.set(selectedPosition, mmDevice.getAddress());
-//            mDeviceNames.set(selectedPosition, mmDevice.getName());
-//            // Start the connected thread
-            connected(mmSocket, mmDevice);//, selectedPosition);
+            // Start the connected thread
+            connected(mmSocket, mmDevice);
         }
 
         public void cancel() {
@@ -457,7 +347,6 @@ public class CommService {
             try {
                 tmpIn = socket.getInputStream();
                 tmpOut = socket.getOutputStream();
-                System.out.println("tmpOut: "+tmpOut);
             } catch (IOException e) {
                 Log.e(TAG, "temp sockets not created", e);
             }
@@ -474,18 +363,14 @@ public class CommService {
             // Keep listening to the InputStream while connected
             while (true) {
                 try {
-                    System.out.println("listening");
                     // Read from the InputStream
                     bytes = mmInStream.read(buffer);
-                    System.out.println("listening22");
                     // Send the obtained bytes to the UI Activity
-                    mHandler.obtainMessage(BluetoothComm.MESSAGE_READ, bytes,-1,buffer).sendToTarget();//, getPositionIndexOfDevice(mmSocket.getRemoteDevice()), buffer).sendToTarget();
+                    mHandler.obtainMessage(BluetoothComm.MESSAGE_READ, bytes,-1,buffer).sendToTarget();
 
-//                    // Reload the buffer to clear extra bytes from the previous read
-//                    buffer = new byte[1024];
                 } catch (IOException e) {
                     Log.e(TAG, "disconnected", e);
-                    connectionLost();//mmSocket.getRemoteDevice());
+                    connectionLost();
                     break;
                 }
             }
@@ -495,11 +380,8 @@ public class CommService {
             while(true){
                 try {
                     mmOutStream.write(buffer);
-                    System.out.println("out");
                     sleep(1000);
-                    // Share the sent message back to the UI Activity
-//                mHandler.obtainMessage(BluetoothChat.MESSAGE_WRITE, -1, -1, buffer)
-//                        .sendToTarget();
+
                 } catch (IOException e) {
                     Log.e(TAG, "Exception during write", e);
                 } catch (InterruptedException e) {

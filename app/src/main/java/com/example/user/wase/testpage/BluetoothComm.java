@@ -7,13 +7,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.NavigationView;
-import android.support.design.widget.Snackbar;
-import android.support.v4.widget.DrawerLayout;
-import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -35,7 +29,6 @@ public class BluetoothComm extends AppCompatActivity {
     public static final int MESSAGE_READ = 2;
     public static final int MESSAGE_DEVICE_NAME = 3;
     public static final int MESSAGE_TOAST = 4;
-    public static final int MESSAGE_WRITE = 5;
 
     private static final int REQUEST_CONNECT_DEVICE = 1;
     private static final int REQUEST_ENABLE_BT = 2;
@@ -85,13 +78,11 @@ public class BluetoothComm extends AppCompatActivity {
         super.onStart();
 
         if (!mBluetoothAdapter.isEnabled()) {
-            System.out.println("aaaaaaaa");
             Intent enableIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
             startActivityForResult(enableIntent, REQUEST_ENABLE_BT);
             // Otherwise, setup the chat session
         } else {
             if (commService == null) try {
-                System.out.println("bbbb");
                 setupService();
             } catch (NoSuchMethodException e) {
                 e.printStackTrace();
@@ -135,20 +126,12 @@ public class BluetoothComm extends AppCompatActivity {
                 case MESSAGE_STATE_CHANGE:
                     switch (msg.arg1) {
                         case CommService.STATE_CONNECTED:
-                            //findViewById(R.id.in).setVisibility(View.VISIBLE);
-                            //state.setText(R.string.title_connected_to);
-                            //state.append(mConnectedDeviceName);
                             mConversationArrayAdapter.clear();
                             mConversationArrayAdapter.add(mConnectedDeviceName + " is connected" );
-                            //commService.write();
-                            //this.sendMessage("connected!");
                             break;
                         case CommService.STATE_CONNECTING:
-                            //state.setText(R.string.title_connecting);
-                            break;
                         case CommService.STATE_LISTEN:
                         case CommService.STATE_NONE:
-                            //state.setText(R.string.title_not_connected);
                             break;
                     }
                     break;
@@ -179,11 +162,9 @@ public class BluetoothComm extends AppCompatActivity {
                     // Get the BLuetoothDevice object
                     for (CharSequence cs : address){
                         BluetoothDevice device = mBluetoothAdapter.getRemoteDevice(cs.toString());
-                        System.out.println("connect" + selectedPosition);
                         commService.connect(device);//, selectedPosition);
                         selectedPosition++;
                     }
-                    System.out.println("onactivity result");
                 }
                 break;
 
