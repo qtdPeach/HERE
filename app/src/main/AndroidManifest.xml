@@ -27,6 +27,9 @@
         </activity>
         <activity android:name=".testpage.BluetoothComm">
         </activity>
+        <activity android:name=".testpage.DiscoverDevice">
+
+        </activity>
 
         <activity android:name=".view.activity.MyEquipmentsActivity"/>
         <activity android:name=".view.activity.MyRecordsActivity"/>

@@ -70,8 +70,8 @@ public class CommService {
         mSockets = new ArrayList<BluetoothSocket>();
         mUuids = new ArrayList<UUID>();
         // 7 randomly-generated UUIDs. These must match on both server and client.
-        mUuids.add(UUID.fromString("00001112-0000-1000-8000-00805f9b34fb"));
-        mUuids.add(UUID.fromString("00001112-0000-1000-8000-00805f9b34fb"));
+        mUuids.add(UUID.fromString("00001101-0000-1000-8000-00805f9b34fb"));
+        mUuids.add(UUID.fromString("00001101-0000-1000-8000-00805f9b34fb"));
         mUuids.add(UUID.fromString("00001112-0000-1000-8000-00805f9b34fb"));
         mUuids.add(UUID.fromString("00001112-0000-1000-8000-00805f9b34fb"));
         mUuids.add(UUID.fromString("00001112-0000-1000-8000-00805f9b34fb"));
@@ -132,7 +132,7 @@ public class CommService {
 //            mConnectedThread = null;
 //        }
 
-        for (int i = 0; i < 7; i++) {
+        for (int i = 0; i < 1; i++) {
             try {
                 mConnectThread = new ConnectThread(device, mUuids.get(i),i);
                 mConnectThread.start();
@@ -163,9 +163,10 @@ public class CommService {
         // Start the thread to manage the connection and perform transmissions
         mConnectedThread = new ConnectedThread(socket);
         mConnectedThread.start();
-        String message = "connected!!";
+        String message = device.getName();
         byte[] send = message.getBytes();
-        mConnectedThread.write(send);
+
+        System.out.println("sent it!");
         // Add each connected thread to an array
         // mConnThreads.set(selectedPosition, mConnectedThread);
         mConnThreads.add(mConnectedThread);
@@ -178,6 +179,9 @@ public class CommService {
         mHandler.sendMessage(msg);
 
         setState(STATE_CONNECTED);
+
+        write(send);
+
         System.out.println("stateconnected");
     }
 
@@ -212,12 +216,15 @@ public class CommService {
                 // Create temporary object
                 ConnectedThread r;
                 // Synchronize a copy of the ConnectedThread
+                System.out.println("in here");
                 synchronized (this) {
-                    if (mState != STATE_CONNECTED) return;
+                    if (mState != STATE_CONNECTED) {System.out.println("state not connected");return;}
                     r = mConnThreads.get(i);
                 }
                 // Perform the write unsynchronized
+                System.out.println("write before");
                 r.write(out);
+                System.out.println("write after");
             } catch (Exception e) {
             }
         }
@@ -325,7 +332,7 @@ public class CommService {
 //            if (D) Log.i(TAG, "END mAcceptThread");
             try {
                 // Listen for all 7 UUIDs
-                for (int i = 0; i < 7; i++) {
+                for (int i = 0; i < 1; i++) {
                     mmServerSocket = mAdapter.listenUsingRfcommWithServiceRecord(NAME, mUuids.get(i));
                     socket = mmServerSocket.accept();
                     if (socket != null) {
@@ -450,6 +457,7 @@ public class CommService {
             try {
                 tmpIn = socket.getInputStream();
                 tmpOut = socket.getOutputStream();
+                System.out.println("tmpOut: "+tmpOut);
             } catch (IOException e) {
                 Log.e(TAG, "temp sockets not created", e);
             }
@@ -466,9 +474,10 @@ public class CommService {
             // Keep listening to the InputStream while connected
             while (true) {
                 try {
+                    System.out.println("listening");
                     // Read from the InputStream
                     bytes = mmInStream.read(buffer);
-
+                    System.out.println("listening22");
                     // Send the obtained bytes to the UI Activity
                     mHandler.obtainMessage(BluetoothComm.MESSAGE_READ, bytes,-1,buffer).sendToTarget();//, getPositionIndexOfDevice(mmSocket.getRemoteDevice()), buffer).sendToTarget();
 
@@ -483,14 +492,19 @@ public class CommService {
         }
 
         public void write(byte[] buffer) {
-            try {
-                mmOutStream.write(buffer);
-
-                // Share the sent message back to the UI Activity
+            while(true){
+                try {
+                    mmOutStream.write(buffer);
+                    System.out.println("out");
+                    sleep(1000);
+                    // Share the sent message back to the UI Activity
 //                mHandler.obtainMessage(BluetoothChat.MESSAGE_WRITE, -1, -1, buffer)
 //                        .sendToTarget();
-            } catch (IOException e) {
-                Log.e(TAG, "Exception during write", e);
+                } catch (IOException e) {
+                    Log.e(TAG, "Exception during write", e);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
             }
         }
 

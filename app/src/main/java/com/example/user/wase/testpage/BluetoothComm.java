@@ -85,11 +85,13 @@ public class BluetoothComm extends AppCompatActivity {
         super.onStart();
 
         if (!mBluetoothAdapter.isEnabled()) {
+            System.out.println("aaaaaaaa");
             Intent enableIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
             startActivityForResult(enableIntent, REQUEST_ENABLE_BT);
             // Otherwise, setup the chat session
         } else {
             if (commService == null) try {
+                System.out.println("bbbb");
                 setupService();
             } catch (NoSuchMethodException e) {
                 e.printStackTrace();
@@ -133,7 +135,7 @@ public class BluetoothComm extends AppCompatActivity {
                 case MESSAGE_STATE_CHANGE:
                     switch (msg.arg1) {
                         case CommService.STATE_CONNECTED:
-                            findViewById(R.id.in).setVisibility(View.VISIBLE);
+                            //findViewById(R.id.in).setVisibility(View.VISIBLE);
                             //state.setText(R.string.title_connected_to);
                             //state.append(mConnectedDeviceName);
                             mConversationArrayAdapter.clear();
@@ -181,6 +183,7 @@ public class BluetoothComm extends AppCompatActivity {
                         commService.connect(device);//, selectedPosition);
                         selectedPosition++;
                     }
+                    System.out.println("onactivity result");
                 }
                 break;
 

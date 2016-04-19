@@ -13,6 +13,6 @@
         android:stackFromBottom="true"
         android:transcriptMode="alwaysScroll"
         android:layout_weight="1"
-        android:visibility="gone"
+
         />
 </LinearLayout>
