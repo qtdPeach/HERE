@@ -32,6 +32,7 @@ public class CommService {
 
     // Unique UUID for this application
     private ArrayList<UUID> mUuids;
+    private static UUID MY_UUID;
 
     // Member fields
     private final BluetoothAdapter mAdapter;
@@ -42,6 +43,7 @@ public class CommService {
     private int mState;
 
     private ArrayList<String> mDeviceAddresses;
+    private ArrayList<String> mDeviceNames;
     private ArrayList<ConnectedThread> mConnThreads;
     private ArrayList<BluetoothSocket> mSockets;
 
@@ -49,32 +51,74 @@ public class CommService {
     public static final int STATE_LISTEN = 1;     // now listening for incoming connections
     public static final int STATE_CONNECTING = 2; // now initiating an outgoing connection
     public static final int STATE_CONNECTED = 3;  // now connected to a remote device
+
     public CommService(Context context, Handler handler) throws NoSuchMethodException, InvocationTargetException, IllegalAccessException {
         mAdapter = BluetoothAdapter.getDefaultAdapter();
-
-        Method getUuidsMethod = BluetoothAdapter.class.getDeclaredMethod("getUuids", null);
-
-        ParcelUuid[] uuids = (ParcelUuid[]) getUuidsMethod.invoke(mAdapter, null);
-
-        for (ParcelUuid uuid: uuids) {
-            Log.d(TAG, "This is UUID: " + uuid.getUuid().toString());
-        }
         mState = STATE_NONE;
         mHandler = handler;
 
-        //initializeArrayLists();
-        mDeviceAddresses = new ArrayList<String>();
-        mConnThreads = new ArrayList<ConnectedThread>();
-        mSockets = new ArrayList<BluetoothSocket>();
-        mUuids = new ArrayList<UUID>();
-        // 7 randomly-generated UUIDs. These must match on both server and client.
-        mUuids.add(UUID.fromString("00001101-0000-1000-8000-00805f9b34fb"));
-        mUuids.add(UUID.fromString("00001101-0000-1000-8000-00805f9b34fb"));
-        mUuids.add(UUID.fromString("00001112-0000-1000-8000-00805f9b34fb"));
-        mUuids.add(UUID.fromString("00001112-0000-1000-8000-00805f9b34fb"));
-        mUuids.add(UUID.fromString("00001112-0000-1000-8000-00805f9b34fb"));
-        mUuids.add(UUID.fromString("00001112-0000-1000-8000-00805f9b34fb"));
-        mUuids.add(UUID.fromString("00001112-0000-1000-8000-00805f9b34fb"));
+        initializeArrayLists();
+//        mDeviceAddresses = new ArrayList<String>();
+//        mConnThreads = new ArrayList<ConnectedThread>();
+//        mSockets = new ArrayList<BluetoothSocket>();
+//        mUuids = new ArrayList<UUID>();
+//        // 7 randomly-generated UUIDs. These must match on both server and client.
+//        mUuids.add(UUID.fromString("00001101-0000-1000-8000-00805f9b34fc"));
+//        mUuids.add(UUID.fromString("00001101-0000-1000-8000-00805f9b34fb"));
+//        mUuids.add(UUID.fromString("00001112-0000-1000-8000-00805f9b34fb"));
+//        mUuids.add(UUID.fromString("00001112-0000-1000-8000-00805f9b34fb"));
+//        mUuids.add(UUID.fromString("00001112-0000-1000-8000-00805f9b34fb"));
+//        mUuids.add(UUID.fromString("00001112-0000-1000-8000-00805f9b34fb"));
+//        mUuids.add(UUID.fromString("00001112-0000-1000-8000-00805f9b34fb"));
+    }
+    public static UUID getMY_UUID() {
+        return MY_UUID;
+    }
+
+    public static void setMY_UUID(UUID mY_UUID) {
+        MY_UUID = mY_UUID;
+    }
+
+    public boolean isDeviceConnectedAtPosition(int position) {
+        if (mConnThreads.get(position) == null) {
+            return false;
+        }
+        return true;
+    }
+
+    private void initializeArrayLists() {
+        mDeviceAddresses = new ArrayList<String>(5);
+        mDeviceNames = new ArrayList<String>(5);
+        mConnThreads = new ArrayList<ConnectedThread>(5);
+        mSockets = new ArrayList<BluetoothSocket>(5);
+        mUuids = new ArrayList<UUID>(5);
+
+        for (int i = 0; i < 5; i++) {
+            mDeviceAddresses.add(null);
+            mDeviceNames.add(null);
+            mConnThreads.add(null);
+            mSockets.add(null);
+            mUuids.add(null);
+        }
+
+        Log.i(TAG, "mConnThreads.size() in Service Constructor--"
+                + mConnThreads.size());
+    }
+
+    public ArrayList<String> getmDeviceNames() {
+        return this.mDeviceNames;
+    }
+
+    public void setmDeviceNames(ArrayList<String> mDeviceNames) {
+        this.mDeviceNames = mDeviceNames;
+    }
+
+    public ArrayList<String> getmDeviceAddresses() {
+        return mDeviceAddresses;
+    }
+
+    public void setmDeviceAddresses(ArrayList<String> mDeviceAddresses) {
+        this.mDeviceAddresses = mDeviceAddresses;
     }
 
     private synchronized void setState(int state) {
@@ -102,6 +146,12 @@ public class CommService {
             mConnectThread = null;
         }
 
+        // Cancel any thread currently running a connection
+        if (mConnectedThread != null) {
+            mConnectedThread.cancel();
+            mConnectedThread = null;
+        }
+
         // Start the thread to listen on a BluetoothServerSocket
         if (mAcceptThread == null) {
             mAcceptThread = new AcceptThread();
@@ -110,7 +160,11 @@ public class CommService {
         setState(STATE_LISTEN);
     }
 
-    public synchronized void connect(BluetoothDevice device) {//, int selectedPosition) {
+    public synchronized void connect(BluetoothDevice device, int selectedPosition) {
+
+        if (getPositionIndexOfDevice(device) == -1) {
+            if (D)
+                Log.d(TAG, "connect to: " + device);
 
         if (mState == STATE_CONNECTING) {
             if (mConnectThread != null) {
@@ -119,15 +173,48 @@ public class CommService {
             }
         }
 
-        // Cancel any thread currently running a connection
-        for (int i = 0; i < 1; i++) {
-            try {
-                mConnectThread = new ConnectThread(device, mUuids.get(i),i);
-                mConnectThread.start();
+            // Cancel any thread currently running a connection
+            if (mConnThreads.get(selectedPosition) != null) {
+                mConnThreads.get(selectedPosition).cancel();
+                // mConnectedThread = null;
+                mConnThreads.set(selectedPosition, null);
+            }
 
+
+//            for (int i = 0; i < 1; i++) {
+//            try {
+//                mConnectThread = new ConnectThread(device, mUuids.get(i),i);
+//                mConnectThread.start();
+//
+//                setState(STATE_CONNECTING);
+//            } catch (Exception e) {
+//            }
+//        }
+            // Create a new thread and attempt to connect to each UUID
+            // one-by-one.
+            try {
+
+                // String
+                // s="00001101-0000-1000-8000"+device.getAddress().split(":");
+                ConnectThread mConnectThread = new ConnectThread(device,
+                        UUID.fromString("00001101-0000-1000-8000-"
+                                + device.getAddress().replace(":", "")),
+                        selectedPosition);
+                Log.i(TAG, "uuid-string at server side"
+                        + ("00001101-0000-1000-8000" + device.getAddress()
+                        .replace(":", "")));
+                mConnectThread.start();
                 setState(STATE_CONNECTING);
             } catch (Exception e) {
             }
+        } else {
+            Message msg = mHandler
+                    .obtainMessage(BluetoothComm.MESSAGE_TOAST);
+            Bundle bundle = new Bundle();
+            bundle.putString(BluetoothComm.TOAST,
+                    "This device " + device.getName() + " Already Connected");
+            msg.setData(bundle);
+            mHandler.sendMessage(msg);
         }
     }
 
@@ -136,17 +223,17 @@ public class CommService {
      * @param socket  The BluetoothSocket on which the connection was made
      * @param device  The BluetoothDevice that has been connected
      */
-    public synchronized void connected(BluetoothSocket socket, BluetoothDevice device){//, int selectedPosition) {
+    public synchronized void connected(BluetoothSocket socket, BluetoothDevice device, int selectedPosition) {
         if (D) Log.d(TAG, "connected");
 
         // Start the thread to manage the connection and perform transmissions
         mConnectedThread = new ConnectedThread(socket);
         mConnectedThread.start();
-        String message = device.getName();
+        mConnThreads.set(selectedPosition, mConnectedThread);
+
+        String message = device.getAddress();
         byte[] send = message.getBytes();
 
-        // Add each connected thread to an array
-        mConnThreads.add(mConnectedThread);
 
         // Send the name of the connected device back to the UI Activity
         Message msg = mHandler.obtainMessage(BluetoothComm.MESSAGE_DEVICE_NAME);
@@ -165,6 +252,16 @@ public class CommService {
         if (mConnectThread != null) {mConnectThread.cancel(); mConnectThread = null;}
         if (mConnectedThread != null) {mConnectedThread.cancel(); mConnectedThread = null;}
         if (mAcceptThread != null) {mAcceptThread.cancel(); mAcceptThread = null;}
+
+        for (int i = 0; i < 5; i++) {
+            mDeviceNames.set(i, null);
+            mDeviceAddresses.set(i, null);
+            mSockets.set(i, null);
+            if (mConnThreads.get(i) != null) {
+                mConnThreads.get(i).cancel();
+                mConnThreads.set(i, null);
+            }
+        }
 
         setState(STATE_NONE);
     }
@@ -192,7 +289,7 @@ public class CommService {
         }
     }
 
-    private void connectionFailed(int i) {
+    private void connectionFailed() {
         setState(STATE_LISTEN);
 
         // Send a failure message back to the Activity
@@ -206,45 +303,114 @@ public class CommService {
     /**
      * Indicate that the connection was lost and notify the UI Activity.
      */
-    private void connectionLost(){//BluetoothDevice device) {
-        setState(STATE_LISTEN);
+    private void connectionLost(BluetoothDevice device) {
+        //setState(STATE_LISTEN);
+        int positionIndex = getPositionIndexOfDevice(device);
+        if (positionIndex != -1) {
+            Log.i(TAG, "getPositionIndexOfDevice(device) ==="
+                    + mDeviceAddresses.get(getPositionIndexOfDevice(device)));
+            mDeviceAddresses.set(positionIndex, null);
+            mDeviceNames.set(positionIndex, null);
+            mConnThreads.set(positionIndex, null);
 
-        // Send a failure message back to the Activity
-        Message msg = mHandler.obtainMessage(BluetoothComm.MESSAGE_TOAST);
-        Bundle bundle = new Bundle();
-        bundle.putString(BluetoothComm.TOAST, "Device connection was lost");
-        msg.setData(bundle);
-        mHandler.sendMessage(msg);
+            Message msg = mHandler
+                    .obtainMessage(BluetoothComm.MESSAGE_TOAST);
+            Bundle bundle = new Bundle();
+            bundle.putString(BluetoothComm.TOAST,
+                    "Device connection was lost from " + device.getName());
+            msg.setData(bundle);
+            mHandler.sendMessage(msg);
+        }
+//        // Send a failure message back to the Activity
+//        Message msg = mHandler.obtainMessage(BluetoothComm.MESSAGE_TOAST);
+//        Bundle bundle = new Bundle();
+//        bundle.putString(BluetoothComm.TOAST, "Device connection was lost");
+//        msg.setData(bundle);
+//        mHandler.sendMessage(msg);
     }
 
     private class AcceptThread extends Thread {
         // The local server socket
-        private BluetoothServerSocket mmServerSocket=null;
+        private final BluetoothServerSocket mmServerSocket;
 
         public AcceptThread() {
+            BluetoothServerSocket tmp = null;
+            // Create a new listening server socket
+            try {
+
+                if (mAdapter.isEnabled()) {
+                    CommService.setMY_UUID(UUID
+                            .fromString("00001101-0000-1000-8000-"
+                                    + mAdapter.getAddress().replace(":", "")));
+                }
+                Log.i(TAG, "MY_UUID.toString()=="
+                        + CommService.getMY_UUID().toString());
+
+                tmp = mAdapter.listenUsingRfcommWithServiceRecord(NAME,
+                        CommService.getMY_UUID());
+            } catch (IOException e) {
+                Log.e(TAG, "listen() failed", e);
+            }
+            mmServerSocket = tmp;
         }
 
         public void run() {
             if (D) Log.d(TAG, "BEGIN mAcceptThread" + this);
             setName("AcceptThread");
             BluetoothSocket socket = null;
-
-            try {
-                // Listen for all 7 UUIDs
-                for (int i = 0; i < 1; i++) {
-                    mmServerSocket = mAdapter.listenUsingRfcommWithServiceRecord(NAME, mUuids.get(i));
+            Log.i(TAG, "mState in acceptThread==" + mState);
+            // Listen to the server socket if we're not connected
+            while (mState != STATE_CONNECTED) {
+                try {
+                    // This is a blocking call and will only return on a
+                    // successful connection or an exception
                     socket = mmServerSocket.accept();
-                    if (socket != null) {
-                        String address = socket.getRemoteDevice().getAddress();
-                        mSockets.add(socket);
-                        mDeviceAddresses.add(address);
-                        connected(socket, socket.getRemoteDevice());
+                } catch (IOException e) {
+                    Log.e(TAG, "accept() failed", e);
+                    break;
+                }
+
+                // If a connection was accepted
+                if (socket != null) {
+                    synchronized (CommService.this) {
+                        switch (mState) {
+                            case STATE_LISTEN:
+                            case STATE_CONNECTING:
+                                // Situation normal. Start the connected thread.
+                                connected(socket, socket.getRemoteDevice(),getAvailablePositionIndexForNewConnection(socket.getRemoteDevice()));
+                                break;
+                            case STATE_NONE:
+                            case STATE_CONNECTED:
+                                // Either not ready or already connected. Terminate
+                                // new socket.
+                                try {
+                                    socket.close();
+                                } catch (IOException e) {
+                                    Log.e(TAG, "Could not close unwanted socket", e);
+                                }
+                                break;
+                        }
                     }
                 }
-            } catch (IOException e) {
-                Log.e(TAG, "accept() failed", e);
             }
-            if (D) Log.i(TAG, "END mAcceptThread");
+            if (D)
+                Log.i(TAG, "END mAcceptThread");
+//            try {
+//                // Listen for all 7 UUIDs
+//                for (int i = 0; i < 1; i++) {
+//                    mmServerSocket = mAdapter.listenUsingRfcommWithServiceRecord(NAME, mUuids.get(i));
+//                    socket = mmServerSocket.accept();
+//                    if (socket != null) {
+//                        String address = socket.getRemoteDevice().getAddress();
+//                        mSockets.add(socket);
+//                        mDeviceAddresses.add(address);
+//                        connected(socket, socket.getRemoteDevice());
+//                    }
+//                }
+//            } catch (IOException e) {
+//                Log.e(TAG, "accept() failed", e);
+//            }
+//            if (D) Log.i(TAG, "END mAcceptThread");
         }
 
         public void cancel() {
@@ -266,14 +432,14 @@ public class CommService {
         private final BluetoothSocket mmSocket;
         private final BluetoothDevice mmDevice;
         private UUID tempUuid;
-        // private int selectedPosition;
-        int thread;
-        public ConnectThread(BluetoothDevice device, UUID uuid, int i){//}, int selectedPosition) {
+        private int selectedPosition;
+
+        public ConnectThread(BluetoothDevice device, UUID uuid, int selectedPosition) {
             mmDevice = device;
             BluetoothSocket tmp = null;
             tempUuid = uuid;
-            thread =i;
 
+            this.selectedPosition = selectedPosition;
             // Get a BluetoothSocket for a connection with the
             // given BluetoothDevice
             try {
@@ -282,6 +448,14 @@ public class CommService {
                 Log.e(TAG, "create() failed", e);
             }
             mmSocket = tmp;
+//            // Get a BluetoothSocket for a connection with the
+//            // given BluetoothDevice
+//            try {
+//                tmp = device.createRfcommSocketToServiceRecord(uuid);
+//            } catch (IOException e) {
+//                Log.e(TAG, "create() failed", e);
+//            }
+//            mmSocket = tmp;
 
         }
 
@@ -297,9 +471,9 @@ public class CommService {
                 // successful connection or an exception
                 mmSocket.connect();
             } catch (IOException e) {
-                if (tempUuid.toString().contentEquals(mUuids.get(6).toString())) {
-                    connectionFailed(thread);
-                }
+                //if (tempUuid.toString().contentEquals(mUuids.get(6).toString())) {
+                    connectionFailed();//thread);
+                //}
                 // Close the socket
                 try {
                     mmSocket.close();
@@ -315,8 +489,10 @@ public class CommService {
             synchronized (CommService.this) {
                 mConnectThread = null;
             }
+            mDeviceAddresses.set(selectedPosition, mmDevice.getAddress());
+            mDeviceNames.set(selectedPosition, mmDevice.getName());
             // Start the connected thread
-            connected(mmSocket, mmDevice);
+            connected(mmSocket, mmDevice, selectedPosition);
         }
 
         public void cancel() {
@@ -366,21 +542,27 @@ public class CommService {
                     // Read from the InputStream
                     bytes = mmInStream.read(buffer);
                     // Send the obtained bytes to the UI Activity
-                    mHandler.obtainMessage(BluetoothComm.MESSAGE_READ, bytes,-1,buffer).sendToTarget();
+                    mHandler.obtainMessage(BluetoothComm.MESSAGE_READ, bytes,getPositionIndexOfDevice(mmSocket.getRemoteDevice()),buffer).sendToTarget();
 
                 } catch (IOException e) {
                     Log.e(TAG, "disconnected", e);
-                    connectionLost();
+                    connectionLost(mmSocket.getRemoteDevice());
                     break;
                 }
             }
         }
 
         public void write(byte[] buffer) {
-            while(true){
+
+
+            for(int i = 0; i < 300 ;i++){
+                String tempMsg = String.valueOf(buffer) + ": " + Math.random()*100;
+                byte[] tempByte = tempMsg.getBytes();
+
                 try {
-                    mmOutStream.write(buffer);
-                    sleep(1000);
+                    mmOutStream.write(tempByte);
+                    System.out.println("send it!!!");
+                    sleep(200);
 
                 } catch (IOException e) {
                     Log.e(TAG, "Exception during write", e);
@@ -398,5 +580,25 @@ public class CommService {
                 Log.e(TAG, "close() of connect socket failed", e);
             }
         }
+    }
+    public int getPositionIndexOfDevice(BluetoothDevice device) {
+        for (int i = 0; i < mDeviceAddresses.size(); i++) {
+            if (mDeviceAddresses.get(i) != null
+                    && mDeviceAddresses.get(i).equalsIgnoreCase(
+                    device.getAddress()))
+                return i;
+        }
+        return -1;
+    }
+
+    public int getAvailablePositionIndexForNewConnection(BluetoothDevice device) {
+        if (getPositionIndexOfDevice(device) == -1) {
+            for (int i = 0; i < mDeviceAddresses.size(); i++) {
+                if (mDeviceAddresses.get(i) == null) {
+                    return i;
+                }
+            }
+        }
+        return -1;
     }
 }

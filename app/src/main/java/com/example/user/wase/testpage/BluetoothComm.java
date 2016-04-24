@@ -126,7 +126,7 @@ public class BluetoothComm extends AppCompatActivity {
                 case MESSAGE_STATE_CHANGE:
                     switch (msg.arg1) {
                         case CommService.STATE_CONNECTED:
-                            mConversationArrayAdapter.clear();
+                            //mConversationArrayAdapter.clear();
                             mConversationArrayAdapter.add(mConnectedDeviceName + " is connected" );
                             break;
                         case CommService.STATE_CONNECTING:
@@ -162,7 +162,7 @@ public class BluetoothComm extends AppCompatActivity {
                     // Get the BLuetoothDevice object
                     for (CharSequence cs : address){
                         BluetoothDevice device = mBluetoothAdapter.getRemoteDevice(cs.toString());
-                        commService.connect(device);//, selectedPosition);
+                        commService.connect(device, selectedPosition);
                         selectedPosition++;
                     }
                 }
