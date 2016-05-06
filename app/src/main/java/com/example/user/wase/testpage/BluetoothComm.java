@@ -3,11 +3,15 @@ package com.example.user.wase.testpage;
 import android.app.Activity;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.os.RemoteException;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -17,13 +21,21 @@ import android.widget.Toast;
 
 import com.example.user.wase.R;
 
+import org.altbeacon.beacon.Beacon;
+import org.altbeacon.beacon.BeaconConsumer;
+import org.altbeacon.beacon.BeaconManager;
+import org.altbeacon.beacon.MonitorNotifier;
+import org.altbeacon.beacon.Region;
+
 import java.lang.reflect.InvocationTargetException;
+import java.util.Collection;
 
 /**
  * Created by user on 2016-04-18.
  */
-public class BluetoothComm extends AppCompatActivity {
+public class BluetoothComm extends AppCompatActivity implements BeaconConsumer {
 
+    public static final String TAG = "BluetoothComm";
     //Message from CommService
     public static final int MESSAGE_STATE_CHANGE = 1;
     public static final int MESSAGE_READ = 2;
@@ -46,6 +58,9 @@ public class BluetoothComm extends AppCompatActivity {
     private TextView state;
     private ListView mConversationView;
 
+
+    private BeaconManager bManager;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
@@ -58,12 +73,16 @@ public class BluetoothComm extends AppCompatActivity {
         mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
 
         Button start = (Button)findViewById(R.id.start);
-        start.setOnClickListener(new Button.OnClickListener(){
+        start.setOnClickListener(new Button.OnClickListener() {
             public void onClick(View v) {
                 Intent discoveringIntent = new Intent(BluetoothComm.this, DiscoverDevice.class);
                 startActivityForResult(discoveringIntent, REQUEST_CONNECT_DEVICE);
             }
         });
+
+
+        bManager = BeaconManager.getInstanceForApplication(this);
+        bManager.bind(this);
 
         if (mBluetoothAdapter == null) {
             Toast.makeText(this, "Bluetooth is not available", Toast.LENGTH_LONG).show();
@@ -137,7 +156,8 @@ public class BluetoothComm extends AppCompatActivity {
                     break;
                 case MESSAGE_READ:
                     byte[] buf = (byte[]) msg.obj;
-                    mConversationArrayAdapter.add(mConnectedDeviceName+":   " + new String(buf).trim());
+                    //mConversationArrayAdapter.add(mConnectedDeviceName+":   " + new String(buf).trim());
+                    mConversationArrayAdapter.add(new String(buf).trim());
                     break;
                 case MESSAGE_DEVICE_NAME:
                     mConnectedDeviceName = msg.getData().getString(DEVICE_NAME); // save the connected device's name
@@ -188,4 +208,87 @@ public class BluetoothComm extends AppCompatActivity {
                 }
         }
     }
+
+    @Override
+    public void onBeaconServiceConnect() {
+        bManager.setMonitorNotifier(new MonitorNotifier() {
+            @Override
+            public void didEnterRegion(Region region) {
+                Log.i(TAG, "I just saw an beacon for the first time!");
+            }
+
+            @Override
+            public void didExitRegion(Region region) {
+                Log.i(TAG, "I no longer see an beacon");
+            }
+
+            @Override
+            public void didDetermineStateForRegion(int state, Region region) {
+                Log.i(TAG, "I have just switched from seeing/not seeing beacons: " + state);
+            }
+        });
+
+        try {
+            bManager.startMonitoringBeaconsInRegion(new Region("myMonitoringUniqueId", null, null, null));
+        } catch (RemoteException e) {    }
+
+    }
+
+
+
+    private void verifyBluetooth() {
+
+        try {
+            if (!BeaconManager.getInstanceForApplication(this).checkAvailability()) {
+                final AlertDialog.Builder builder = new AlertDialog.Builder(this);
+                builder.setTitle("Bluetooth not enabled");
+                builder.setMessage("Please enable bluetooth in settings and restart this application.");
+                builder.setPositiveButton(android.R.string.ok, null);
+                builder.setOnDismissListener(new DialogInterface.OnDismissListener() {
+                    @Override
+                    public void onDismiss(DialogInterface dialog) {
+                        finish();
+                        System.exit(0);
+                    }
+                });
+                builder.show();
+            }
+        }
+        catch (RuntimeException e) {
+            final AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            builder.setTitle("Bluetooth LE not available");
+            builder.setMessage("Sorry, this device does not support Bluetooth LE.");
+            builder.setPositiveButton(android.R.string.ok, null);
+            builder.setOnDismissListener(new DialogInterface.OnDismissListener() {
+
+                @Override
+                public void onDismiss(DialogInterface dialog) {
+                    finish();
+                    System.exit(0);
+                }
+
+            });
+            builder.show();
+
+        }
+
+    }
+
+    public void didEnterRegion(Region region) {
+        Log.d(TAG, "I just saw a beacon named " + region.getUniqueId() + " for the first time!");
+    }
+
+    public void didExitRegion(Region region) {
+        Log.d(TAG,"I no longer see a beacon named "+ region.getUniqueId());
+    }
+
+    public void didDetermineStateForRegion(int state, Region region) {
+        Log.d(TAG,"I have just switched from seeing/not seeing beacons: "+state);
+    }
+
+    public void didRangeBeaconsInRegion(Collection<Beacon> beacons, Region region) {
+
+
+    }
+
 }

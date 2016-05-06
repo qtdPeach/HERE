@@ -38,6 +38,7 @@
         <activity android:name=".view.activity.SettingMyInfoActivity"/>
         <activity android:name=".view.activity.SupportAppInfoActivity"/>
         <activity android:name=".view.activity.SupportHelpActivity"/>
+        <activity android:name = "com.example.user.wase.device.BeaconRangingActivity" />
 
     </application>
 

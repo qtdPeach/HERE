@@ -108,6 +108,7 @@ public class DiscoverDevice extends Activity {
         filter = new IntentFilter(BluetoothAdapter.ACTION_DISCOVERY_FINISHED);
         this.registerReceiver(mReceiver, filter);
 
+
         // Get the local Bluetooth adapter
         mBtAdapter = BluetoothAdapter.getDefaultAdapter();
 
@@ -115,6 +116,8 @@ public class DiscoverDevice extends Activity {
         Set<BluetoothDevice> pairedDevices = mBtAdapter.getBondedDevices();
 
         // If there are paired devices, add each one to the ArrayAdapter
+        //check device signal strength: RSSI
+
         if (pairedDevices.size() > 0) {
             for (BluetoothDevice device : pairedDevices) {
                 mPairedDevicesArrayAdapter.add(device.getName() + "\n" + device.getAddress());
@@ -169,10 +172,16 @@ public class DiscoverDevice extends Activity {
                 // Get the BluetoothDevice object from the Intent
                 BluetoothDevice device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
                 // If it's already paired, skip it, because it's been listed already
-                if (device.getBondState() != BluetoothDevice.BOND_BONDED) {
-                    list_new.add(device.getName() + "\n" + device.getAddress());
+
+
+                //check device signal strength: RSSI
+                short rssi = intent.getShortExtra(BluetoothDevice.EXTRA_RSSI, Short.MIN_VALUE);
+                //if (device.getBondState() != BluetoothDevice.BOND_BONDED) {
+                if (rssi < 70){
+                    list_new.add(device.getName() + ", RSSI: " + rssi + "dBm" + "\n" + device.getAddress());
                     mNewDevicesArrayAdapter.notifyDataSetChanged();
                 }
+                //}
                 // When discovery is finished, change the Activity title
             } else if (BluetoothAdapter.ACTION_DISCOVERY_FINISHED.equals(action)) {
                 setProgressBarIndeterminateVisibility(false);

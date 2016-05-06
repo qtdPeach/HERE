@@ -8,14 +8,12 @@ import android.content.Context;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.os.ParcelUuid;
 import android.util.Log;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.UUID;
 
@@ -193,12 +191,12 @@ public class CommService {
             // Create a new thread and attempt to connect to each UUID
             // one-by-one.
             try {
-
                 // String
                 // s="00001101-0000-1000-8000"+device.getAddress().split(":");
+
+                //00001101-0000-1000-8000-00805F9B34FB
                 ConnectThread mConnectThread = new ConnectThread(device,
-                        UUID.fromString("00001101-0000-1000-8000-"
-                                + device.getAddress().replace(":", "")),
+                        UUID.fromString("00001101-0000-1000-8000-00805F9B34FB"),
                         selectedPosition);
                 Log.i(TAG, "uuid-string at server side"
                         + ("00001101-0000-1000-8000" + device.getAddress()
@@ -253,7 +251,7 @@ public class CommService {
         if (mConnectedThread != null) {mConnectedThread.cancel(); mConnectedThread = null;}
         if (mAcceptThread != null) {mAcceptThread.cancel(); mAcceptThread = null;}
 
-        for (int i = 0; i < 5; i++) {
+        for (int i = 0; i < 1; i++) {
             mDeviceNames.set(i, null);
             mDeviceAddresses.set(i, null);
             mSockets.set(i, null);
@@ -555,21 +553,19 @@ public class CommService {
         public void write(byte[] buffer) {
 
 
-            for(int i = 0; i < 300 ;i++){
+            //for(int i = 0; i < 300 ;i++){
                 String tempMsg = String.valueOf(buffer) + ": " + Math.random()*100;
                 byte[] tempByte = tempMsg.getBytes();
 
                 try {
                     mmOutStream.write(tempByte);
                     System.out.println("send it!!!");
-                    sleep(200);
+                    //sleep(200);
 
                 } catch (IOException e) {
                     Log.e(TAG, "Exception during write", e);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
                 }
-            }
+           // }
         }
 
         public void cancel() {
