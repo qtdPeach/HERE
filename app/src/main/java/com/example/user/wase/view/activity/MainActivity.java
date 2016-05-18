@@ -73,11 +73,7 @@ public class MainActivity extends AppCompatActivity
         });
 
 
-
-
-
-
-
+        System.out.println("Modification test");
 
         System.out.print("GOOD");
 
