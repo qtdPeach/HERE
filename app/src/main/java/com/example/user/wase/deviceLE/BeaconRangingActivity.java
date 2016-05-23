@@ -1,4 +1,4 @@
-package com.example.user.wase.device;
+package com.example.user.wase.deviceLE;
 
 import android.app.Activity;
 import android.os.Bundle;
@@ -57,14 +57,14 @@ public class BeaconRangingActivity extends Activity implements BeaconConsumer {
 
 
     public void didRangeBeaconsInRegion(Collection<Beacon> beacons, Region region) {
-    	/*
+
         if (beacons.size() > 0) {
             for (Beacon beacon: beacons) {
             	beacon.getBluetoothAddress();
             	
             	Log.d("d","Beacon "+beacon.toString()+" is about "+beacon.getDistance()+" meters away, with Rssi: "+beacon.getRssi());            	
             }
-        }*/
+        }
     }
 
     // The Handler that gets information back from the BluetoothChatService

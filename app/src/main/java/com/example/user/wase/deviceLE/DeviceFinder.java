@@ -1,10 +1,8 @@
-package com.example.user.wase.device;
+package com.example.user.wase.deviceLE;
 
 import android.app.Application;
-import android.os.RemoteException;
-import android.util.Log;
 
-import com.example.user.wase.testpage.BluetoothComm;
+import com.example.user.wase.device.BluetoothComm;
 
 import org.altbeacon.beacon.Beacon;
 import org.altbeacon.beacon.BeaconManager;
@@ -20,12 +18,12 @@ import java.util.Collection;
 
 public class DeviceFinder extends Application implements BootstrapNotifier,
         RangeNotifier {
-    private static final String TAG = "Coordinate Finder";
+    private static final String TAG = "Device Finder";
     private BeaconManager mBeaconManager;
     private Region mAllBeaconsRegion;
     private Region mYellowBeaconsRegion;
     private Region mPinkBeaconsRegion;
-    private BluetoothComm mMonitoringActivity;
+    //private BluetoothComm mMonitoringActivity;
     //private BeaconRangingActivity mRangingActivity;
     private BackgroundPowerSaver mBackgroundPowerSaver;
     @SuppressWarnings("unused")
@@ -56,6 +54,8 @@ public class DeviceFinder extends Application implements BootstrapNotifier,
             beacons[i] = new BeaconInfo();
             isFind[i] = false;
         }
+
+        System.currentTimeMillis();
         beacons[0].mac = new String("20:16:01:18:94:43"); // Green
 		/*
 		 * beacons[0].height = 178; beacons[0].x = 267; beacons[0].y = 264;
@@ -168,6 +168,7 @@ public class DeviceFinder extends Application implements BootstrapNotifier,
 
     @Override
     public void didEnterRegion(Region arg0) {
+        /*
         if (mMonitoringActivity != null) {
             mMonitoringActivity.didEnterRegion(arg0);
         }
@@ -178,17 +179,19 @@ public class DeviceFinder extends Application implements BootstrapNotifier,
         } catch (RemoteException e) {
             Log.e(TAG, "Cannot start ranging");
         }
+        */
     }
 
     @Override
     public void didExitRegion(Region arg0) {
+        /*
         if (mMonitoringActivity != null) {
             mMonitoringActivity.didExitRegion(arg0);
-        }
+        }*/
     }
 
     public void setMonitoringActivity(BluetoothComm activity) {
-        mMonitoringActivity = activity;
+       // mMonitoringActivity = activity;
     }
 /*
 	public void setRangingActivity(BeaconRangingActivity activity) {

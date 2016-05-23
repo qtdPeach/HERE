@@ -1,14 +1,32 @@
 package com.example.user.wase.model;
 
+import java.util.Calendar;
+import java.util.Date;
+import java.util.Locale;
+
 /**
  * Created by user on 2016-04-18.
  */
 public class Equipment {
 
+    // Major ID of HERE beacon
+    public static int MAJOR_ID = 10;
+
+    //Minor ID of HERE devices
+    public final static String DUMBEL = "0000A";
+    public final static String PLANK = "00009";
+    public final static String PUSH_UP = "00008";
+    public final static String HOOP = "00007";
+    public final static String JUMP_ROPE = "00006";
+
     String equipmentID;
+
     String equipmentName;
+    //MAC address
     String equipmentSensorID;
-    String equipmentRegisterDate;
+
+    Date equipmentRegisterDate;
+    Date equipmentLastUseDate;
 
     //Equipment type
     //0: NO NAME, 1: Dumbbells, 2: Pushup bars, 3: Jumprope, 4: Hoola-hoop, 5: Others
@@ -18,7 +36,7 @@ public class Equipment {
     public Equipment() {
         this.equipmentID = "NO ID";
         this.equipmentSensorID = "NO SENSOR ID";
-        this.equipmentRegisterDate = "NO DATE";
+        this.equipmentRegisterDate = Calendar.getInstance(Locale.KOREA).getTime();
         this.equipmentName = "NO NAME";
         this.equipmentType = 0;
     }
@@ -26,7 +44,7 @@ public class Equipment {
     public Equipment(String equipmentName, int equipmentType) {
         this.equipmentID = "NO ID";
         this.equipmentSensorID = "NO SENSOR ID";
-        this.equipmentRegisterDate = "NO DATE";
+        this.equipmentRegisterDate =Calendar.getInstance(Locale.KOREA).getTime();
         this.equipmentName = equipmentName;
         this.equipmentType = equipmentType;
 
@@ -34,7 +52,7 @@ public class Equipment {
 
     public Equipment(String equipmentID, String equipmentName, int equipmentType) {
         this.equipmentSensorID = "NO SENSOR ID";
-        this.equipmentRegisterDate = "NO DATE";
+        this.equipmentRegisterDate =Calendar.getInstance(Locale.KOREA).getTime();
         this.equipmentID = equipmentID;
         this.equipmentName = equipmentName;
         this.equipmentType = equipmentType;
@@ -44,7 +62,7 @@ public class Equipment {
         this.equipmentSensorID = "NO SENSOR ID";
         this.equipmentID = equipmentID;
         this.equipmentName = equipmentName;
-        this.equipmentRegisterDate = equipmentRegisterDate;
+        this.equipmentRegisterDate =Calendar.getInstance(Locale.KOREA).getTime();
         this.equipmentType = equipmentType;
     }
 
@@ -52,7 +70,7 @@ public class Equipment {
         this.equipmentID = equipmentID;
         this.equipmentName = equipmentName;
         this.equipmentSensorID = equipmentSensorID;
-        this.equipmentRegisterDate = equipmentRegisterDate;
+        this.equipmentRegisterDate =Calendar.getInstance(Locale.KOREA).getTime();
         this.equipmentType = equipmentType;
     }
 
@@ -81,10 +99,10 @@ public class Equipment {
     }
 
     public String getEquipmentRegisterDate() {
-        return equipmentRegisterDate;
+        return equipmentRegisterDate.toString();
     }
 
-    public void setEquipmentRegisterDate(String equipmentRegisterDate) {
+    public void setEquipmentRegisterDate(Date equipmentRegisterDate) {
         this.equipmentRegisterDate = equipmentRegisterDate;
     }
 
@@ -94,5 +112,10 @@ public class Equipment {
 
     public void setEquipmentType(int equipmentType) {
         this.equipmentType = equipmentType;
+    }
+
+    @Override
+    public boolean equals(Object obj){
+        return this.equipmentID.equals(((Equipment)obj).equipmentID);
     }
 }

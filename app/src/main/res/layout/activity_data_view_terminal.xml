@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    tools:context="hcil.tonetuner.MainActivity">
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:id="@+id/linearLayout">
+
+        <ViewFlipper
+            android:id = "@+id/flipper"
+            android:layout_width="match_parent"
+            android:layout_height="200dp"
+            android:layout_marginBottom="50dp">
+            <com.jjoe64.graphview.GraphView
+                android:id="@+id/graphX"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"/>
+            <com.jjoe64.graphview.GraphView
+                android:id="@+id/graphY"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"/>
+            <com.jjoe64.graphview.GraphView
+                android:id="@+id/graphZ"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"/>
+            <com.jjoe64.graphview.GraphView
+                android:id="@+id/graphGX"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"/>
+            <com.jjoe64.graphview.GraphView
+                android:id="@+id/graphGY"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"/>
+            <com.jjoe64.graphview.GraphView
+                android:id="@+id/graphGZ"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"/>
+            <com.jjoe64.graphview.GraphView
+                android:id="@+id/graphAzi"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"/>
+            <com.jjoe64.graphview.GraphView
+                android:id="@+id/graphRoll"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"/>
+            <com.jjoe64.graphview.GraphView
+                android:id="@+id/graphPch"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"/>
+            <com.jjoe64.graphview.GraphView
+                android:id="@+id/graphPressure"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"/>
+            </ViewFlipper>>
+
+
+        <Spinner
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/spinner"
+            android:entries="@array/data_type"
+            android:textAlignment="center"
+            android:layout_marginBottom="10dp"/>
+
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:inputType="textMultiLine"
+            android:textSize="10dp"
+            android:id="@+id/rawData"
+            android:editable="false"
+            android:focusable="false"/>
+
+    </LinearLayout>
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="RESET"
+        android:id="@+id/button"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentStart="true" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="LOAD"
+        android:id="@+id/button2"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentEnd="true" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="SAVE"
+        android:id="@+id/button3"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true" />
+
+</RelativeLayout>

@@ -1,4 +1,4 @@
-package com.example.user.wase.device;
+package com.example.user.wase.deviceLE;
 import org.altbeacon.beacon.Beacon;
 
 public class BeaconInfo {

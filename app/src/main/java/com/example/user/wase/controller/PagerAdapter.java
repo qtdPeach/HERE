@@ -4,7 +4,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 
-import com.example.user.wase.view.fragment.DeviceListFragment;
+import com.example.user.wase.view.fragment.EquipmentScanner;
 import com.example.user.wase.view.fragment.ExerciseFragment;
 import com.example.user.wase.view.fragment.MyRecordsFragment;
 
@@ -14,10 +14,16 @@ import com.example.user.wase.view.fragment.MyRecordsFragment;
 public class PagerAdapter extends FragmentStatePagerAdapter {
 
     int mNumOfTabs;
+    Fragment deviceList;
+    Fragment exercise;
+    Fragment myRecord;
 
     public PagerAdapter(FragmentManager fm, int NumOfTabs) {
         super(fm);
         this.mNumOfTabs = NumOfTabs;
+        deviceList = new EquipmentScanner();
+        exercise = new ExerciseFragment();
+        myRecord = new MyRecordsFragment();
     }
 
     @Override
@@ -25,14 +31,11 @@ public class PagerAdapter extends FragmentStatePagerAdapter {
 
         switch (position) {
             case 0:
-                DeviceListFragment tab1 = new DeviceListFragment();
-                return tab1;
+                return deviceList;
             case 1:
-                ExerciseFragment tab2 = new ExerciseFragment();
-                return tab2;
+                return exercise;
             case 2:
-                MyRecordsFragment tab3 = new MyRecordsFragment();
-                return tab3;
+                return myRecord;
             default:
                 return null;
 

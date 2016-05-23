@@ -1,4 +1,4 @@
-package com.example.user.wase.testpage;
+package com.example.user.wase.device;
 
 import android.app.Activity;
 import android.bluetooth.BluetoothAdapter;

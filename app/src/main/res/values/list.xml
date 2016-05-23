@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="data_type">
+        <item> Linear Acc-: X </item>
+        <item> Linear Acc-: Y </item>
+        <item> Linear Acc-: Z </item>
+        <item> Angular Acc-: X </item>
+        <item> Angular Acc-: Y </item>
+        <item> Angular Acc-: Z </item>
+        <item> Orientation: Azimuth </item>
+        <item> Orientation: Roll </item>
+        <item> Orientation: Pitch </item>
+    </string-array>
+</resources>

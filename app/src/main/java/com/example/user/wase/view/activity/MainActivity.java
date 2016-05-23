@@ -19,10 +19,7 @@ import android.widget.Toast;
 
 import com.example.user.wase.R;
 import com.example.user.wase.controller.PagerAdapter;
-import com.example.user.wase.model.Equipment;
-import com.example.user.wase.testpage.BluetoothComm;
-
-import java.util.ArrayList;
+import com.example.user.wase.device.BluetoothComm;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
