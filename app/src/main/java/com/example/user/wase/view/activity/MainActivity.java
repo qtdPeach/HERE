@@ -1,5 +1,6 @@
 package com.example.user.wase.view.activity;
 
+import android.app.FragmentTransaction;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -20,6 +21,7 @@ import android.widget.Toast;
 import com.example.user.wase.R;
 import com.example.user.wase.controller.PagerAdapter;
 import com.example.user.wase.device.BluetoothComm;
+import com.example.user.wase.view.fragment.SupportHelpFragment;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -189,8 +191,16 @@ public class MainActivity extends AppCompatActivity
                 Toast.makeText(getApplicationContext(), "SHOW HELP DIALOG", Toast.LENGTH_SHORT).show();
                 //TODO: Dialog (HelpDialog)
 
-                Intent intent_supporthelp = new Intent(getApplicationContext(), SupportHelpActivity.class);
-                startActivity(intent_supporthelp);
+                SupportHelpFragment fragment = new SupportHelpFragment();
+                FragmentTransaction transaction = getFragmentManager().beginTransaction();
+
+                transaction.add(R.id.container, fragment, "instruction");
+                transaction.addToBackStack("instruction");
+
+                transaction.commit();
+
+//                Intent intent_supporthelp = new Intent(getApplicationContext(), SupportHelpActivity.class);
+//                startActivity(intent_supporthelp);
                 break;
             //Application information
             case R.id.nav_mng_showappinfo:

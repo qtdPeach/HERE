@@ -23,18 +23,18 @@ public class SupportHelpActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_support_help);
 
-        toolbar = (Toolbar) findViewById(R.id.toolbar);
-
-        toolbar.setTitle("도움말");
-        toolbar.setNavigationIcon(R.mipmap.ic_menu_arrow_back);
-        toolbar.setTitleTextColor(Color.WHITE);
-
-        setSupportActionBar(toolbar);
-
-        final ActionBar actionBar = getSupportActionBar();
-
-        actionBar.setTitle("도움말");
-        actionBar.setDefaultDisplayHomeAsUpEnabled(true);
+//        toolbar = (Toolbar) findViewById(R.id.toolbar);
+//
+//        toolbar.setTitle("도움말");
+//        toolbar.setNavigationIcon(R.mipmap.ic_menu_arrow_back);
+//        toolbar.setTitleTextColor(Color.WHITE);
+//
+//        setSupportActionBar(toolbar);
+//
+//        final ActionBar actionBar = getSupportActionBar();
+//
+//        actionBar.setTitle("도움말");
+//        actionBar.setDefaultDisplayHomeAsUpEnabled(true);
     }
 
     @Override

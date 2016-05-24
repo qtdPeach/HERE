@@ -38,7 +38,8 @@
         <activity android:name=".view.activity.SettingAppInfoActivity"/>
         <activity android:name=".view.activity.SettingMyInfoActivity"/>
         <activity android:name=".view.activity.SupportAppInfoActivity"/>
-        <activity android:name=".view.activity.SupportHelpActivity"/>
+        <activity android:name=".view.activity.SupportHelpActivity"
+            android:theme="@style/Theme.Transparent"/>
         <activity android:name = ".deviceLE.BeaconRangingActivity" />
         <activity android:name = ".deviceLE.DataViewTerminal" />
         <service android:name=".deviceLE.BluetoothLeService" android:enabled="true" />
