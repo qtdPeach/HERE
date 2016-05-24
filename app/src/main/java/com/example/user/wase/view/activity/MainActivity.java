@@ -7,6 +7,7 @@ import android.support.design.widget.Snackbar;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.ViewPager;
+import android.util.Log;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -21,10 +22,17 @@ import android.widget.Toast;
 import com.example.user.wase.R;
 import com.example.user.wase.controller.PagerAdapter;
 import com.example.user.wase.device.BluetoothComm;
+import com.example.user.wase.utility.DatabaseHelper;
 import com.example.user.wase.view.fragment.SupportHelpFragment;
+
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
+
+    private static final String TAG = "MainActivityTag";
+    private static final String TAG_DB = "MainActivityDBTag";
+
+    public static DatabaseHelper hereDB;
 
     private TabLayout tabLayout;
     private ViewPager viewPager;
@@ -39,6 +47,12 @@ public class MainActivity extends AppCompatActivity
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
+        /* Initialize Database */
+        hereDB = new DatabaseHelper(getApplicationContext());
+
+        if (hereDB != null) {
+            Log.d(TAG_DB, "[Database] DatabaseHelper is created.");
+        }
 
         tabLayout = (TabLayout) findViewById(R.id.main_tablayout);
 
@@ -136,6 +150,13 @@ public class MainActivity extends AppCompatActivity
         int id = item.getItemId();
 
         switch (item.getItemId()) {
+            //Test page
+            case R.id.nav_dbtest:
+                //TODO: Bluetooth test activity
+                //Move to test page
+                Intent dbtestIntent = new Intent(this, DatabaseTestActivity.class);
+                startActivity(dbtestIntent);
+                break;
             //Test page
             case R.id.nav_testpage:
                 //TODO: Bluetooth test activity

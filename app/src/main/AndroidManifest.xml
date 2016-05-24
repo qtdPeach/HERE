@@ -38,6 +38,7 @@
         <activity android:name=".view.activity.SettingAppInfoActivity"/>
         <activity android:name=".view.activity.SettingMyInfoActivity"/>
         <activity android:name=".view.activity.SupportAppInfoActivity"/>
+        <activity android:name=".view.activity.DatabaseTestActivity"/>
         <activity android:name=".view.activity.SupportHelpActivity"
             android:theme="@style/Theme.Transparent"/>
         <activity android:name = ".deviceLE.BeaconRangingActivity" />

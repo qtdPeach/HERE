@@ -5,6 +5,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.util.Log;
 
 import com.example.user.wase.model.MyHereAgent;
 import com.example.user.wase.model.MyInformation;
@@ -22,6 +23,9 @@ import java.util.Locale;
  */
 public class DatabaseHelper extends SQLiteOpenHelper {
 
+    SQLiteDatabase mDB;
+
+    private static final String TAG_DB = "DatabaseHelperDBTag";
 
     private static final String DATABASE_NAME = "hereAppDatabase.db";
     private static final int DATABASE_VERSION = 1;
@@ -100,15 +104,15 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                     ATTR_MYROUTINE_EQ4_GOAL + " VARCHAR(30), " +
                     ATTR_MYROUTINE_EQ5_ID + " VARCHAR(30), " +
                     ATTR_MYROUTINE_EQ5_GOAL + " VARCHAR(30), " +
-                    "FOREIGN_KEY(" + ATTR_MYROUTINE_EQ1_ID +
-                        ") REFERENCES " + TABLE_MYHEREAGENTS + "(" + ATTR_MYEQ_MACID + ")," +
-                    "FOREIGN_KEY(" + ATTR_MYROUTINE_EQ2_ID +
-                        ") REFERENCES " + TABLE_MYHEREAGENTS + "(" + ATTR_MYEQ_MACID + ")," +
-                    "FOREIGN_KEY(" + ATTR_MYROUTINE_EQ3_ID +
-                        ") REFERENCES " + TABLE_MYHEREAGENTS + "(" + ATTR_MYEQ_MACID + ")," +
-                    "FOREIGN_KEY(" + ATTR_MYROUTINE_EQ4_ID +
-                        ") REFERENCES " + TABLE_MYHEREAGENTS + "(" + ATTR_MYEQ_MACID + ")," +
-                    "FOREIGN_KEY(" + ATTR_MYROUTINE_EQ5_ID +
+                    "FOREIGN KEY(" + ATTR_MYROUTINE_EQ1_ID +
+                        ") REFERENCES " + TABLE_MYHEREAGENTS + "(" + ATTR_MYEQ_MACID + "), " +
+                    "FOREIGN KEY(" + ATTR_MYROUTINE_EQ2_ID +
+                        ") REFERENCES " + TABLE_MYHEREAGENTS + "(" + ATTR_MYEQ_MACID + "), " +
+                    "FOREIGN KEY(" + ATTR_MYROUTINE_EQ3_ID +
+                        ") REFERENCES " + TABLE_MYHEREAGENTS + "(" + ATTR_MYEQ_MACID + "), " +
+                    "FOREIGN KEY(" + ATTR_MYROUTINE_EQ4_ID +
+                        ") REFERENCES " + TABLE_MYHEREAGENTS + "(" + ATTR_MYEQ_MACID + "), " +
+                    "FOREIGN KEY(" + ATTR_MYROUTINE_EQ5_ID +
                         ") REFERENCES " + TABLE_MYHEREAGENTS + "(" + ATTR_MYEQ_MACID + ")" +
                     ");";
 
@@ -142,34 +146,47 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                     ATTR_MYRECORD_EQ4_DONE + " VARCHAR(30), " +
                     ATTR_MYRECORD_EQ5_ID + " VARCHAR(30), " +
                     ATTR_MYRECORD_EQ5_DONE + " VARCHAR(30), " +
-                    "FOREIGN_KEY(" + ATTR_MYRECORD_EQ1_ID +
-                        ") REFERENCES " + TABLE_MYHEREAGENTS + "(" + ATTR_MYEQ_MACID + ")," +
-                    "FOREIGN_KEY(" + ATTR_MYRECORD_EQ2_ID +
-                        ") REFERENCES " + TABLE_MYHEREAGENTS + "(" + ATTR_MYEQ_MACID + ")," +
-                    "FOREIGN_KEY(" + ATTR_MYRECORD_EQ3_ID +
-                        ") REFERENCES " + TABLE_MYHEREAGENTS + "(" + ATTR_MYEQ_MACID + ")," +
-                    "FOREIGN_KEY(" + ATTR_MYRECORD_EQ4_ID +
-                        ") REFERENCES " + TABLE_MYHEREAGENTS + "(" + ATTR_MYEQ_MACID + ")," +
-                    "FOREIGN_KEY(" + ATTR_MYRECORD_EQ5_ID +
+                    "FOREIGN KEY(" + ATTR_MYRECORD_EQ1_ID +
+                        ") REFERENCES " + TABLE_MYHEREAGENTS + "(" + ATTR_MYEQ_MACID + "), " +
+                    "FOREIGN KEY(" + ATTR_MYRECORD_EQ2_ID +
+                        ") REFERENCES " + TABLE_MYHEREAGENTS + "(" + ATTR_MYEQ_MACID + "), " +
+                    "FOREIGN KEY(" + ATTR_MYRECORD_EQ3_ID +
+                        ") REFERENCES " + TABLE_MYHEREAGENTS + "(" + ATTR_MYEQ_MACID + "), " +
+                    "FOREIGN KEY(" + ATTR_MYRECORD_EQ4_ID +
+                        ") REFERENCES " + TABLE_MYHEREAGENTS + "(" + ATTR_MYEQ_MACID + "), " +
+                    "FOREIGN KEY(" + ATTR_MYRECORD_EQ5_ID +
                         ") REFERENCES " + TABLE_MYHEREAGENTS + "(" + ATTR_MYEQ_MACID + ")" +
                     ")";
 
     public DatabaseHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
+        Log.d(TAG_DB, "[Database] DatabaseHelper(): Constructer is called.");
+
+        mDB = getWritableDatabase();
     }
 
     @Override
     public void onCreate(SQLiteDatabase db) {
+
+        Log.d(TAG_DB, "[Database] CREATE_TABLE_MYINFO: " + CREATE_TABLE_MYINFO);
+        Log.d(TAG_DB, "[Database] CREATE_TABLE_MYHEREAGENTS: " + CREATE_TABLE_MYHEREAGENTS);
+        Log.d(TAG_DB, "[Database] CREATE_TABLE_MYROUTINES: " + CREATE_TABLE_MYROUTINES);
+        Log.d(TAG_DB, "[Database] CREATE_TABLE_MYRECORDS: " + CREATE_TABLE_MYRECORDS);
+
 
         db.execSQL(CREATE_TABLE_MYINFO);
         db.execSQL(CREATE_TABLE_MYHEREAGENTS);
         db.execSQL(CREATE_TABLE_MYROUTINES);
         db.execSQL(CREATE_TABLE_MYRECORDS);
 
+        Log.d(TAG_DB, "[Database] DatabaseHelper-OnCreate(): Create table success.");
+
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
+        Log.d(TAG_DB, "[Database] DatabaseHelper-OnUpgrade()");
+
         //On upgrade drop older tables
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_MYINFO);
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_MYHEREAGENTS);
