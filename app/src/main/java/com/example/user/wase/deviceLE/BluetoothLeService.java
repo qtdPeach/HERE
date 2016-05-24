@@ -78,7 +78,9 @@ public class BluetoothLeService extends Service {
                 Log.i(TAG, "Connected to GATT server.");
                 // Attempts to discover services after successful connection.
                 Log.i(TAG, "Attempting to start service discovery:" +
-                        mBluetoothGatt.discoverServices());
+                mBluetoothGatt.discoverServices());
+
+
 
             } else if (newState == BluetoothProfile.STATE_DISCONNECTED) {
                 intentAction = ACTION_GATT_DISCONNECTED;
@@ -300,9 +302,10 @@ public class BluetoothLeService extends Service {
         // This is specific to Heart Rate Measurement.
         if (UUID_HM_RX_TX.equals(characteristic.getUuid())) {
             BluetoothGattDescriptor descriptor = characteristic.getDescriptor(
-                    UUID.fromString(HERE_GattAttributes.CLIENT_CHARACTERISTIC_CONFIG));
+            UUID.fromString(HERE_GattAttributes.CLIENT_CHARACTERISTIC_CONFIG));
             descriptor.setValue(BluetoothGattDescriptor.ENABLE_NOTIFICATION_VALUE);
             mBluetoothGatt.writeDescriptor(descriptor);
+            mBluetoothGatt.requestConnectionPriority(BluetoothGatt.CONNECTION_PRIORITY_HIGH);
         }
     }
 

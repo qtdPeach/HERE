@@ -101,6 +101,7 @@ public class DataViewTerminal extends Activity {
                 // Show all the supported services and characteristics on the user interface.
                 displayGattServices(mBluetoothLeService.getSupportedGattServices());
             } else if (BluetoothLeService.ACTION_DATA_AVAILABLE.equals(action)) {
+
                 appendData(intent.getStringExtra(mBluetoothLeService.EXTRA_DATA));
             }
         }
@@ -241,7 +242,7 @@ public class DataViewTerminal extends Activity {
 
         // Set up the custom title
         rawData = (EditText) findViewById(R.id.rawData);
-        rawData.setMaxLines(100);
+        rawData.setMaxLines(20);
 
     }
 
@@ -288,6 +289,9 @@ public class DataViewTerminal extends Activity {
 
         if (raw != null) {
             rawData.append(raw);
+            if(rawData.getLineCount() > rawData.getMaxLines()){
+                rawData.setText("");
+            }
         }
     }
 
