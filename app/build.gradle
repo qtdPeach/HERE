@@ -25,5 +25,5 @@ dependencies {
     compile 'com.android.support:appcompat-v7:23.1.1'
     compile 'com.android.support:design:23.1.1'
     compile 'org.altbeacon:android-beacon-library:2+@aar'
-    compile files('libs/GraphView-4.0.1.jar')
+    compile 'com.jjoe64:graphview:4.0.1'
 }

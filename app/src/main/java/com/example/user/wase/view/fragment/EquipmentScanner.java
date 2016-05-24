@@ -118,6 +118,7 @@ public class EquipmentScanner extends Fragment {
     public void onResume() {
         super.onResume();
 
+        Toast.makeText(getActivity(), "onPause", Toast.LENGTH_SHORT).show();
         // Ensures Bluetooth is enabled on the device.  If Bluetooth is not currently enabled,
         // fire an intent to display a dialog asking the user to grant permission to enable it.
         if (!mBluetoothAdapter.isEnabled()) {
@@ -143,6 +144,7 @@ public class EquipmentScanner extends Fragment {
     @Override
     public void onPause() {
         super.onPause();
+        Toast.makeText(getActivity(), "onPause", Toast.LENGTH_SHORT).show();
         scanLeDevice(false);
         equipListAdapter.clear();
     }
