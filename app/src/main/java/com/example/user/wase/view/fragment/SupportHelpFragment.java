@@ -1,5 +1,6 @@
 package com.example.user.wase.view.fragment;
 
+import android.app.FragmentManager;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -12,12 +13,17 @@ import com.example.user.wase.R;
 /**
  * Created by ymbae on 2016-04-18.
  */
-public class SupportHelpFragment extends android.app.Fragment{
+public class SupportHelpFragment extends Fragment{
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+
         return inflater.inflate(R.layout.fragment_instruction, container, false);
         //return super.onCreateView(inflater, container, savedInstanceState);
+
+
     }
+
+
 }
