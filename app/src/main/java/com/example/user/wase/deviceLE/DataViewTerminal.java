@@ -10,6 +10,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.ServiceConnection;
 import android.graphics.Color;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.util.Log;
@@ -22,6 +23,7 @@ import android.widget.Spinner;
 import android.widget.ViewFlipper;
 
 import com.example.user.wase.R;
+import com.example.user.wase.data.SingleData;
 import com.jjoe64.graphview.GraphView;
 import com.jjoe64.graphview.series.DataPoint;
 import com.jjoe64.graphview.series.LineGraphSeries;
@@ -47,6 +49,8 @@ public class DataViewTerminal extends Activity {
     private EditText rawData;
     LineGraphSeries<DataPoint>[] series;
 
+
+    //Bluetooth components
     private String mDeviceName;
     private String mDeviceAddress;
 
@@ -61,6 +65,10 @@ public class DataViewTerminal extends Activity {
     public final static UUID HM_RX_TX =
             UUID.fromString(HERE_GattAttributes.HM_RX_TX);
 
+
+    //data components
+    private String remained;
+    private char remainedType;
 
     // Code to manage Service lifecycle.
     private final ServiceConnection mServiceConnection = new ServiceConnection() {
@@ -288,10 +296,12 @@ public class DataViewTerminal extends Activity {
     private void appendData(String raw) {
 
         if (raw != null) {
+
             rawData.append(raw);
             if(rawData.getLineCount() > rawData.getMaxLines()){
                 rawData.setText("");
             }
+
         }
     }
 
@@ -305,5 +315,36 @@ public class DataViewTerminal extends Activity {
         intentFilter.addAction(BluetoothLeService.ACTION_DATA_AVAILABLE);
         return intentFilter;
     }
+
+
+    private class RawDataBinder extends AsyncTask<String, Character, String> {
+
+        private char startBit;
+        private boolean isCheckStartBit;
+
+        @Override
+        protected String doInBackground(String... raw){
+            String[] data = raw[0].split(SingleData.END_BIT);
+            for(int i =0 ; i < data.length; i++){
+                switch(data[i].charAt(0)){
+                    case SingleData.INDEX_ACC:
+                        break;
+                    case SingleData.INDEX_GYRO:
+                        break;
+                    case SingleData.INDEX_MAG:
+                        break;
+                    case SingleData.INDEX_FORCE:
+                        break;
+                    default:
+                        break;
+                }
+            }
+
+            return remained;
+        }
+
+
+    }
+
 
 }

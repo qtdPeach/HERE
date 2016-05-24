@@ -42,6 +42,8 @@ import java.util.UUID;
 public class BluetoothLeService extends Service {
     private final static String TAG = BluetoothLeService.class.getSimpleName();
 
+    private StringBuffer buffer;
+
     private BluetoothManager mBluetoothManager;
     private BluetoothAdapter mBluetoothAdapter;
     private String mBluetoothDeviceAddress;
@@ -129,11 +131,43 @@ public class BluetoothLeService extends Service {
 
             if (data != null && data.length > 0) {
                 final StringBuilder stringBuilder = new StringBuilder(data.length);
-                for(byte byteChar : data)
-                stringBuilder.append(String.format("%02X ", byteChar));
-                Log.d(TAG, String.format("%s", new String(data)));
-                // getting cut off when longer, need to push on new line, 0A
-                intent.putExtra(EXTRA_DATA,String.format("%s", new String(data)));
+                for(byte byteChar : data) {
+                    stringBuilder.append(String.format("%02X ", byteChar));
+                    //Log.d(TAG, String.format("%s", new String(data)));
+
+                }
+                buffer.append(new String(data));
+                String packet = null;
+                char temp;
+                int idx = 0;
+                Log.d(TAG, buffer.substring(0));
+                idx = buffer.indexOf("\r\n");
+
+                if(idx >= 0){
+                    packet = buffer.substring(0, idx+1);
+                    buffer = buffer.delete(0,idx+1);
+                    if(packet != null) {
+                        // getting cut off when longer, need to push on new line, 0A
+                        //intent.putExtra(EXTRA_DATA, String.format("%s", new String(data)));
+                        intent.putExtra(EXTRA_DATA, packet);
+                    }
+                }
+                /*
+                while(idx >= 0) {
+
+                    idx = buffer.indexOf("\n");
+                    if(idx >= 0){
+                        packet = buffer.substring(0, idx);
+                        buffer = buffer.delete(0,idx);
+                        if(packet != null) {
+                            // getting cut off when longer, need to push on new line, 0A
+                            //intent.putExtra(EXTRA_DATA, String.format("%s", new String(data)));
+                            intent.putExtra(EXTRA_DATA, packet);
+                        }
+
+                    }
+                }
+                */
 
             }
         sendBroadcast(intent);
@@ -169,6 +203,8 @@ public class BluetoothLeService extends Service {
     public boolean initialize() {
         // For API level 18 and above, get a reference to BluetoothAdapter through
         // BluetoothManager.
+        buffer = new StringBuffer();
+        buffer.ensureCapacity(100);
         if (mBluetoothManager == null) {
             mBluetoothManager = (BluetoothManager) getSystemService(Context.BLUETOOTH_SERVICE);
             if (mBluetoothManager == null) {

@@ -30,6 +30,12 @@ public class Equipment {
 
     //Equipment type
     //0: NO NAME, 1: Dumbbells, 2: Pushup bars, 3: Jumprope, 4: Hoola-hoop, 5: Others
+    public final static int TYPE_DUMBEL = 1;
+    public final static int TYPE_PUSH_UP = 2;
+    public final static int TYPE_JUMP_ROPE = 3;
+    public final static int TYPE_HOOLA_HOOP = 4;
+    public final static int TYPE_OTHERS = 5;
+
     int equipmentType;
 
 
