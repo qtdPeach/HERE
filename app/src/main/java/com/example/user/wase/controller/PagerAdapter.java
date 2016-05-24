@@ -40,9 +40,6 @@ public class PagerAdapter extends FragmentStatePagerAdapter {
                 return null;
 
         }
-
-
-
         //return null;
     }
 

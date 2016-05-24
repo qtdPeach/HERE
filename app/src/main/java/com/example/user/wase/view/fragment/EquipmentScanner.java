@@ -27,6 +27,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -47,6 +48,8 @@ import java.util.ArrayList;
  * Activity for scanning and displaying available Bluetooth LE devices.
  */
 public class EquipmentScanner extends Fragment {
+    private final String TAG = "EquipmentScanner";
+
     private HERE_DeviceListAdapter equipListAdapter;
     private BluetoothAdapter mBluetoothAdapter;
     private ArrayList<BluetoothDevice> mLEdeviceList;
@@ -115,23 +118,6 @@ public class EquipmentScanner extends Fragment {
 
 
     @Override
-    public void onResume() {
-        super.onResume();
-
-        Toast.makeText(getActivity(), "onPause", Toast.LENGTH_SHORT).show();
-        // Ensures Bluetooth is enabled on the device.  If Bluetooth is not currently enabled,
-        // fire an intent to display a dialog asking the user to grant permission to enable it.
-        if (!mBluetoothAdapter.isEnabled()) {
-            if (!mBluetoothAdapter.isEnabled()) {
-                Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
-                startActivityForResult(enableBtIntent, REQUEST_ENABLE_BT);
-            }
-        }
-
-        scanLeDevice(true);
-    }
-
-    @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         // User chose not to enable Bluetooth.
         if (requestCode == REQUEST_ENABLE_BT && resultCode == Activity.RESULT_CANCELED) {
@@ -144,7 +130,29 @@ public class EquipmentScanner extends Fragment {
     @Override
     public void onPause() {
         super.onPause();
-        Toast.makeText(getActivity(), "onPause", Toast.LENGTH_SHORT).show();
+        Log.d(TAG, "onPause");
+        scanLeDevice(false);
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+
+        Log.d(TAG, "onResume");
+        // Ensures Bluetooth is enabled on the device.  If Bluetooth is not currently enabled,
+        // fire an intent to display a dialog asking the user to grant permission to enable it.
+        if (!mBluetoothAdapter.isEnabled()) {
+            Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
+            startActivityForResult(enableBtIntent, REQUEST_ENABLE_BT);
+        }
+
+        scanLeDevice(true);
+    }
+
+    @Override
+    public void onStop(){
+        super.onStop();
+        Log.d(TAG, "onStop");
         scanLeDevice(false);
         equipListAdapter.clear();
     }
