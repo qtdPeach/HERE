@@ -11,8 +11,11 @@ import com.example.user.wase.model.MyInformation;
 import com.example.user.wase.model.MyRecord;
 import com.example.user.wase.model.MyRoutine;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 /**
  * Created by user on 2016-05-24.
@@ -712,5 +715,25 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     }
 
 
+    /**
+     * Close the opened DB
+     */
+    public void closeDB() {
+        SQLiteDatabase db = this.getReadableDatabase();
+        if (db != null && db.isOpen()) {
+            db.close();
+        }
+    }
+
+
+    /**
+     * Get current DateTime
+     * @return current DateTime
+     */
+    public String getDateTime() {
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault());
+        Date date = new Date();
+        return dateFormat.format(date);
+    }
 
 }
