@@ -884,6 +884,58 @@
                 />
 
 
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <Button
+                    android:id="@+id/dbtest_btn_drop_myinfo"
+                    android:layout_width="0px"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:onClick="mOnClick"
+                    android:textColor="#ff0000"
+                    android:text="DROP\nMYINFO\nTABLE"/>
+
+                <Button
+                    android:id="@+id/dbtest_btn_drop_myhereagents"
+                    android:layout_width="0px"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:onClick="mOnClick"
+                    android:textColor="#ff0000"
+                    android:text="DROP\nMYHEREAGENTS\nTABLE"/>
+
+                <Button
+                    android:id="@+id/dbtest_btn_drop_myroutines"
+                    android:layout_width="0px"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:onClick="mOnClick"
+                    android:textColor="#ff0000"
+                    android:text="DROP\nMYROUTINES\nTABLE"/>
+
+                <Button
+                    android:id="@+id/dbtest_btn_drop_myrecords"
+                    android:layout_width="0px"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:onClick="mOnClick"
+                    android:textColor="#ff0000"
+                    android:text="DROP\nMYRECORDS\nTABLE"/>
+
+            </LinearLayout>
+
+            <Button
+                android:id="@+id/dbtest_btn_drop_all"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:onClick="mOnClick"
+                android:background="#ff0000"
+                android:textColor="#ffffff"
+                android:text="DROP ALL TABLES"/>
 
         </LinearLayout>
     </ScrollView>

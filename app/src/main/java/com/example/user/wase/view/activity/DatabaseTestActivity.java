@@ -212,7 +212,7 @@ public class DatabaseTestActivity extends AppCompatActivity {
 
         if (myinfo != null) {
             dbtest_tv_myinfo_table.setText(
-                            "- id: " + myinfo.getUserId() + "\n" +
+                    "- id: " + myinfo.getUserId() + "\n" +
                             "- nick: " + myinfo.getUserNick() + "\n" +
                             "- name: " + myinfo.getUserName() + "\n" +
                             "- age: " + myinfo.getUserAge() + "\n" +
@@ -222,6 +222,8 @@ public class DatabaseTestActivity extends AppCompatActivity {
                             "- registered: " + myinfo.getUserRegistered() + "\n" +
                             "- deviceid: " + myinfo.getUserDeviceId()
             );
+        } else {
+            dbtest_tv_myinfo_table.setText("NO RECORDS");
         }
 
     }
@@ -241,6 +243,8 @@ public class DatabaseTestActivity extends AppCompatActivity {
                 myAgentsString += "- minor id: " + myAgents.get(i).getMyeqBeaconMinorId() + "\n\n";
             }
             dbtest_tv_myeq_table.setText(myAgentsString);
+        } else {
+            dbtest_tv_myeq_table.setText("NO RECORDS");
         }
 
     }
@@ -304,6 +308,28 @@ public class DatabaseTestActivity extends AppCompatActivity {
                 break;
             case R.id.dbtest_btn_myrecord_add:
                 Toast.makeText(getApplicationContext(), "Not implemented", Toast.LENGTH_SHORT).show();
+                break;
+            case R.id.dbtest_btn_drop_myinfo:
+                MainActivity.hereDB.dropTableMyInfo();
+                printMyInfoTable();
+                Toast.makeText(getApplicationContext(), "Table is dropped.", Toast.LENGTH_SHORT).show();
+                break;
+            case R.id.dbtest_btn_drop_myhereagents:
+                MainActivity.hereDB.dropTableMyHereAgents();
+                printMyHereAgentTable();
+                Toast.makeText(getApplicationContext(), "Table is dropped.", Toast.LENGTH_SHORT).show();
+                break;
+            case R.id.dbtest_btn_drop_myroutines:
+                //MainActivity.hereDB.dropTableMyRoutines();
+                Toast.makeText(getApplicationContext(), "Check the code", Toast.LENGTH_SHORT).show();
+                break;
+            case R.id.dbtest_btn_drop_myrecords:
+                //MainActivity.hereDB.dropTableMyRecords();
+                Toast.makeText(getApplicationContext(), "Check the code", Toast.LENGTH_SHORT).show();
+                break;
+            case R.id.dbtest_btn_drop_all:
+                //MainActivity.hereDB.dropAllTables();
+                Toast.makeText(getApplicationContext(), "Check the code", Toast.LENGTH_SHORT).show();
                 break;
         }
     }

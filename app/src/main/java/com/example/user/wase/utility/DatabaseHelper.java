@@ -769,6 +769,77 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
 
     /**
+     * Drop the table [myinfo]
+     */
+    public void dropTableMyInfo() {
+        SQLiteDatabase db = this.getWritableDatabase();
+        db.execSQL("DROP TABLE IF EXISTS " + TABLE_MYINFO);
+        Log.d(TAG_DB, "[Database] dropTableMyInfo: Table " + TABLE_MYINFO + " is dropped.");
+
+        db.execSQL(CREATE_TABLE_MYINFO);
+        Log.d(TAG_DB, "[Database] dropTableMyInfo: Table " + TABLE_MYINFO + " is recreated.");
+    }
+
+    /**
+     * Drop the table [myhereagents]
+     */
+    public void dropTableMyHereAgents() {
+        SQLiteDatabase db = this.getWritableDatabase();
+        db.execSQL("DROP TABLE IF EXISTS " + TABLE_MYHEREAGENTS);
+        Log.d(TAG_DB, "[Database] dropTableMyHereAgents: Table " + TABLE_MYHEREAGENTS + " is dropped.");
+
+        db.execSQL(CREATE_TABLE_MYHEREAGENTS);
+        Log.d(TAG_DB, "[Database] dropTableMyHereAgents: Table " + TABLE_MYHEREAGENTS + " is recreated.");
+    }
+
+    /**
+     * Drop the table [myroutines]
+     */
+    public void dropTableMyRoutines() {
+        SQLiteDatabase db = this.getWritableDatabase();
+        db.execSQL("DROP TABLE IF EXISTS " + TABLE_MYROUTINES);
+        Log.d(TAG_DB, "[Database] dropTableMyRoutines: Table " + TABLE_MYROUTINES + " is dropped.");
+
+        db.execSQL(CREATE_TABLE_MYROUTINES);
+        Log.d(TAG_DB, "[Database] dropTableMyRoutines: Table " + TABLE_MYROUTINES + " is recreated.");
+    }
+
+    /**
+     * Drop the table [myrecords]
+     */
+    public void dropTableMyRecords() {
+        SQLiteDatabase db = this.getWritableDatabase();
+        db.execSQL("DROP TABLE IF EXISTS " + TABLE_MYRECORDS);
+        Log.d(TAG_DB, "[Database] dropTableMyRecords: Table " + TABLE_MYRECORDS + " is dropped.");
+
+        db.execSQL(CREATE_TABLE_MYRECORDS);
+        Log.d(TAG_DB, "[Database] dropTableMyRecords: Table " + TABLE_MYRECORDS + " is recreated.");
+    }
+
+    /**
+     * Drop all tables in DB
+     */
+    public void dropAllTables() {
+        SQLiteDatabase db = this.getWritableDatabase();
+        db.execSQL("DROP TABLE IF EXISTS " + TABLE_MYINFO);
+        Log.d(TAG_DB, "[Database] dropAllTables: Table " + TABLE_MYINFO + " is dropped.");
+
+        db.execSQL("DROP TABLE IF EXISTS " + TABLE_MYHEREAGENTS);
+        Log.d(TAG_DB, "[Database] dropAllTables: Table " + TABLE_MYHEREAGENTS + " is dropped.");
+
+        db.execSQL("DROP TABLE IF EXISTS " + TABLE_MYROUTINES);
+        Log.d(TAG_DB, "[Database] dropAllTables: Table " + TABLE_MYROUTINES + " is dropped.");
+
+        db.execSQL("DROP TABLE IF EXISTS " + TABLE_MYRECORDS);
+        Log.d(TAG_DB, "[Database] dropAllTables: Table " + TABLE_MYRECORDS + " is dropped.");
+
+        //Recreate tables
+        onCreate(db);
+        Log.d(TAG_DB, "[Database] dropAllTables: Tables are recreated.");
+
+    }
+
+    /**
      * Close the opened DB
      */
     public void closeDB() {
