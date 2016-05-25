@@ -236,23 +236,28 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         String selectQuery = "SELECT * FROM " + TABLE_MYINFO;
 
         Cursor c = db.rawQuery(selectQuery, null);
-        if (c != null) {
+        if (c != null && c.getCount() != 0) {
             c.moveToFirst();
+
+            MyInformation tmpMyInformation = new MyInformation();
+
+            tmpMyInformation.setUserId(c.getString(c.getColumnIndex(ATTR_MYINFO_ID)));
+            tmpMyInformation.setUserNick(c.getString(c.getColumnIndex(ATTR_MYINFO_NICK)));
+            tmpMyInformation.setUserName(c.getString(c.getColumnIndex(ATTR_MYINFO_NAME)));
+            tmpMyInformation.setUserAge(c.getInt(c.getColumnIndex(ATTR_MYINFO_AGE)));
+            tmpMyInformation.setUserSex(c.getInt(c.getColumnIndex(ATTR_MYINFO_SEX)));
+            tmpMyInformation.setUserHeight(c.getInt(c.getColumnIndex(ATTR_MYINFO_HEIGHT)));
+            tmpMyInformation.setUserWeight(c.getInt(c.getColumnIndex(ATTR_MYINFO_WEIGHT)));
+            tmpMyInformation.setUserRegistered(c.getInt(c.getColumnIndex(ATTR_MYINFO_REGISTERED)));
+            tmpMyInformation.setUserDeviceId(c.getString(c.getColumnIndex(ATTR_MYINFO_DEVICEID)));
+
+            return tmpMyInformation;
+
+        } else {
+            return null;
         }
 
-        MyInformation tmpMyInformation = new MyInformation();
 
-        tmpMyInformation.setUserId(c.getString(c.getColumnIndex(ATTR_MYINFO_ID)));
-        tmpMyInformation.setUserNick(c.getString(c.getColumnIndex(ATTR_MYINFO_NICK)));
-        tmpMyInformation.setUserName(c.getString(c.getColumnIndex(ATTR_MYINFO_NAME)));
-        tmpMyInformation.setUserAge(c.getInt(c.getColumnIndex(ATTR_MYINFO_AGE)));
-        tmpMyInformation.setUserSex(c.getInt(c.getColumnIndex(ATTR_MYINFO_SEX)));
-        tmpMyInformation.setUserHeight(c.getInt(c.getColumnIndex(ATTR_MYINFO_HEIGHT)));
-        tmpMyInformation.setUserWeight(c.getInt(c.getColumnIndex(ATTR_MYINFO_WEIGHT)));
-        tmpMyInformation.setUserRegistered(c.getInt(c.getColumnIndex(ATTR_MYINFO_REGISTERED)));
-        tmpMyInformation.setUserDeviceId(c.getString(c.getColumnIndex(ATTR_MYINFO_DEVICEID)));
-
-        return tmpMyInformation;
     }
 
     /**
@@ -321,22 +326,29 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor c = db.rawQuery(selectQuery, null);
 
-        //Looping through all rows and adding to list
-        if (c.moveToFirst()) {
-            do{
-                MyHereAgent tmpHereAgent = new MyHereAgent();
+        if (c != null && c.getCount() != 0) {
 
-                tmpHereAgent.setMyeqMacId(c.getString(c.getColumnIndex(ATTR_MYEQ_MACID)));
-                tmpHereAgent.setMyeqName(c.getString(c.getColumnIndex(ATTR_MYEQ_NAME)));
-                tmpHereAgent.setMyeqType(c.getInt(c.getColumnIndex(ATTR_MYEQ_TYPE)));
-                tmpHereAgent.setMyeqBeaconMajorId(c.getString(c.getColumnIndex(ATTR_MYEQ_BEACONMAJORID)));
-                tmpHereAgent.setMyeqBeaconMinorId(c.getString(c.getColumnIndex(ATTR_MYEQ_BEACONMINORID)));
+            //Looping through all rows and adding to list
+            if (c.moveToFirst()) {
+                do {
+                    MyHereAgent tmpHereAgent = new MyHereAgent();
 
-                myHereAgents.add(tmpHereAgent);
-            }while (c.moveToNext());
+                    tmpHereAgent.setMyeqMacId(c.getString(c.getColumnIndex(ATTR_MYEQ_MACID)));
+                    tmpHereAgent.setMyeqName(c.getString(c.getColumnIndex(ATTR_MYEQ_NAME)));
+                    tmpHereAgent.setMyeqType(c.getInt(c.getColumnIndex(ATTR_MYEQ_TYPE)));
+                    tmpHereAgent.setMyeqBeaconMajorId(c.getString(c.getColumnIndex(ATTR_MYEQ_BEACONMAJORID)));
+                    tmpHereAgent.setMyeqBeaconMinorId(c.getString(c.getColumnIndex(ATTR_MYEQ_BEACONMINORID)));
+
+                    myHereAgents.add(tmpHereAgent);
+                } while (c.moveToNext());
+            }
+
+            return myHereAgents;
+
+        } else {
+            return null;
         }
 
-        return myHereAgents;
     }
 
 
@@ -353,19 +365,23 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
         Cursor c = db.rawQuery(selectQuery, null);
 
-        if (c != null) {
+        if (c != null && c.getCount() != 0) {
             c.moveToFirst();
+
+            MyHereAgent tmpHereAgent = new MyHereAgent();
+
+            tmpHereAgent.setMyeqMacId(c.getString(c.getColumnIndex(ATTR_MYEQ_MACID)));
+            tmpHereAgent.setMyeqName(c.getString(c.getColumnIndex(ATTR_MYEQ_NAME)));
+            tmpHereAgent.setMyeqType(c.getInt(c.getColumnIndex(ATTR_MYEQ_TYPE)));
+            tmpHereAgent.setMyeqBeaconMajorId(c.getString(c.getColumnIndex(ATTR_MYEQ_BEACONMAJORID)));
+            tmpHereAgent.setMyeqBeaconMinorId(c.getString(c.getColumnIndex(ATTR_MYEQ_BEACONMINORID)));
+
+            return tmpHereAgent;
+        } else {
+            return null;
         }
 
-        MyHereAgent tmpHereAgent = new MyHereAgent();
 
-        tmpHereAgent.setMyeqMacId(c.getString(c.getColumnIndex(ATTR_MYEQ_MACID)));
-        tmpHereAgent.setMyeqName(c.getString(c.getColumnIndex(ATTR_MYEQ_NAME)));
-        tmpHereAgent.setMyeqType(c.getInt(c.getColumnIndex(ATTR_MYEQ_TYPE)));
-        tmpHereAgent.setMyeqBeaconMajorId(c.getString(c.getColumnIndex(ATTR_MYEQ_BEACONMAJORID)));
-        tmpHereAgent.setMyeqBeaconMinorId(c.getString(c.getColumnIndex(ATTR_MYEQ_BEACONMINORID)));
-
-        return tmpHereAgent;
 
     }
 
@@ -441,29 +457,35 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor c = db.rawQuery(selectQuery, null);
 
-        //Looping through all rows and adding to list
-        if (c.moveToFirst()) {
-            do {
-                MyRoutine tmpRoutine = new MyRoutine();
+        if (c != null && c.getCount() != 0) {
+            //Looping through all rows and adding to list
+            if (c.moveToFirst()) {
+                do {
+                    MyRoutine tmpRoutine = new MyRoutine();
 
-                tmpRoutine.setRoutineId(c.getString(c.getColumnIndex(ATTR_MYROUTINE_ID)));
-                tmpRoutine.setRoutineName(c.getString(c.getColumnIndex(ATTR_MYROUTINE_NAME)));
-                tmpRoutine.setRoutineEq1Id(c.getString(c.getColumnIndex(ATTR_MYROUTINE_EQ1_ID)));
-                tmpRoutine.setRoutineEq1Goal(c.getString(c.getColumnIndex(ATTR_MYROUTINE_EQ1_GOAL)));
-                tmpRoutine.setRoutineEq2Id(c.getString(c.getColumnIndex(ATTR_MYROUTINE_EQ2_ID)));
-                tmpRoutine.setRoutineEq2Goal(c.getString(c.getColumnIndex(ATTR_MYROUTINE_EQ2_GOAL)));
-                tmpRoutine.setRoutineEq3Id(c.getString(c.getColumnIndex(ATTR_MYROUTINE_EQ3_ID)));
-                tmpRoutine.setRoutineEq3Goal(c.getString(c.getColumnIndex(ATTR_MYROUTINE_EQ3_GOAL)));
-                tmpRoutine.setRoutineEq4Id(c.getString(c.getColumnIndex(ATTR_MYROUTINE_EQ4_ID)));
-                tmpRoutine.setRoutineEq4Goal(c.getString(c.getColumnIndex(ATTR_MYROUTINE_EQ4_GOAL)));
-                tmpRoutine.setRoutineEq5Id(c.getString(c.getColumnIndex(ATTR_MYROUTINE_EQ5_ID)));
-                tmpRoutine.setRoutineEq5Goal(c.getString(c.getColumnIndex(ATTR_MYROUTINE_EQ5_GOAL)));
+                    tmpRoutine.setRoutineId(c.getString(c.getColumnIndex(ATTR_MYROUTINE_ID)));
+                    tmpRoutine.setRoutineName(c.getString(c.getColumnIndex(ATTR_MYROUTINE_NAME)));
+                    tmpRoutine.setRoutineEq1Id(c.getString(c.getColumnIndex(ATTR_MYROUTINE_EQ1_ID)));
+                    tmpRoutine.setRoutineEq1Goal(c.getString(c.getColumnIndex(ATTR_MYROUTINE_EQ1_GOAL)));
+                    tmpRoutine.setRoutineEq2Id(c.getString(c.getColumnIndex(ATTR_MYROUTINE_EQ2_ID)));
+                    tmpRoutine.setRoutineEq2Goal(c.getString(c.getColumnIndex(ATTR_MYROUTINE_EQ2_GOAL)));
+                    tmpRoutine.setRoutineEq3Id(c.getString(c.getColumnIndex(ATTR_MYROUTINE_EQ3_ID)));
+                    tmpRoutine.setRoutineEq3Goal(c.getString(c.getColumnIndex(ATTR_MYROUTINE_EQ3_GOAL)));
+                    tmpRoutine.setRoutineEq4Id(c.getString(c.getColumnIndex(ATTR_MYROUTINE_EQ4_ID)));
+                    tmpRoutine.setRoutineEq4Goal(c.getString(c.getColumnIndex(ATTR_MYROUTINE_EQ4_GOAL)));
+                    tmpRoutine.setRoutineEq5Id(c.getString(c.getColumnIndex(ATTR_MYROUTINE_EQ5_ID)));
+                    tmpRoutine.setRoutineEq5Goal(c.getString(c.getColumnIndex(ATTR_MYROUTINE_EQ5_GOAL)));
 
-                myRoutines.add(tmpRoutine);
-            } while (c.moveToNext());
+                    myRoutines.add(tmpRoutine);
+                } while (c.moveToNext());
+            }
+
+            return myRoutines;
+        } else {
+            return null;
         }
 
-        return myRoutines;
+
     }
 
 
@@ -480,26 +502,30 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
         Cursor c = db.rawQuery(selectQuery, null);
 
-        if (c != null) {
+        if (c != null && c.getCount() != 0) {
             c.moveToFirst();
+
+            MyRoutine tmpRoutine = new MyRoutine();
+
+            tmpRoutine.setRoutineId(c.getString(c.getColumnIndex(ATTR_MYROUTINE_ID)));
+            tmpRoutine.setRoutineName(c.getString(c.getColumnIndex(ATTR_MYROUTINE_NAME)));
+            tmpRoutine.setRoutineEq1Id(c.getString(c.getColumnIndex(ATTR_MYROUTINE_EQ1_ID)));
+            tmpRoutine.setRoutineEq1Goal(c.getString(c.getColumnIndex(ATTR_MYROUTINE_EQ1_GOAL)));
+            tmpRoutine.setRoutineEq2Id(c.getString(c.getColumnIndex(ATTR_MYROUTINE_EQ2_ID)));
+            tmpRoutine.setRoutineEq2Goal(c.getString(c.getColumnIndex(ATTR_MYROUTINE_EQ2_GOAL)));
+            tmpRoutine.setRoutineEq3Id(c.getString(c.getColumnIndex(ATTR_MYROUTINE_EQ3_ID)));
+            tmpRoutine.setRoutineEq3Goal(c.getString(c.getColumnIndex(ATTR_MYROUTINE_EQ3_GOAL)));
+            tmpRoutine.setRoutineEq4Id(c.getString(c.getColumnIndex(ATTR_MYROUTINE_EQ4_ID)));
+            tmpRoutine.setRoutineEq4Goal(c.getString(c.getColumnIndex(ATTR_MYROUTINE_EQ4_GOAL)));
+            tmpRoutine.setRoutineEq5Id(c.getString(c.getColumnIndex(ATTR_MYROUTINE_EQ5_ID)));
+            tmpRoutine.setRoutineEq5Goal(c.getString(c.getColumnIndex(ATTR_MYROUTINE_EQ5_GOAL)));
+
+            return tmpRoutine;
+        } else {
+            return null;
         }
 
-        MyRoutine tmpRoutine = new MyRoutine();
 
-        tmpRoutine.setRoutineId(c.getString(c.getColumnIndex(ATTR_MYROUTINE_ID)));
-        tmpRoutine.setRoutineName(c.getString(c.getColumnIndex(ATTR_MYROUTINE_NAME)));
-        tmpRoutine.setRoutineEq1Id(c.getString(c.getColumnIndex(ATTR_MYROUTINE_EQ1_ID)));
-        tmpRoutine.setRoutineEq1Goal(c.getString(c.getColumnIndex(ATTR_MYROUTINE_EQ1_GOAL)));
-        tmpRoutine.setRoutineEq2Id(c.getString(c.getColumnIndex(ATTR_MYROUTINE_EQ2_ID)));
-        tmpRoutine.setRoutineEq2Goal(c.getString(c.getColumnIndex(ATTR_MYROUTINE_EQ2_GOAL)));
-        tmpRoutine.setRoutineEq3Id(c.getString(c.getColumnIndex(ATTR_MYROUTINE_EQ3_ID)));
-        tmpRoutine.setRoutineEq3Goal(c.getString(c.getColumnIndex(ATTR_MYROUTINE_EQ3_GOAL)));
-        tmpRoutine.setRoutineEq4Id(c.getString(c.getColumnIndex(ATTR_MYROUTINE_EQ4_ID)));
-        tmpRoutine.setRoutineEq4Goal(c.getString(c.getColumnIndex(ATTR_MYROUTINE_EQ4_GOAL)));
-        tmpRoutine.setRoutineEq5Id(c.getString(c.getColumnIndex(ATTR_MYROUTINE_EQ5_ID)));
-        tmpRoutine.setRoutineEq5Goal(c.getString(c.getColumnIndex(ATTR_MYROUTINE_EQ5_GOAL)));
-
-        return tmpRoutine;
     }
 
     /**
@@ -608,29 +634,35 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor c = db.rawQuery(selectQuery, null);
 
-        if (c.moveToFirst()) {
-            do {
-                MyRecord tmpMyRecord = new MyRecord();
+        if (c != null && c.getCount() != 0) {
 
-                tmpMyRecord.setRecordId(c.getString(c.getColumnIndex(ATTR_MYRECORD_ID)));
-                tmpMyRecord.setRecordName(c.getString(c.getColumnIndex(ATTR_MYRECORD_NAME)));
-                tmpMyRecord.setRecordDateTime(c.getString(c.getColumnIndex(ATTR_MYRECORD_DATETIME)));
-                tmpMyRecord.setRecordEq1Id(c.getString(c.getColumnIndex(ATTR_MYRECORD_EQ1_ID)));
-                tmpMyRecord.setRecordEq1Done(c.getString(c.getColumnIndex(ATTR_MYRECORD_EQ1_DONE)));
-                tmpMyRecord.setRecordEq2Id(c.getString(c.getColumnIndex(ATTR_MYRECORD_EQ2_ID)));
-                tmpMyRecord.setRecordEq2Done(c.getString(c.getColumnIndex(ATTR_MYRECORD_EQ2_DONE)));
-                tmpMyRecord.setRecordEq3Id(c.getString(c.getColumnIndex(ATTR_MYRECORD_EQ3_ID)));
-                tmpMyRecord.setRecordEq3Done(c.getString(c.getColumnIndex(ATTR_MYRECORD_EQ3_DONE)));
-                tmpMyRecord.setRecordEq4Id(c.getString(c.getColumnIndex(ATTR_MYRECORD_EQ4_ID)));
-                tmpMyRecord.setRecordEq4Done(c.getString(c.getColumnIndex(ATTR_MYRECORD_EQ4_DONE)));
-                tmpMyRecord.setRecordEq5Id(c.getString(c.getColumnIndex(ATTR_MYRECORD_EQ5_ID)));
-                tmpMyRecord.setRecordEq5Done(c.getString(c.getColumnIndex(ATTR_MYRECORD_EQ5_DONE)));
+            if (c.moveToFirst()) {
+                do {
+                    MyRecord tmpMyRecord = new MyRecord();
 
-                myRecords.add(tmpMyRecord);
-            } while (c.moveToNext());
+                    tmpMyRecord.setRecordId(c.getString(c.getColumnIndex(ATTR_MYRECORD_ID)));
+                    tmpMyRecord.setRecordName(c.getString(c.getColumnIndex(ATTR_MYRECORD_NAME)));
+                    tmpMyRecord.setRecordDateTime(c.getString(c.getColumnIndex(ATTR_MYRECORD_DATETIME)));
+                    tmpMyRecord.setRecordEq1Id(c.getString(c.getColumnIndex(ATTR_MYRECORD_EQ1_ID)));
+                    tmpMyRecord.setRecordEq1Done(c.getString(c.getColumnIndex(ATTR_MYRECORD_EQ1_DONE)));
+                    tmpMyRecord.setRecordEq2Id(c.getString(c.getColumnIndex(ATTR_MYRECORD_EQ2_ID)));
+                    tmpMyRecord.setRecordEq2Done(c.getString(c.getColumnIndex(ATTR_MYRECORD_EQ2_DONE)));
+                    tmpMyRecord.setRecordEq3Id(c.getString(c.getColumnIndex(ATTR_MYRECORD_EQ3_ID)));
+                    tmpMyRecord.setRecordEq3Done(c.getString(c.getColumnIndex(ATTR_MYRECORD_EQ3_DONE)));
+                    tmpMyRecord.setRecordEq4Id(c.getString(c.getColumnIndex(ATTR_MYRECORD_EQ4_ID)));
+                    tmpMyRecord.setRecordEq4Done(c.getString(c.getColumnIndex(ATTR_MYRECORD_EQ4_DONE)));
+                    tmpMyRecord.setRecordEq5Id(c.getString(c.getColumnIndex(ATTR_MYRECORD_EQ5_ID)));
+                    tmpMyRecord.setRecordEq5Done(c.getString(c.getColumnIndex(ATTR_MYRECORD_EQ5_DONE)));
+
+                    myRecords.add(tmpMyRecord);
+                } while (c.moveToNext());
+            }
+
+            return myRecords;
+        } else {
+            return null;
         }
 
-        return myRecords;
     }
 
 
@@ -647,27 +679,31 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
         Cursor c = db.rawQuery(selectQuery, null);
 
-        if (c != null) {
+        if (c != null && c.getCount() != 0) {
             c.moveToFirst();
+
+            MyRecord tmpMyRecord = new MyRecord();
+
+            tmpMyRecord.setRecordId(c.getString(c.getColumnIndex(ATTR_MYRECORD_ID)));
+            tmpMyRecord.setRecordName(c.getString(c.getColumnIndex(ATTR_MYRECORD_NAME)));
+            tmpMyRecord.setRecordDateTime(c.getString(c.getColumnIndex(ATTR_MYRECORD_DATETIME)));
+            tmpMyRecord.setRecordEq1Id(c.getString(c.getColumnIndex(ATTR_MYRECORD_EQ1_ID)));
+            tmpMyRecord.setRecordEq1Done(c.getString(c.getColumnIndex(ATTR_MYRECORD_EQ1_DONE)));
+            tmpMyRecord.setRecordEq2Id(c.getString(c.getColumnIndex(ATTR_MYRECORD_EQ2_ID)));
+            tmpMyRecord.setRecordEq2Done(c.getString(c.getColumnIndex(ATTR_MYRECORD_EQ2_DONE)));
+            tmpMyRecord.setRecordEq3Id(c.getString(c.getColumnIndex(ATTR_MYRECORD_EQ3_ID)));
+            tmpMyRecord.setRecordEq3Done(c.getString(c.getColumnIndex(ATTR_MYRECORD_EQ3_DONE)));
+            tmpMyRecord.setRecordEq4Id(c.getString(c.getColumnIndex(ATTR_MYRECORD_EQ4_ID)));
+            tmpMyRecord.setRecordEq4Done(c.getString(c.getColumnIndex(ATTR_MYRECORD_EQ4_DONE)));
+            tmpMyRecord.setRecordEq5Id(c.getString(c.getColumnIndex(ATTR_MYRECORD_EQ5_ID)));
+            tmpMyRecord.setRecordEq5Done(c.getString(c.getColumnIndex(ATTR_MYRECORD_EQ5_DONE)));
+
+            return tmpMyRecord;
+        } else {
+            return null;
         }
 
-        MyRecord tmpMyRecord = new MyRecord();
 
-        tmpMyRecord.setRecordId(c.getString(c.getColumnIndex(ATTR_MYRECORD_ID)));
-        tmpMyRecord.setRecordName(c.getString(c.getColumnIndex(ATTR_MYRECORD_NAME)));
-        tmpMyRecord.setRecordDateTime(c.getString(c.getColumnIndex(ATTR_MYRECORD_DATETIME)));
-        tmpMyRecord.setRecordEq1Id(c.getString(c.getColumnIndex(ATTR_MYRECORD_EQ1_ID)));
-        tmpMyRecord.setRecordEq1Done(c.getString(c.getColumnIndex(ATTR_MYRECORD_EQ1_DONE)));
-        tmpMyRecord.setRecordEq2Id(c.getString(c.getColumnIndex(ATTR_MYRECORD_EQ2_ID)));
-        tmpMyRecord.setRecordEq2Done(c.getString(c.getColumnIndex(ATTR_MYRECORD_EQ2_DONE)));
-        tmpMyRecord.setRecordEq3Id(c.getString(c.getColumnIndex(ATTR_MYRECORD_EQ3_ID)));
-        tmpMyRecord.setRecordEq3Done(c.getString(c.getColumnIndex(ATTR_MYRECORD_EQ3_DONE)));
-        tmpMyRecord.setRecordEq4Id(c.getString(c.getColumnIndex(ATTR_MYRECORD_EQ4_ID)));
-        tmpMyRecord.setRecordEq4Done(c.getString(c.getColumnIndex(ATTR_MYRECORD_EQ4_DONE)));
-        tmpMyRecord.setRecordEq5Id(c.getString(c.getColumnIndex(ATTR_MYRECORD_EQ5_ID)));
-        tmpMyRecord.setRecordEq5Done(c.getString(c.getColumnIndex(ATTR_MYRECORD_EQ5_DONE)));
-
-        return tmpMyRecord;
     }
 
 

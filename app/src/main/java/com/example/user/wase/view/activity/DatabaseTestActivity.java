@@ -10,6 +10,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.user.wase.R;
@@ -17,6 +18,9 @@ import com.example.user.wase.model.MyHereAgent;
 import com.example.user.wase.model.MyInformation;
 import com.example.user.wase.model.MyRecord;
 import com.example.user.wase.model.MyRoutine;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by ymbaek on 2016-04-18.
@@ -39,6 +43,8 @@ public class DatabaseTestActivity extends AppCompatActivity {
 
     Button dbtest_btn_myinfo_add;
 
+    TextView dbtest_tv_myinfo_table;
+
     /* MyHereAgent */
     EditText dbtest_et_myeq_id;
     EditText dbtest_et_myeq_name;
@@ -47,6 +53,8 @@ public class DatabaseTestActivity extends AppCompatActivity {
     EditText dbtest_et_myeq_minorid;
 
     Button dbtest_btn_myeq_add;
+
+    TextView dbtest_tv_myeq_table;
 
     /* MyRoutine */
 
@@ -77,6 +85,9 @@ public class DatabaseTestActivity extends AppCompatActivity {
 
         initWidgets();
 
+        printMyInfoTable();
+        printMyHereAgentTable();
+
 //        //Database tests
 //        dbTestCountEntries();
 //
@@ -100,6 +111,8 @@ public class DatabaseTestActivity extends AppCompatActivity {
 
         dbtest_btn_myinfo_add = (Button) findViewById(R.id.dbtest_btn_myinfo_add);
 
+        dbtest_tv_myinfo_table = (TextView) findViewById(R.id.dbtest_tv_table_myinfo);
+
         /* MyHereAgent */
         dbtest_et_myeq_id = (EditText) findViewById(R.id.dbtest_edit_myeq_macid);
         dbtest_et_myeq_name = (EditText) findViewById(R.id.dbtest_edit_myeq_name);
@@ -108,6 +121,8 @@ public class DatabaseTestActivity extends AppCompatActivity {
         dbtest_et_myeq_minorid = (EditText) findViewById(R.id.dbtest_edit_myeq_minorid);
 
         dbtest_btn_myeq_add = (Button) findViewById(R.id.dbtest_btn_myeq_add);
+
+        dbtest_tv_myeq_table = (TextView) findViewById(R.id.dbtest_tv_table_myhereagents);
 
         /* MyRoutine */
 
@@ -192,6 +207,44 @@ public class DatabaseTestActivity extends AppCompatActivity {
 //        MainActivity.hereDB.insertHereAgent()
 //    }
 
+    private void printMyInfoTable() {
+        MyInformation myinfo = MainActivity.hereDB.getMyInformation();
+
+        if (myinfo != null) {
+            dbtest_tv_myinfo_table.setText(
+                            "- id: " + myinfo.getUserId() + "\n" +
+                            "- nick: " + myinfo.getUserNick() + "\n" +
+                            "- name: " + myinfo.getUserName() + "\n" +
+                            "- age: " + myinfo.getUserAge() + "\n" +
+                            "- sex: " + myinfo.getUserSex() + "\n" +
+                            "- height: " + myinfo.getUserHeight() + "\n" +
+                            "- weight: " + myinfo.getUserWeight() + "\n" +
+                            "- registered: " + myinfo.getUserRegistered() + "\n" +
+                            "- deviceid: " + myinfo.getUserDeviceId()
+            );
+        }
+
+    }
+
+    private void printMyHereAgentTable() {
+        List<MyHereAgent> myAgents = new ArrayList<>();
+        myAgents = MainActivity.hereDB.getAllMyHereAgents();
+
+        if (myAgents != null) {
+            String myAgentsString = "";
+
+            for (int i = 0; i < myAgents.size(); i++) {
+                myAgentsString += "- mac id: " + myAgents.get(i).getMyeqMacId() + "\n";
+                myAgentsString += "- name: " + myAgents.get(i).getMyeqName() + "\n";
+                myAgentsString += "- type: " + myAgents.get(i).getMyeqType() + "\n";
+                myAgentsString += "- major id: " + myAgents.get(i).getMyeqBeaconMajorId() + "\n";
+                myAgentsString += "- minor id: " + myAgents.get(i).getMyeqBeaconMinorId() + "\n\n";
+            }
+            dbtest_tv_myeq_table.setText(myAgentsString);
+        }
+
+    }
+
     public void mOnClick(View v) {
         switch (v.getId()) {
             case R.id.dbtest_btn_myinfo_add:
@@ -219,6 +272,9 @@ public class DatabaseTestActivity extends AppCompatActivity {
 
                 MainActivity.hereDB.insertMyInformation(tmpMyInfo);
                 Log.d(TAG_DB, "[DatabaseTest] MyInformation is added to DB.");
+
+                printMyInfoTable();
+                Toast.makeText(getApplicationContext(), "Table is updated.", Toast.LENGTH_SHORT).show();
                 break;
             case R.id.dbtest_btn_myeq_add:
                 MyHereAgent tmpMyAgent = new MyHereAgent();
@@ -238,6 +294,10 @@ public class DatabaseTestActivity extends AppCompatActivity {
                 MainActivity.hereDB.insertHereAgent(tmpMyAgent);
                 Log.d(TAG_DB, "[DatabaseTest] MyHereAgent is added to DB.");
                 Log.d(TAG_DB, "[DatabaseTest]  > Table size (myhereagents): " + dbTestCountAgent());
+
+                printMyHereAgentTable();
+                Toast.makeText(getApplicationContext(), "Table is updated.", Toast.LENGTH_SHORT).show();
+
                 break;
             case R.id.dbtest_btn_myroutine_add:
                 Toast.makeText(getApplicationContext(), "Not implemented", Toast.LENGTH_SHORT).show();

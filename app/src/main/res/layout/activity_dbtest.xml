@@ -841,6 +841,49 @@
             </LinearLayout>
 
 
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:background="@color/colorAccent"
+                android:layout_marginTop="20dp"
+                android:padding="5dp"
+                android:textColor="#ffffff"
+                android:text="TABLE myinfo"
+                android:textStyle="bold"/>
+
+            <TextView
+                android:id="@+id/dbtest_tv_table_myinfo"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="5dp"
+                android:textColor="#333333"
+                android:text="records in myinfo table"
+                android:textSize="14dp"
+                />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:background="@color/colorAccent"
+                android:layout_marginTop="20dp"
+                android:padding="5dp"
+                android:textColor="#ffffff"
+                android:text="TABLE myhereagents"
+                android:textStyle="bold"/>
+
+            <TextView
+                android:id="@+id/dbtest_tv_table_myhereagents"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="5dp"
+                android:textColor="#333333"
+                android:text="records in myhereagents table"
+                android:textSize="14dp"
+                />
+
+
 
         </LinearLayout>
     </ScrollView>
