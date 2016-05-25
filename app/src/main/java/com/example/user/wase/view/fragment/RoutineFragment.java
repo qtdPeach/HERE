@@ -12,12 +12,12 @@ import com.example.user.wase.R;
 /**
  * Created by ymbae on 2016-04-18.
  */
-public class ExerciseFragment extends Fragment{
+public class RoutineFragment extends Fragment{
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_exercise, container, false);
+        return inflater.inflate(R.layout.fragment_routine, container, false);
         //return super.onCreateView(inflater, container, savedInstanceState);
     }
 }
