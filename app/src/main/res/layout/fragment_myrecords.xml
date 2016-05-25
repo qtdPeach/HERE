@@ -4,13 +4,136 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <TextView
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:gravity="center"
-        android:text="My exercise records"
-        android:textSize="25dp"
-        android:textStyle="bold"
-        android:textColor="@color/colorSkyBlue"/>
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingLeft="15dp"
+                android:paddingRight="15dp"
+                android:paddingTop="10dp"
+                android:paddingBottom="10dp"
+                android:background="#eeeeee">
+
+                <ImageView
+                    android:layout_width="100dp"
+                    android:layout_height="100dp"
+                    android:src="@drawable/here_character_simple_boy"/>
+
+                <LinearLayout
+                    android:orientation="vertical"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginLeft="10dp"
+                    android:gravity="left|center_vertical">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="10dp"
+                        android:text="Jiyoung Song (jysong_selab)"
+                        android:textSize="13dp"
+                        android:textColor="#999999"/>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Your records"
+                        android:textSize="23dp"
+                        android:textColor="@color/colorPrimaryDark"/>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="You have to do more! :)"
+                        android:textSize="16dp"
+                        android:textStyle="bold"
+                        android:textColor="@color/colorSkyBlue"/>
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingLeft="15dp"
+                android:paddingTop="5dp"
+                android:paddingBottom="5dp"
+                android:layout_marginTop="10dp"
+                android:textColor="@color/colorSkyBlue"
+                android:textStyle="bold"
+                android:textSize="18dp"
+                android:text="Weekly Records"/>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/colorSkyBlue"/>
+
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="160dp"
+                android:paddingLeft="25dp"
+                android:paddingRight="25dp"
+                android:paddingTop="15dp"
+                android:paddingBottom="15dp"
+                android:background="#eeeeee">
+
+                <com.jjoe64.graphview.GraphView
+                    android:id="@+id/graphX"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"/>
+
+                <!--<com.jjoe64.graphview.GraphView-->
+                    <!--android:layout_width="match_parent"-->
+                    <!--android:layout_height="160dp"/>-->
+
+            </LinearLayout>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingLeft="15dp"
+                android:paddingTop="5dp"
+                android:paddingBottom="5dp"
+                android:layout_marginTop="10dp"
+                android:textColor="@color/colorSkyBlue"
+                android:textStyle="bold"
+                android:textSize="18dp"
+                android:text="Equipment Records"/>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/colorSkyBlue"/>
+
+            <ListView
+                android:layout_width="match_parent"
+                android:layout_height="400dp"
+                android:background="#eeeeee"></ListView>
+
+            <!--<TextView-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="match_parent"-->
+            <!--android:gravity="center"-->
+            <!--android:text="My exercise records"-->
+            <!--android:textSize="25dp"-->
+            <!--android:textStyle="bold"-->
+            <!--android:textColor="@color/colorSkyBlue"/>-->
+
+        </LinearLayout>
+
+    </ScrollView>
 
 </LinearLayout>

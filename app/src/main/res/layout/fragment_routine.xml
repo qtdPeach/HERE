@@ -16,6 +16,11 @@
         android:textSize="18dp"
         android:text="Selected routine: "/>
 
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/colorSkyBlue"/>
+
     <HorizontalScrollView
         android:background="#eeeeee"
         android:layout_width="match_parent"
@@ -231,6 +236,11 @@
         android:textStyle="bold"
         android:textSize="18dp"
         android:text="My registered routines"/>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/colorSkyBlue"/>
 
     <ListView
         android:background="#eeeeee"
