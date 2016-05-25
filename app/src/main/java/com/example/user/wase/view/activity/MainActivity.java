@@ -22,6 +22,8 @@ import android.widget.Toast;
 import com.example.user.wase.R;
 import com.example.user.wase.controller.PagerAdapter;
 import com.example.user.wase.device.BluetoothComm;
+import com.example.user.wase.device.WorkoutRecord;
+import com.example.user.wase.device.WorkoutRecords;
 import com.example.user.wase.utility.DatabaseHelper;
 import com.example.user.wase.view.fragment.SupportHelpFragment;
 
@@ -161,7 +163,7 @@ public class MainActivity extends AppCompatActivity
             case R.id.nav_testpage:
                 //TODO: Bluetooth test activity
                 //Move to test page
-                Intent testIntent = new Intent(this, BluetoothComm.class);
+                Intent testIntent = new Intent(this, WorkoutRecords.class);
                 startActivity(testIntent);
                 break;
             //My exercise equipments
