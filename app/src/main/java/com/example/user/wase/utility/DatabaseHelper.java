@@ -221,9 +221,17 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         values.put(ATTR_MYINFO_REGISTERED, myInformation.getUserRegistered());
         values.put(ATTR_MYINFO_DEVICEID, myInformation.getUserDeviceId());
 
-        long myinfo_id = db.insert(TABLE_MYINFO, null, values);
+        String selectQueryToCount = "SELECT * FROM " + TABLE_MYINFO;
+        Cursor c = db.rawQuery(selectQueryToCount, null);
 
-        return myinfo_id;
+        if (c.getCount() == 0) {
+            // MyInformation can have at most one tuple
+            long myinfo_id = db.insert(TABLE_MYINFO, null, values);
+            return myinfo_id;
+        } else {
+            return -1;
+        }
+
     }
 
     /**

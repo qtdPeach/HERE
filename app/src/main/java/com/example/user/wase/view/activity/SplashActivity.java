@@ -12,7 +12,7 @@ import com.example.user.wase.R;
  */
 public class SplashActivity extends Activity {
 
-    public static final int SPLASH_TIMEOUT_MILLIS = 2000;
+    public static final int SPLASH_TIMEOUT_MILLIS = 500;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
