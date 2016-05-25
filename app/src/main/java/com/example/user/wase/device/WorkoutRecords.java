@@ -10,6 +10,7 @@ import com.example.user.wase.R;
 
 /**
  * Created by sarahsong on 2016-05-26.
+ * Cheer up!
  */
 public class WorkoutRecords extends AppCompatActivity implements View.OnClickListener{
 
