@@ -33,6 +33,7 @@
         <activity android:name = ".device.WorkoutRecords"/>
         <activity android:name = ".device.WorkoutRecord"/>
         <activity android:name = ".device.WorkoutRecord2"/>
+        <activity android:name = ".device.EquipmentRecordTerminal"/>
         <activity android:name=".view.activity.MyEquipmentsActivity"/>
         <activity android:name=".view.activity.MyRecordsActivity"/>
         <activity android:name=".view.activity.MyRoutinesActivity"/>
