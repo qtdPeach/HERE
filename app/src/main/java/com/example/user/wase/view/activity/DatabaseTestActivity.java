@@ -57,10 +57,38 @@ public class DatabaseTestActivity extends AppCompatActivity {
     TextView dbtest_tv_myeq_table;
 
     /* MyRoutine */
+    EditText dbtest_et_myroutine_id;
+    EditText dbtest_et_myroutine_name;
+    EditText dbtest_et_myroutine_eq1_id;
+    EditText dbtest_et_myroutine_eq1_goal;
+    EditText dbtest_et_myroutine_eq2_id;
+    EditText dbtest_et_myroutine_eq2_goal;
+    EditText dbtest_et_myroutine_eq3_id;
+    EditText dbtest_et_myroutine_eq3_goal;
+    EditText dbtest_et_myroutine_eq4_id;
+    EditText dbtest_et_myroutine_eq4_goal;
+    EditText dbtest_et_myroutine_eq5_id;
+    EditText dbtest_et_myroutine_eq5_goal;
 
+    Button dbtest_btn_myroutine_add;
+    TextView dbtest_tv_myroutine_table;
 
     /* MyRecord */
+    EditText dbtest_et_myrecord_id;
+    EditText dbtest_et_myrecord_name;
+    EditText dbtest_et_myrecord_eq1_id;
+    EditText dbtest_et_myrecord_eq1_done;
+    EditText dbtest_et_myrecord_eq2_id;
+    EditText dbtest_et_myrecord_eq2_done;
+    EditText dbtest_et_myrecord_eq3_id;
+    EditText dbtest_et_myrecord_eq3_done;
+    EditText dbtest_et_myrecord_eq4_id;
+    EditText dbtest_et_myrecord_eq4_done;
+    EditText dbtest_et_myrecord_eq5_id;
+    EditText dbtest_et_myrecord_eq5_done;
 
+    Button dbtest_btn_myrecord_add;
+    TextView dbtest_tv_myrecord_table;
 
     //Toolbar
     private Toolbar toolbar;
@@ -125,9 +153,38 @@ public class DatabaseTestActivity extends AppCompatActivity {
         dbtest_tv_myeq_table = (TextView) findViewById(R.id.dbtest_tv_table_myhereagents);
 
         /* MyRoutine */
+        dbtest_et_myroutine_id = (EditText) findViewById(R.id.dbtest_edit_myroutine_id);
+        dbtest_et_myroutine_name = (EditText) findViewById(R.id.dbtest_edit_myroutine_name);
+        dbtest_et_myroutine_eq1_id = (EditText) findViewById(R.id.dbtest_edit_myroutine_eq1_id);
+        dbtest_et_myroutine_eq1_goal = (EditText) findViewById(R.id.dbtest_edit_myroutine_eq1_goal);
+        dbtest_et_myroutine_eq2_id = (EditText) findViewById(R.id.dbtest_edit_myroutine_eq2_id);
+        dbtest_et_myroutine_eq2_goal = (EditText) findViewById(R.id.dbtest_edit_myroutine_eq2_goal);
+        dbtest_et_myroutine_eq3_id = (EditText) findViewById(R.id.dbtest_edit_myroutine_eq3_id);
+        dbtest_et_myroutine_eq3_goal = (EditText) findViewById(R.id.dbtest_edit_myroutine_eq3_goal);
+        dbtest_et_myroutine_eq4_id = (EditText) findViewById(R.id.dbtest_edit_myroutine_eq4_id);
+        dbtest_et_myroutine_eq4_goal = (EditText) findViewById(R.id.dbtest_edit_myroutine_eq4_goal);
+        dbtest_et_myroutine_eq5_id = (EditText) findViewById(R.id.dbtest_edit_myroutine_eq5_id);
+        dbtest_et_myroutine_eq5_goal = (EditText) findViewById(R.id.dbtest_edit_myroutine_eq5_goal);
 
+        dbtest_btn_myroutine_add = (Button) findViewById(R.id.dbtest_btn_myroutine_add);
+        dbtest_tv_myroutine_table = (TextView) findViewById(R.id.dbtest_tv_table_myroutines);
 
         /* MyRecord */
+        dbtest_et_myrecord_id = (EditText) findViewById(R.id.dbtest_edit_myrecord_id);
+        dbtest_et_myrecord_name = (EditText) findViewById(R.id.dbtest_edit_myrecord_name);
+        dbtest_et_myrecord_eq1_id = (EditText) findViewById(R.id.dbtest_edit_myrecord_eq1_id);
+        dbtest_et_myrecord_eq1_done = (EditText) findViewById(R.id.dbtest_edit_myrecord_eq1_done);
+        dbtest_et_myrecord_eq2_id = (EditText) findViewById(R.id.dbtest_edit_myrecord_eq2_id);
+        dbtest_et_myrecord_eq2_done = (EditText) findViewById(R.id.dbtest_edit_myrecord_eq2_done);
+        dbtest_et_myrecord_eq3_id = (EditText) findViewById(R.id.dbtest_edit_myrecord_eq3_id);
+        dbtest_et_myrecord_eq3_done = (EditText) findViewById(R.id.dbtest_edit_myrecord_eq3_done);
+        dbtest_et_myrecord_eq4_id = (EditText) findViewById(R.id.dbtest_edit_myrecord_eq4_id);
+        dbtest_et_myrecord_eq4_done = (EditText) findViewById(R.id.dbtest_edit_myrecord_eq4_done);
+        dbtest_et_myrecord_eq5_id = (EditText) findViewById(R.id.dbtest_edit_myrecord_eq5_id);
+        dbtest_et_myrecord_eq5_done = (EditText) findViewById(R.id.dbtest_edit_myrecord_eq5_done);
+
+        dbtest_btn_myrecord_add = (Button) findViewById(R.id.dbtest_btn_myrecord_add);
+        dbtest_tv_myrecord_table = (TextView) findViewById(R.id.dbtest_tv_table_myrecords);
     }
 
 

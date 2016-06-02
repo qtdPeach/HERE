@@ -612,6 +612,94 @@
                     </LinearLayout>
 
 
+                    <LinearLayout
+                        android:orientation="horizontal"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+                        <TextView
+                            android:layout_width="0px"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:gravity="center|right"
+                            android:textSize="13dp"
+                            android:text="myroutine_\neq4_id: "/>
+                        <EditText
+                            android:id="@+id/dbtest_edit_myroutine_eq4_id"
+                            android:layout_width="0px"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="2"
+                            android:textSize="13dp"
+                            android:hint="VARCHAR(30)"
+                            android:textColorHint="#aaaaaa"
+                            />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:orientation="horizontal"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+                        <TextView
+                            android:layout_width="0px"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:gravity="center|right"
+                            android:textSize="13dp"
+                            android:text="myroutine_\neq4_goal: "/>
+                        <EditText
+                            android:id="@+id/dbtest_edit_myroutine_eq4_goal"
+                            android:layout_width="0px"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="2"
+                            android:textSize="13dp"
+                            android:hint="VARCHAR(30)"
+                            android:textColorHint="#aaaaaa"
+                            />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:orientation="horizontal"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+                        <TextView
+                            android:layout_width="0px"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:gravity="center|right"
+                            android:textSize="13dp"
+                            android:text="myroutine_\neq5_id: "/>
+                        <EditText
+                            android:id="@+id/dbtest_edit_myroutine_eq5_id"
+                            android:layout_width="0px"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="2"
+                            android:textSize="13dp"
+                            android:hint="VARCHAR(30)"
+                            android:textColorHint="#aaaaaa"
+                            />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:orientation="horizontal"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+                        <TextView
+                            android:layout_width="0px"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:gravity="center|right"
+                            android:textSize="13dp"
+                            android:text="myroutine_\neq5_goal: "/>
+                        <EditText
+                            android:id="@+id/dbtest_edit_myroutine_eq5_goal"
+                            android:layout_width="0px"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="2"
+                            android:textSize="13dp"
+                            android:hint="VARCHAR(30)"
+                            android:textColorHint="#aaaaaa"
+                            />
+                    </LinearLayout>
+
                 </LinearLayout>
 
                 <Button
@@ -826,6 +914,94 @@
                             />
                     </LinearLayout>
 
+                    <LinearLayout
+                        android:orientation="horizontal"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+                        <TextView
+                            android:layout_width="0px"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:gravity="center|right"
+                            android:textSize="13dp"
+                            android:text="myrecord_\neq4_id: "/>
+                        <EditText
+                            android:id="@+id/dbtest_edit_myrecord_eq4_id"
+                            android:layout_width="0px"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="2"
+                            android:textSize="13dp"
+                            android:hint="VARCHAR(30)"
+                            android:textColorHint="#aaaaaa"
+                            />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:orientation="horizontal"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+                        <TextView
+                            android:layout_width="0px"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:gravity="center|right"
+                            android:textSize="13dp"
+                            android:text="myrecord_\neq4_done: "/>
+                        <EditText
+                            android:id="@+id/dbtest_edit_myrecord_eq4_done"
+                            android:layout_width="0px"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="2"
+                            android:textSize="13dp"
+                            android:hint="VARCHAR(50)"
+                            android:textColorHint="#aaaaaa"
+                            />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:orientation="horizontal"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+                        <TextView
+                            android:layout_width="0px"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:gravity="center|right"
+                            android:textSize="13dp"
+                            android:text="myrecord_\neq5_id: "/>
+                        <EditText
+                            android:id="@+id/dbtest_edit_myrecord_eq5_id"
+                            android:layout_width="0px"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="2"
+                            android:textSize="13dp"
+                            android:hint="VARCHAR(30)"
+                            android:textColorHint="#aaaaaa"
+                            />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:orientation="horizontal"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+                        <TextView
+                            android:layout_width="0px"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:gravity="center|right"
+                            android:textSize="13dp"
+                            android:text="myrecord_\neq5_done: "/>
+                        <EditText
+                            android:id="@+id/dbtest_edit_myrecord_eq5_done"
+                            android:layout_width="0px"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="2"
+                            android:textSize="13dp"
+                            android:hint="VARCHAR(50)"
+                            android:textColorHint="#aaaaaa"
+                            />
+                    </LinearLayout>
+
 
                 </LinearLayout>
 
@@ -880,6 +1056,48 @@
                 android:padding="5dp"
                 android:textColor="#333333"
                 android:text="records in myhereagents table"
+                android:textSize="14dp"
+                />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:background="@color/colorAccent"
+                android:layout_marginTop="20dp"
+                android:padding="5dp"
+                android:textColor="#ffffff"
+                android:text="TABLE myhereagents"
+                android:textStyle="bold"/>
+
+            <TextView
+                android:id="@+id/dbtest_tv_table_myroutines"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="5dp"
+                android:textColor="#333333"
+                android:text="records in myroutines table"
+                android:textSize="14dp"
+                />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:background="@color/colorAccent"
+                android:layout_marginTop="20dp"
+                android:padding="5dp"
+                android:textColor="#ffffff"
+                android:text="TABLE myrecords"
+                android:textStyle="bold"/>
+
+            <TextView
+                android:id="@+id/dbtest_tv_table_myrecords"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="5dp"
+                android:textColor="#333333"
+                android:text="records in myrecords table"
                 android:textSize="14dp"
                 />
 
