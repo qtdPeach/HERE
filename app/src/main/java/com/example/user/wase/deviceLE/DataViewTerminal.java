@@ -12,6 +12,7 @@ import android.content.ServiceConnection;
 import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Handler;
 import android.os.IBinder;
 import android.util.Log;
 import android.view.Menu;
@@ -48,11 +49,14 @@ public class DataViewTerminal extends Activity {
     private GraphView[] gv;
     private EditText rawData;
     LineGraphSeries<DataPoint>[] series;
+    private Runnable invalidator;
 
+    private final Handler mHandler = new Handler();
 
     //Bluetooth components
     private String mDeviceName;
     private String mDeviceAddress;
+    private final int duration = 10; //sampling period of measuring
 
     private BluetoothLeService mBluetoothLeService;
     private boolean mConnected = false;
@@ -66,9 +70,12 @@ public class DataViewTerminal extends Activity {
             UUID.fromString(HERE_GattAttributes.HM_RX_TX);
 
 
+
     //data components
     private String remained;
     private char remainedType;
+    private long startTime;
+    private float[] values;
 
     // Code to manage Service lifecycle.
     private final ServiceConnection mServiceConnection = new ServiceConnection() {
@@ -215,8 +222,6 @@ public class DataViewTerminal extends Activity {
             gv[i].getViewport().setScrollable(true);
 
             gv[i].getViewport().setXAxisBoundsManual(true);
-            gv[i].getViewport().setMinX(0);
-            gv[i].getViewport().setMaxX(10000);
 
             gv[i].getViewport().setYAxisBoundsManual(true);
             gv[i].getViewport().setMinY(-10);
@@ -251,6 +256,26 @@ public class DataViewTerminal extends Activity {
         rawData = (EditText) findViewById(R.id.rawData);
         rawData.setMaxLines(20);
 
+        values = new float[10];
+
+
+
+        startTime = System.currentTimeMillis();
+        invalidator = new Runnable() {
+            @Override
+            public void run() {
+
+                double x = (double) (System.currentTimeMillis() - startTime)/1000;
+                //series[vf.getDisplayedChild()].appendData(new DataPoint((double) (System.currentTimeMillis() - startTime) / 1000, (double) values[vf.getDisplayedChild()]), true, 1000);
+                for(int i = 0 ; i < 6; i++){
+                    series[i].appendData(new DataPoint(x, (double) values[i]), true, 300);
+                }
+
+                mHandler.postDelayed(this, duration);
+            }
+        };
+        mHandler.postDelayed(invalidator, 1500);
+
     }
 
     @Override
@@ -265,14 +290,15 @@ public class DataViewTerminal extends Activity {
                 mBluetoothLeService.writeCharacteristic(characteristicTX);
                 mBluetoothLeService.setCharacteristicNotification(characteristicRX,true);
             }
-        }
 
+        }
     }
 
     @Override
     protected void onPause() {
         super.onPause();
         unregisterReceiver(mGattUpdateReceiver);
+        mHandler.removeCallbacks(invalidator);
     }
 
     @Override
@@ -280,6 +306,7 @@ public class DataViewTerminal extends Activity {
         super.onDestroy();
         unbindService(mServiceConnection);
         mBluetoothLeService = null;
+        mHandler.removeCallbacks(invalidator);
     }
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -294,9 +321,34 @@ public class DataViewTerminal extends Activity {
 
     private void appendData(String raw) {
 
+        int ax,ay,az;
+        int what = -1;
         if (raw != null) {
 
             rawData.append(raw);
+            String[] data = raw.split(" ");
+            try {
+                for (int i = 0; i < data.length; i++) {
+                    if (data[i].equals("a")) {
+                        ax = Integer.parseInt(data[++i]);
+                        values[0] = (float) ax;
+                        ay = Integer.parseInt(data[++i]);
+                        values[1] = (float) ay;
+                        az = Integer.parseInt(data[++i]);
+                        values[2] = (float) az;
+                        what = 0;
+                    } else if (data[i].equals("g")) {
+                        ax = Integer.parseInt(data[++i]);
+                        values[3] = (float) ax;
+                        ay = Integer.parseInt(data[++i]);
+                        values[4] = (float) ay;
+                        az = Integer.parseInt(data[++i]);
+                        values[5] = (float) az;
+                    }
+                }
+            }catch(NumberFormatException e){};
+
+
             if(rawData.getLineCount() > rawData.getMaxLines()){
                 rawData.setText("");
             }
