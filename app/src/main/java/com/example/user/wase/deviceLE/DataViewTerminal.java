@@ -173,7 +173,6 @@ public class DataViewTerminal extends Activity {
                 mBluetoothLeService.writeCharacteristic(characteristicTX);
                 mBluetoothLeService.setCharacteristicNotification(characteristicRX,true);
             }
-
         }
 
     }
