@@ -26,6 +26,7 @@ import android.widget.TextView;
 import android.widget.ViewFlipper;
 
 import com.example.user.wase.R;
+import com.example.user.wase.data.Dumbel;
 import com.example.user.wase.data.SingleData;
 import com.jjoe64.graphview.GraphView;
 import com.jjoe64.graphview.series.DataPoint;
@@ -49,6 +50,7 @@ public class DataViewTerminal extends Activity {
     private Spinner selector;
     private ViewFlipper vf;
     private TextView srView;
+    private TextView exercisePhase;
     private GraphView[] gv;
     private EditText rawData;
 
@@ -59,7 +61,6 @@ public class DataViewTerminal extends Activity {
     //Bluetooth components
     private String mDeviceName;
     private String mDeviceAddress;
-    private final int duration = 5; //sampling period of measuring
 
     private BluetoothLeService mBluetoothLeService;
     private boolean mConnected = false;
@@ -221,6 +222,8 @@ public class DataViewTerminal extends Activity {
         });
 
         srView = (TextView)findViewById(R.id.sampling_rate);
+        exercisePhase = (TextView)findViewById(R.id.state);
+
         vf = (ViewFlipper)findViewById(R.id.flipper);
 
         gv = new GraphView[10];
@@ -453,12 +456,21 @@ public class DataViewTerminal extends Activity {
                         values[4] =  LPF(ay, 4)  - longTermAvgGyro(ay, 1);
                         az = (float)Integer.parseInt(data[++i])- offsets[5];
                         values[5] =  LPF(az, 5) - longTermAvgGyro(az, 2);
+                        if(values[5] > Dumbel.phaseThresHold){
+                            exercisePhase.setText("Rising");
+                        }
+                        else if(values[5] < -Dumbel.phaseThresHold){
+                            exercisePhase.setText("Falling");
+                        }
+                        else{
+                            exercisePhase.setText("Static");
+                        }
                         samplingCount++;
 
                     }
                 }
             }catch(NumberFormatException e){};
-            //values[0] = (float)Math.sqrt(values[0] * values[0] + values[1] * values[1] + values[2] * values[2] );
+            values[0] = (float)Math.sqrt(values[3] * values[3] + values[4] * values[4] + values[5] * values[5] );
             invalidator.run();
 
             if(rawData.getLineCount() > rawData.getMaxLines()){
