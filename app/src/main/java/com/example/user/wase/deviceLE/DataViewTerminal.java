@@ -12,6 +12,7 @@ import android.content.ServiceConnection;
 import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.os.Handler;
 import android.os.IBinder;
 import android.util.Log;
@@ -21,6 +22,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.ViewFlipper;
 
 import com.example.user.wase.R;
@@ -46,17 +48,18 @@ public class DataViewTerminal extends Activity {
     //UI components
     private Spinner selector;
     private ViewFlipper vf;
+    private TextView srView;
     private GraphView[] gv;
     private EditText rawData;
+
     LineGraphSeries<DataPoint>[] series;
     private Runnable invalidator;
-
     private final Handler mHandler = new Handler();
 
     //Bluetooth components
     private String mDeviceName;
     private String mDeviceAddress;
-    private final int duration = 10; //sampling period of measuring
+    private final int duration = 5; //sampling period of measuring
 
     private BluetoothLeService mBluetoothLeService;
     private boolean mConnected = false;
@@ -76,6 +79,25 @@ public class DataViewTerminal extends Activity {
     private char remainedType;
     private long startTime;
     private float[] values;
+
+    float[] offsets;
+
+    boolean isSetOffset;
+    CountDownTimer cdt, srChecker;
+    float[] roughLPF;
+    float[][] LPFbuffer;
+    final int LPFwindow = 20;
+    int[] latestIdx;
+    private final float radToDeg = (float)(180/ Math.PI);
+    private int countGyro = 0;
+    private int countAcc = 0;
+
+    private int samplingCount;
+    private float samplingRate;
+    private float[][] longtermAverageGyroBuffer;
+    private float[] longtermAverageGyro;
+    private int[] longTermIndex;
+    private final int longterm = 5*100; //approx. 5s
 
     // Code to manage Service lifecycle.
     private final ServiceConnection mServiceConnection = new ServiceConnection() {
@@ -198,6 +220,7 @@ public class DataViewTerminal extends Activity {
             }
         });
 
+        srView = (TextView)findViewById(R.id.sampling_rate);
         vf = (ViewFlipper)findViewById(R.id.flipper);
 
         gv = new GraphView[10];
@@ -218,14 +241,17 @@ public class DataViewTerminal extends Activity {
             series[i] = new LineGraphSeries<DataPoint>();
             series[i].setColor(lineColors[i]);
 
+
             gv[i].addSeries(series[i]);
             gv[i].getViewport().setScrollable(true);
 
             gv[i].getViewport().setXAxisBoundsManual(true);
+            gv[i].getViewport().setMinX(0);
+            gv[i].getViewport().setMaxX(5); //second
 
             gv[i].getViewport().setYAxisBoundsManual(true);
-            gv[i].getViewport().setMinY(-10);
-            gv[i].getViewport().setMaxY(10);
+            gv[i].getViewport().setMinY(-150);
+            gv[i].getViewport().setMaxY(150);
 
             if(i < 3){
                 gv[i].getViewport().setBackgroundColor(Color.WHITE);
@@ -256,9 +282,67 @@ public class DataViewTerminal extends Activity {
         rawData = (EditText) findViewById(R.id.rawData);
         rawData.setMaxLines(20);
 
+        samplingCount = 0;
+        samplingRate = 0;
+        longtermAverageGyroBuffer = new float[3][longterm];
+        longtermAverageGyro = new float[longterm];
+        longTermIndex= new int[3];
+        for(int i = 0; i < 3; i++){
+            longTermIndex[i] = 0;
+            longtermAverageGyro[i] = 0;
+            for(int k = 0; k <longterm; k++){
+                longtermAverageGyroBuffer[i][k] = 0;
+            }
+        }
+
+
+        roughLPF = new float[10];
+        LPFbuffer= new float[10][LPFwindow];
+        latestIdx = new int[10];
+        for(int i = 0; i < 10; i++){
+            latestIdx[i] = 0;
+            roughLPF[i] = 0;
+            for(int k = 0; k < LPFwindow; k++){
+                LPFbuffer[i][k] = 0;
+            }
+        }
+
         values = new float[10];
+        offsets = new float[6];
+        isSetOffset = false;
+        cdt = new CountDownTimer(1000, 1000) {
+            @Override
+            public void onTick(long millisUntilFinished) {
 
+            }
 
+            @Override
+            public void onFinish() {
+                isSetOffset = false;
+                for(int i = 0; i < 3; i++){
+                    offsets[i] = offsets[i]/countAcc;
+                }
+                for(int i = 3; i < 6; i++){
+                    offsets[i] = offsets[i]/countGyro;
+                }
+            }
+        };
+
+        srChecker = new CountDownTimer(1000, 1000) {
+            @Override
+            public void onTick(long millisUntilFinished) {
+
+            }
+
+            @Override
+            public void onFinish() {
+                samplingRate = (float)samplingCount;
+                srView.setText(String.format("%.3f", samplingRate));
+                samplingCount = 0;
+                srChecker.start();
+            }
+        };
+        srChecker.start();
 
         startTime = System.currentTimeMillis();
         invalidator = new Runnable() {
@@ -271,11 +355,36 @@ public class DataViewTerminal extends Activity {
                     series[i].appendData(new DataPoint(x, (double) values[i]), true, 300);
                 }
 
-                mHandler.postDelayed(this, duration);
             }
         };
-        mHandler.postDelayed(invalidator, 1500);
+        //mHandler.postDelayed(invalidator, 1500);
 
+    }
+
+    private void setOffset(){
+        isSetOffset = true;
+        countAcc = 0;
+        countGyro = 0;
+        for(int i = 0; i < 6; i++){
+            offsets[i] = 0;
+        }
+        cdt.start();
+    }
+
+
+    private float LPF(float raw, int what){
+        latestIdx[what] = (latestIdx[what]+1) % LPFwindow;
+        roughLPF[what] -= LPFbuffer[what][latestIdx[what]];
+        LPFbuffer[what][latestIdx[what]] = raw;
+        roughLPF[what] += raw;
+        return roughLPF[what]/LPFwindow;
+    }
+    private float longTermAvgGyro(float raw, int what){
+        longTermIndex[what] = (longTermIndex[what]+1) % longterm;
+        longtermAverageGyro[what] -= longtermAverageGyroBuffer[what][longTermIndex[what]];
+        longtermAverageGyroBuffer[what][longTermIndex[what]] = raw;
+        longtermAverageGyro[what] += raw;
+        return longtermAverageGyro[what]/longterm;
     }
 
     @Override
@@ -321,7 +430,7 @@ public class DataViewTerminal extends Activity {
 
     private void appendData(String raw) {
 
-        int ax,ay,az;
+        float ax,ay,az;
         int what = -1;
         if (raw != null) {
 
@@ -330,24 +439,27 @@ public class DataViewTerminal extends Activity {
             try {
                 for (int i = 0; i < data.length; i++) {
                     if (data[i].equals("a")) {
-                        ax = Integer.parseInt(data[++i]);
-                        values[0] = (float) ax;
-                        ay = Integer.parseInt(data[++i]);
-                        values[1] = (float) ay;
-                        az = Integer.parseInt(data[++i]);
-                        values[2] = (float) az;
+                        ax = (float)Integer.parseInt(data[++i]) / 100 - offsets[0];
+                        values[0] =  LPF(ax,0);
+                        ay = (float)Integer.parseInt(data[++i]) / 100- offsets[1];
+                        values[1] =  LPF(ay,1);
+                        az = (float)Integer.parseInt(data[++i]) / 100- offsets[2];
+                        values[2] =  LPF(az,2);
                         what = 0;
                     } else if (data[i].equals("g")) {
-                        ax = Integer.parseInt(data[++i]);
-                        values[3] = (float) ax;
-                        ay = Integer.parseInt(data[++i]);
-                        values[4] = (float) ay;
-                        az = Integer.parseInt(data[++i]);
-                        values[5] = (float) az;
+                        ax = (float)Integer.parseInt(data[++i]) - offsets[3];
+                        values[3] =  LPF(ax, 3) - longTermAvgGyro(ax, 0);
+                        ay = (float)Integer.parseInt(data[++i])- offsets[4];
+                        values[4] =  LPF(ay, 4)  - longTermAvgGyro(ay, 1);
+                        az = (float)Integer.parseInt(data[++i])- offsets[5];
+                        values[5] =  LPF(az, 5) - longTermAvgGyro(az, 2);
+                        samplingCount++;
+
                     }
                 }
             }catch(NumberFormatException e){};
-
+            //values[0] = (float)Math.sqrt(values[0] * values[0] + values[1] * values[1] + values[2] * values[2] );
+            invalidator.run();
 
             if(rawData.getLineCount() > rawData.getMaxLines()){
                 rawData.setText("");
