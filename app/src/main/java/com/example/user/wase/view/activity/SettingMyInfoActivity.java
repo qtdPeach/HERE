@@ -196,6 +196,7 @@ public class SettingMyInfoActivity extends AppCompatActivity {
                 myInfo.setUserSex(userSex);
                 myInfo.setUserHeight(userHeight);
                 myInfo.setUserWeight(userWeight);
+                myInfo.setUserRegistered(1);
                 myInfo.setUserDeviceId(android_id);
 
                 //Update database
@@ -208,14 +209,11 @@ public class SettingMyInfoActivity extends AppCompatActivity {
                     MainActivity.hereDB.insertMyInformation(myInfo);
                 }
 
-//                //Update
-//                if (MainActivity.hereDB.getMyInformation() == null) {
-//                    MainActivity.hereDB.insertMyInformation(myInfo);
-//                } else {
-//                    MainActivity.hereDB.updateMyInformation(myInfo);
-//                }
 
                 initWidgetValues();
+
+                Toast.makeText(getApplicationContext(), "My information is updated.", Toast.LENGTH_SHORT).show();
+
 
                 break;
         }
