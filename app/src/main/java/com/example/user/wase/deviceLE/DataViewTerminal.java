@@ -15,6 +15,7 @@ import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.os.Handler;
 import android.os.IBinder;
+import android.os.Vibrator;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -26,8 +27,7 @@ import android.widget.TextView;
 import android.widget.ViewFlipper;
 
 import com.example.user.wase.R;
-import com.example.user.wase.data.Dumbel;
-import com.example.user.wase.data.SingleData;
+import com.example.user.wase.utility.DataAnalyzer;
 import com.jjoe64.graphview.GraphView;
 import com.jjoe64.graphview.series.DataPoint;
 import com.jjoe64.graphview.series.LineGraphSeries;
@@ -45,6 +45,11 @@ public class DataViewTerminal extends Activity {
 
     public static final String EXTRAS_DEVICE_NAME = "DEVICE_NAME";
     public static final String EXTRAS_DEVICE_ADDRESS = "DEVICE_ADDRESS";
+
+    public DataAnalyzer dumbel;
+
+    private Vibrator vib;
+
 
     //UI components
     private Spinner selector;
@@ -76,6 +81,14 @@ public class DataViewTerminal extends Activity {
 
 
     //data components
+    public static final char INDEX_ACC = 'a';
+    public static final char INDEX_GYRO = 'g';
+    public static final char INDEX_MAG = 'm';
+    public static final char INDEX_FORCE = 'f';
+
+    public static final String END_BIT = "@";
+
+    private final int numberOfMeasures = 10;
     private String remained;
     private char remainedType;
     private long startTime;
@@ -95,11 +108,13 @@ public class DataViewTerminal extends Activity {
 
     private int samplingCount;
     private float samplingRate;
-    private float[][] longtermAverageGyroBuffer;
-    private float[] longtermAverageGyro;
+    private float[][] longtermAverageBuffer;
+    private float[] longtermAverage;
     private int[] longTermIndex;
     private final int longterm = 5*100; //approx. 5s
 
+    private int dumbelCount = 0;
+    private boolean isRisingPeak, isFallingPeak;
     // Code to manage Service lifecycle.
     private final ServiceConnection mServiceConnection = new ServiceConnection() {
 
@@ -151,6 +166,9 @@ public class DataViewTerminal extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_data_view_terminal);
         linkComponents();
+
+        dumbel = new DataAnalyzer(0);
+        vib = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
 
         final Intent intent = getIntent();
         mDeviceName = intent.getStringExtra(EXTRAS_DEVICE_NAME);
@@ -226,7 +244,7 @@ public class DataViewTerminal extends Activity {
 
         vf = (ViewFlipper)findViewById(R.id.flipper);
 
-        gv = new GraphView[10];
+        gv = new GraphView[numberOfMeasures];
         gv[0] =  (GraphView) findViewById(R.id.graphX);
         gv[1] =  (GraphView) findViewById(R.id.graphY);
         gv[2] =  (GraphView) findViewById(R.id.graphZ);
@@ -272,8 +290,8 @@ public class DataViewTerminal extends Activity {
                 gv[i].getGridLabelRenderer().reloadStyles();
             }
         }
-        gv[6].getViewport().setMinY(-180);
-        gv[6].getViewport().setMaxY(180);
+        gv[6].getViewport().setMinY(-20);
+        gv[6].getViewport().setMaxY(400);
         gv[7].getViewport().setMinY(-90);
         gv[7].getViewport().setMaxY(90);
         gv[8].getViewport().setMinY(-180);
@@ -287,22 +305,22 @@ public class DataViewTerminal extends Activity {
 
         samplingCount = 0;
         samplingRate = 0;
-        longtermAverageGyroBuffer = new float[3][longterm];
-        longtermAverageGyro = new float[longterm];
-        longTermIndex= new int[3];
-        for(int i = 0; i < 3; i++){
+        longtermAverageBuffer = new float[numberOfMeasures][longterm];
+        longtermAverage = new float[longterm];
+        longTermIndex= new int[numberOfMeasures];
+        for(int i = 0; i < numberOfMeasures; i++){
             longTermIndex[i] = 0;
-            longtermAverageGyro[i] = 0;
+            longtermAverage[i] = 0;
             for(int k = 0; k <longterm; k++){
-                longtermAverageGyroBuffer[i][k] = 0;
+                longtermAverageBuffer[i][k] = 0;
             }
         }
 
 
-        roughLPF = new float[10];
-        LPFbuffer= new float[10][LPFwindow];
-        latestIdx = new int[10];
-        for(int i = 0; i < 10; i++){
+        roughLPF = new float[numberOfMeasures];
+        LPFbuffer= new float[numberOfMeasures][LPFwindow];
+        latestIdx = new int[numberOfMeasures];
+        for(int i = 0; i < numberOfMeasures; i++){
             latestIdx[i] = 0;
             roughLPF[i] = 0;
             for(int k = 0; k < LPFwindow; k++){
@@ -310,8 +328,8 @@ public class DataViewTerminal extends Activity {
             }
         }
 
-        values = new float[10];
-        offsets = new float[6];
+        values = new float[numberOfMeasures];
+        offsets = new float[numberOfMeasures];
         isSetOffset = false;
         cdt = new CountDownTimer(1000, 1000) {
             @Override
@@ -331,18 +349,19 @@ public class DataViewTerminal extends Activity {
             }
         };
 
-        srChecker = new CountDownTimer(1000, 1000) {
+        srChecker = new CountDownTimer(5000, 1000) {
             @Override
             public void onTick(long millisUntilFinished) {
+                samplingRate = (float)samplingCount;
+                srView.setText(String.format("%.3f", samplingRate));
+                samplingCount = 0;
 
             }
 
             @Override
             public void onFinish() {
-                samplingRate = (float)samplingCount;
-                srView.setText(String.format("%.3f", samplingRate));
-                samplingCount = 0;
-                srChecker.start();
+                isFallingPeak = false;
+                isRisingPeak = false;
             }
         };
         srChecker.start();
@@ -354,14 +373,15 @@ public class DataViewTerminal extends Activity {
 
                 double x = (double) (System.currentTimeMillis() - startTime)/1000;
                 //series[vf.getDisplayedChild()].appendData(new DataPoint((double) (System.currentTimeMillis() - startTime) / 1000, (double) values[vf.getDisplayedChild()]), true, 1000);
-                for(int i = 0 ; i < 6; i++){
+                for(int i = 0 ; i < 7; i++){
                     series[i].appendData(new DataPoint(x, (double) values[i]), true, 300);
                 }
 
             }
         };
         //mHandler.postDelayed(invalidator, 1500);
-
+        isRisingPeak = false;
+        isFallingPeak = false;
     }
 
     private void setOffset(){
@@ -382,12 +402,12 @@ public class DataViewTerminal extends Activity {
         roughLPF[what] += raw;
         return roughLPF[what]/LPFwindow;
     }
-    private float longTermAvgGyro(float raw, int what){
+    private float longTermAvg(float raw, int what){
         longTermIndex[what] = (longTermIndex[what]+1) % longterm;
-        longtermAverageGyro[what] -= longtermAverageGyroBuffer[what][longTermIndex[what]];
-        longtermAverageGyroBuffer[what][longTermIndex[what]] = raw;
-        longtermAverageGyro[what] += raw;
-        return longtermAverageGyro[what]/longterm;
+        longtermAverage[what] -= longtermAverageBuffer[what][longTermIndex[what]];
+        longtermAverageBuffer[what][longTermIndex[what]] = raw;
+        longtermAverage[what] += raw;
+        return longtermAverage[what]/longterm;
     }
 
     @Override
@@ -442,35 +462,56 @@ public class DataViewTerminal extends Activity {
             try {
                 for (int i = 0; i < data.length; i++) {
                     if (data[i].equals("a")) {
-                        ax = (float)Integer.parseInt(data[++i]) / 100 - offsets[0];
-                        values[0] =  LPF(ax,0);
-                        ay = (float)Integer.parseInt(data[++i]) / 100- offsets[1];
-                        values[1] =  LPF(ay,1);
-                        az = (float)Integer.parseInt(data[++i]) / 100- offsets[2];
-                        values[2] =  LPF(az,2);
+                        ax = (float)Integer.parseInt(data[++i])/10  - offsets[0];
+                        values[0] =  LPF(ax,0) - longTermAvg(ax, 0);
+                        ay = (float)Integer.parseInt(data[++i])/10 - offsets[1];
+                        values[1] =  LPF(ay,1) - longTermAvg(ay, 1);
+                        az = (float)Integer.parseInt(data[++i])/10 - offsets[2];
+                        values[2] =  LPF(az,2) - longTermAvg(az, 2);
                         what = 0;
                     } else if (data[i].equals("g")) {
                         ax = (float)Integer.parseInt(data[++i]) - offsets[3];
-                        values[3] =  LPF(ax, 3) - longTermAvgGyro(ax, 0);
+                        values[3] =  LPF(ax, 3) - longTermAvg(ax, 3);
                         ay = (float)Integer.parseInt(data[++i])- offsets[4];
-                        values[4] =  LPF(ay, 4)  - longTermAvgGyro(ay, 1);
+                        values[4] =  LPF(ay, 4) - longTermAvg(ay, 4);
                         az = (float)Integer.parseInt(data[++i])- offsets[5];
-                        values[5] =  LPF(az, 5) - longTermAvgGyro(az, 2);
-                        if(values[5] > Dumbel.phaseThresHold){
-                            exercisePhase.setText("Rising");
+                        values[5] =  LPF(az, 5) - longTermAvg(az, 5);
+                        if(values[5] > 20 ){
+                            exercisePhase.setText(dumbelCount/2 + ":  Rising");
+                            dumbel.setDetectingMode(1);
                         }
-                        else if(values[5] < -Dumbel.phaseThresHold){
-                            exercisePhase.setText("Falling");
+                        else if(values[5] < -20){
+                            exercisePhase.setText(dumbelCount/2 + ":  Falling");
+                            dumbel.setDetectingMode(-1);
                         }
-                        else{
-                            exercisePhase.setText("Static");
+                        else {
+                            exercisePhase.setText(dumbelCount/2 + ":  Static");
+                            dumbel.setDetectingMode(0);
+                        }
+                        switch ( dumbel.peakDetection(new DataPoint(0, values[5]))){
+                            case 1:
+                                isRisingPeak = true;
+                                if(isFallingPeak){
+                                    dumbelCount++;
+                                    vib.vibrate(100);
+                                }
+                                isFallingPeak = false;
+                                break;
+                            case -1:
+                                isFallingPeak = true;
+                                if(isRisingPeak){
+                                    dumbelCount++;
+                                    vib.vibrate(100);
+                                }
+                                isRisingPeak = false;
+                                break;
                         }
                         samplingCount++;
 
                     }
                 }
             }catch(NumberFormatException e){};
-            values[0] = (float)Math.sqrt(values[3] * values[3] + values[4] * values[4] + values[5] * values[5] );
+            values[6] = (float)Math.sqrt(values[0] * values[0] + values[1] * values[1] + values[2] * values[2] );
             invalidator.run();
 
             if(rawData.getLineCount() > rawData.getMaxLines()){
@@ -499,16 +540,16 @@ public class DataViewTerminal extends Activity {
 
         @Override
         protected String doInBackground(String... raw){
-            String[] data = raw[0].split(SingleData.END_BIT);
+            String[] data = raw[0].split(END_BIT);
             for(int i =0 ; i < data.length; i++){
                 switch(data[i].charAt(0)){
-                    case SingleData.INDEX_ACC:
+                    case INDEX_ACC:
                         break;
-                    case SingleData.INDEX_GYRO:
+                    case INDEX_GYRO:
                         break;
-                    case SingleData.INDEX_MAG:
+                    case INDEX_MAG:
                         break;
-                    case SingleData.INDEX_FORCE:
+                    case INDEX_FORCE:
                         break;
                     default:
                         break;

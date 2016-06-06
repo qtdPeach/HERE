@@ -9,8 +9,6 @@ import java.util.Locale;
  */
 public class Equipment {
 
-    // Major ID of HERE beacon
-    public static int MAJOR_ID = 10;
 
     //Minor ID of HERE devices
     public final static String DUMBEL = "0000A";
