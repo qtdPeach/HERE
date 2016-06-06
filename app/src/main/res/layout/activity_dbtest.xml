@@ -799,7 +799,7 @@
                             android:layout_height="wrap_content"
                             android:layout_weight="2"
                             android:textSize="13dp"
-                            android:hint="VARCHAR(30)"
+                            android:hint="DATETIME"
                             android:textColorHint="#aaaaaa"
                             />
                     </LinearLayout>
@@ -843,7 +843,7 @@
                             android:layout_height="wrap_content"
                             android:layout_weight="2"
                             android:textSize="13dp"
-                            android:hint="VARCHAR(50)"
+                            android:hint="INTEGER"
                             android:textColorHint="#aaaaaa"
                             />
                     </LinearLayout>
@@ -887,7 +887,7 @@
                             android:layout_height="wrap_content"
                             android:layout_weight="2"
                             android:textSize="13dp"
-                            android:hint="VARCHAR(50)"
+                            android:hint="INTEGER"
                             android:textColorHint="#aaaaaa"
                             />
                     </LinearLayout>
@@ -931,7 +931,7 @@
                             android:layout_height="wrap_content"
                             android:layout_weight="2"
                             android:textSize="13dp"
-                            android:hint="VARCHAR(50)"
+                            android:hint="INTEGER"
                             android:textColorHint="#aaaaaa"
                             />
                     </LinearLayout>
@@ -975,7 +975,7 @@
                             android:layout_height="wrap_content"
                             android:layout_weight="2"
                             android:textSize="13dp"
-                            android:hint="VARCHAR(50)"
+                            android:hint="INTEGER"
                             android:textColorHint="#aaaaaa"
                             />
                     </LinearLayout>
@@ -1019,7 +1019,7 @@
                             android:layout_height="wrap_content"
                             android:layout_weight="2"
                             android:textSize="13dp"
-                            android:hint="VARCHAR(50)"
+                            android:hint="INTEGER"
                             android:textColorHint="#aaaaaa"
                             />
                     </LinearLayout>

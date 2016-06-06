@@ -366,15 +366,15 @@ public class DatabaseTestActivity extends AppCompatActivity {
                 myRecordsString += "- record name: " + myRecords.get(i).getRecordName() + "\n";
                 myRecordsString += "- record datetime: " + myRecords.get(i).getRecordDateTime() + "\n";
                 myRecordsString += "- record eq1_id: " + myRecords.get(i).getRecordEq1Id() + "\n";
-                myRecordsString += "- record eq1_goal: " + myRecords.get(i).getRecordEq1Done() + "\n";
+                myRecordsString += "- record eq1_done: " + myRecords.get(i).getRecordEq1Done() + "\n";
                 myRecordsString += "- record eq2_id: " + myRecords.get(i).getRecordEq2Id() + "\n";
-                myRecordsString += "- record eq2_goal: " + myRecords.get(i).getRecordEq2Done() + "\n";
+                myRecordsString += "- record eq2_done: " + myRecords.get(i).getRecordEq2Done() + "\n";
                 myRecordsString += "- record eq3_id: " + myRecords.get(i).getRecordEq3Id() + "\n";
-                myRecordsString += "- record eq3_goal: " + myRecords.get(i).getRecordEq3Done() + "\n";
+                myRecordsString += "- record eq3_done: " + myRecords.get(i).getRecordEq3Done() + "\n";
                 myRecordsString += "- record eq4_id: " + myRecords.get(i).getRecordEq4Id() + "\n";
-                myRecordsString += "- record eq4_goal: " + myRecords.get(i).getRecordEq4Done() + "\n";
+                myRecordsString += "- record eq4_done: " + myRecords.get(i).getRecordEq4Done() + "\n";
                 myRecordsString += "- record eq5_id: " + myRecords.get(i).getRecordEq5Id() + "\n";
-                myRecordsString += "- record eq5_goal: " + myRecords.get(i).getRecordEq5Done() + "\n";
+                myRecordsString += "- record eq5_done: " + myRecords.get(i).getRecordEq5Done() + "\n\n";
             }
             dbtest_tv_myrecord_table.setText(myRecordsString);
         } else {
@@ -487,19 +487,51 @@ public class DatabaseTestActivity extends AppCompatActivity {
 
                 MyRecord tmpMyRecord = new MyRecord();
 
+                int myrecord_eq1_done;
+                int myrecord_eq2_done;
+                int myrecord_eq3_done;
+                int myrecord_eq4_done;
+                int myrecord_eq5_done;
+
                 String myrecord_id = dbtest_et_myrecord_id.getText().toString();
                 String myrecord_name = dbtest_et_myrecord_name.getText().toString();
                 String myrecord_datetime = dbtest_et_myrecord_datetime.getText().toString();
                 String myrecord_eq1_id = dbtest_et_myrecord_eq1_id.getText().toString();
-                int myrecord_eq1_done = Integer.parseInt(dbtest_et_myrecord_eq1_done.getText().toString());
                 String myrecord_eq2_id = dbtest_et_myrecord_eq2_id.getText().toString();
-                int myrecord_eq2_done = Integer.parseInt(dbtest_et_myrecord_eq2_done.getText().toString());
                 String myrecord_eq3_id = dbtest_et_myrecord_eq3_id.getText().toString();
-                int myrecord_eq3_done = Integer.parseInt(dbtest_et_myrecord_eq3_done.getText().toString());
                 String myrecord_eq4_id = dbtest_et_myrecord_eq4_id.getText().toString();
-                int myrecord_eq4_done = Integer.parseInt(dbtest_et_myrecord_eq4_done.getText().toString());
                 String myrecord_eq5_id = dbtest_et_myrecord_eq5_id.getText().toString();
-                int myrecord_eq5_done = Integer.parseInt(dbtest_et_myrecord_eq5_done.getText().toString());
+
+                if (!dbtest_et_myrecord_eq1_done.getText().toString().equals("")) {
+                    myrecord_eq1_done = Integer.parseInt(dbtest_et_myrecord_eq1_done.getText().toString());
+                } else {
+                    myrecord_eq1_done = -1;
+                }
+
+                if (!dbtest_et_myrecord_eq2_done.getText().toString().equals("")) {
+                    myrecord_eq2_done = Integer.parseInt(dbtest_et_myrecord_eq2_done.getText().toString());
+                } else {
+                    myrecord_eq2_done = -1;
+                }
+
+                if (!dbtest_et_myrecord_eq3_done.getText().toString().equals("")) {
+                    myrecord_eq3_done = Integer.parseInt(dbtest_et_myrecord_eq3_done.getText().toString());
+                } else {
+                    myrecord_eq3_done = -1;
+                }
+
+                if (!dbtest_et_myrecord_eq4_done.getText().toString().equals("")) {
+                    myrecord_eq4_done = Integer.parseInt(dbtest_et_myrecord_eq4_done.getText().toString());
+                } else {
+                    myrecord_eq4_done = -1;
+                }
+
+                if (!dbtest_et_myrecord_eq5_done.getText().toString().equals("")) {
+                    myrecord_eq5_done = Integer.parseInt(dbtest_et_myrecord_eq5_done.getText().toString());
+                } else {
+                    myrecord_eq5_done = -1;
+                }
+
 
                 tmpMyRecord.setRecordId(myrecord_id);
                 tmpMyRecord.setRecordName(myrecord_name);

@@ -2,9 +2,11 @@ package com.example.user.wase.view.activity;
 
 import android.graphics.Color;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
@@ -22,6 +24,7 @@ import com.example.user.wase.model.MyInformation;
 public class SettingMyInfoActivity extends AppCompatActivity {
 
     public static final String TAG = "SettingMyInfoActivity";
+    public static final String TAG_DB = "DatabaseTestDBTag";
 
     private Toolbar toolbar;
 
@@ -42,6 +45,9 @@ public class SettingMyInfoActivity extends AppCompatActivity {
     TextView settingMyInfo_tv_deviceid;
 
     Button settingMyInfo_btn_save;
+
+    MyInformation myInformation;
+    String android_id;
 
 
     @Override
@@ -64,7 +70,7 @@ public class SettingMyInfoActivity extends AppCompatActivity {
 
         initWidgets();
 
-
+        initWidgetValues();
     }
 
 
@@ -87,6 +93,49 @@ public class SettingMyInfoActivity extends AppCompatActivity {
 
         settingMyInfo_btn_save = (Button) findViewById(R.id.setting_myinfo_btn_save);
     }
+
+    private void initWidgetValues() {
+        //Image src
+//        String imgSrc_man = "here_character_simple_boy.png";
+//        String imgSrc_man = "here_logo.png";
+
+
+        //Android device id
+        android_id = Settings.Secure.getString(getApplicationContext().getContentResolver(),
+                Settings.Secure.ANDROID_ID);
+
+        String imgSrc_uri_man = "@drawable/here_logo";
+
+        int img_id = getResources().getIdentifier(imgSrc_uri_man, null, getPackageName());
+        settingMyInfo_iv_img.setImageResource(img_id);
+
+        //Toast.makeText(getApplicationContext(), "img_id: " + img_id, Toast.LENGTH_SHORT).show();
+
+        myInformation = MainActivity.hereDB.getMyInformation();
+
+        if (myInformation == null) {
+            Toast.makeText(getApplicationContext(), "There is no my information", Toast.LENGTH_SHORT).show();
+        } else {
+            settingMyInfo_tv_nick.setText(myInformation.getUserNick());
+            settingMyInfo_tv_id.setText(myInformation.getUserId());
+            settingMyInfo_tv_name.setText(myInformation.getUserName());
+
+            settingMyInfo_et_id.setText(myInformation.getUserId());
+            settingMyInfo_et_nick.setText(myInformation.getUserNick());
+            settingMyInfo_et_name.setText(myInformation.getUserName());
+            settingMyInfo_et_age.setText(String.valueOf(myInformation.getUserAge()));
+            settingMyInfo_et_sex.setText(String.valueOf(myInformation.getUserSex()));
+            settingMyInfo_et_height.setText(String.valueOf(myInformation.getUserHeight()));
+            settingMyInfo_et_weight.setText(String.valueOf(myInformation.getUserWeight()));
+
+            settingMyInfo_tv_deviceid.setText(android_id);
+        }
+
+        //Toast.makeText(getApplicationContext(), "android_id: " + android_id, Toast.LENGTH_SHORT).show();
+
+    }
+
+
 
     private void clearEditText() {
         settingMyInfo_et_id.setText("");
@@ -119,20 +168,18 @@ public class SettingMyInfoActivity extends AppCompatActivity {
                 myInfo.setUserSex(userSex);
                 myInfo.setUserHeight(userHeight);
                 myInfo.setUserWeight(userWeight);
+                myInfo.setUserDeviceId(android_id);
 
-                String storedInfo = "";
+                if (MainActivity.hereDB.getMyInformation() != null) {
+                    Log.d(TAG_DB, "[DatabaseTest] User information already exists in DB.");
+                    Log.d(TAG_DB, "[DatabaseTest] User information is updated.");
+                    MainActivity.hereDB.updateMyInformation(myInfo);
+                } else {
+                    Log.d(TAG_DB, "[DatabaseTest] User information is added into DB.");
+                    MainActivity.hereDB.insertMyInformation(myInfo);
+                }
 
-                storedInfo = "USER INFO\n===============\n" +
-                        "- user_id: " + userId + "\n" +
-                        "- user_nick: " + userNick + "\n" +
-                        "- user_name: " + userName + "\n" +
-                        "- user_age: " + userAge + "\n" +
-                        "- user_sex: " + userSex + "\n" +
-                        "- user_height: " + userHeight + "\n" +
-                        "- user_weight: " + userWeight;
-
-                Toast.makeText(getApplicationContext(), storedInfo, Toast.LENGTH_SHORT).show();
-
+                initWidgetValues();
 
                 break;
         }
