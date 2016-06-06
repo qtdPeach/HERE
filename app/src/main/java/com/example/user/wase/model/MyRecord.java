@@ -52,30 +52,30 @@ public class MyRecord {
     String recordName;
     String recordDateTime;
     String recordEq1Id;
-    String recordEq1Done;
+    int recordEq1Done;
     String recordEq2Id;
-    String recordEq2Done;
+    int recordEq2Done;
     String recordEq3Id;
-    String recordEq3Done;
+    int recordEq3Done;
     String recordEq4Id;
-    String recordEq4Done;
+    int recordEq4Done;
     String recordEq5Id;
-    String recordEq5Done;
+    int recordEq5Done;
 
     private void initRecord() {
         recordId = "-1";
         recordName = "-1";
         recordDateTime = "-1";
         recordEq1Id = "-1";
-        recordEq1Done = "-1";
+        recordEq1Done = -1;
         recordEq2Id = "-1";
-        recordEq2Done = "-1";
+        recordEq2Done = -1;
         recordEq3Id = "-1";
-        recordEq3Done = "-1";
+        recordEq3Done = -1;
         recordEq4Id = "-1";
-        recordEq4Done = "-1";
+        recordEq4Done = -1;
         recordEq5Id = "-1";
-        recordEq5Done = "-1";
+        recordEq5Done = -1;
     }
 
     public MyRecord() {
@@ -97,7 +97,7 @@ public class MyRecord {
         this.recordDateTime = recordDateTime;
     }
 
-    public MyRecord(String recordId, String recordName, String recordDateTime, String recordEq1Id, String recordEq1Done) {
+    public MyRecord(String recordId, String recordName, String recordDateTime, String recordEq1Id, int recordEq1Done) {
         initRecord();
 
         this.recordId = recordId;
@@ -107,7 +107,7 @@ public class MyRecord {
         this.recordEq1Done = recordEq1Done;
     }
 
-    public MyRecord(String recordId, String recordName, String recordDateTime, String recordEq1Id, String recordEq1Done, String recordEq2Id, String recordEq2Done) {
+    public MyRecord(String recordId, String recordName, String recordDateTime, String recordEq1Id, int recordEq1Done, String recordEq2Id, int recordEq2Done) {
         initRecord();
 
         this.recordId = recordId;
@@ -119,7 +119,7 @@ public class MyRecord {
         this.recordEq2Done = recordEq2Done;
     }
 
-    public MyRecord(String recordId, String recordName, String recordDateTime, String recordEq1Id, String recordEq1Done, String recordEq2Id, String recordEq2Done, String recordEq3Id, String recordEq3Done) {
+    public MyRecord(String recordId, String recordName, String recordDateTime, String recordEq1Id, int recordEq1Done, String recordEq2Id, int recordEq2Done, String recordEq3Id, int recordEq3Done) {
         initRecord();
 
         this.recordId = recordId;
@@ -133,7 +133,7 @@ public class MyRecord {
         this.recordEq3Done = recordEq3Done;
     }
 
-    public MyRecord(String recordId, String recordName, String recordDateTime, String recordEq1Id, String recordEq1Done, String recordEq2Id, String recordEq2Done, String recordEq3Id, String recordEq3Done, String recordEq4Id, String recordEq4Done) {
+    public MyRecord(String recordId, String recordName, String recordDateTime, String recordEq1Id, int recordEq1Done, String recordEq2Id, int recordEq2Done, String recordEq3Id, int recordEq3Done, String recordEq4Id, int recordEq4Done) {
         initRecord();
 
         this.recordId = recordId;
@@ -149,7 +149,7 @@ public class MyRecord {
         this.recordEq4Done = recordEq4Done;
     }
 
-    public MyRecord(String recordId, String recordName, String recordDateTime, String recordEq1Id, String recordEq1Done, String recordEq2Id, String recordEq2Done, String recordEq3Id, String recordEq3Done, String recordEq4Id, String recordEq4Done, String recordEq5Id, String recordEq5Done) {
+    public MyRecord(String recordId, String recordName, String recordDateTime, String recordEq1Id, int recordEq1Done, String recordEq2Id, int recordEq2Done, String recordEq3Id, int recordEq3Done, String recordEq4Id, int recordEq4Done, String recordEq5Id, int recordEq5Done) {
         initRecord();
 
         this.recordId = recordId;
@@ -199,11 +199,11 @@ public class MyRecord {
         this.recordEq1Id = recordEq1Id;
     }
 
-    public String getRecordEq1Done() {
+    public int getRecordEq1Done() {
         return recordEq1Done;
     }
 
-    public void setRecordEq1Done(String recordEq1Done) {
+    public void setRecordEq1Done(int recordEq1Done) {
         this.recordEq1Done = recordEq1Done;
     }
 
@@ -215,11 +215,11 @@ public class MyRecord {
         this.recordEq2Id = recordEq2Id;
     }
 
-    public String getRecordEq2Done() {
+    public int getRecordEq2Done() {
         return recordEq2Done;
     }
 
-    public void setRecordEq2Done(String recordEq2Done) {
+    public void setRecordEq2Done(int recordEq2Done) {
         this.recordEq2Done = recordEq2Done;
     }
 
@@ -231,11 +231,11 @@ public class MyRecord {
         this.recordEq3Id = recordEq3Id;
     }
 
-    public String getRecordEq3Done() {
+    public int getRecordEq3Done() {
         return recordEq3Done;
     }
 
-    public void setRecordEq3Done(String recordEq3Done) {
+    public void setRecordEq3Done(int recordEq3Done) {
         this.recordEq3Done = recordEq3Done;
     }
 
@@ -247,11 +247,11 @@ public class MyRecord {
         this.recordEq4Id = recordEq4Id;
     }
 
-    public String getRecordEq4Done() {
+    public int getRecordEq4Done() {
         return recordEq4Done;
     }
 
-    public void setRecordEq4Done(String recordEq4Done) {
+    public void setRecordEq4Done(int recordEq4Done) {
         this.recordEq4Done = recordEq4Done;
     }
 
@@ -263,11 +263,11 @@ public class MyRecord {
         this.recordEq5Id = recordEq5Id;
     }
 
-    public String getRecordEq5Done() {
+    public int getRecordEq5Done() {
         return recordEq5Done;
     }
 
-    public void setRecordEq5Done(String recordEq5Done) {
+    public void setRecordEq5Done(int recordEq5Done) {
         this.recordEq5Done = recordEq5Done;
     }
 }

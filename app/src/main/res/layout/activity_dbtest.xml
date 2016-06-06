@@ -411,7 +411,7 @@
 
 
 
-            <!-- MyRecord -->
+            <!-- MyRoutine -->
 
             <TextView
                 android:layout_width="match_parent"
@@ -518,7 +518,7 @@
                             android:layout_height="wrap_content"
                             android:layout_weight="2"
                             android:textSize="13dp"
-                            android:hint="VARCHAR(30)"
+                            android:hint="VARCHAR(30) ex. 3|15|-1"
                             android:textColorHint="#aaaaaa"
                             />
                     </LinearLayout>
@@ -562,7 +562,7 @@
                             android:layout_height="wrap_content"
                             android:layout_weight="2"
                             android:textSize="13dp"
-                            android:hint="VARCHAR(30)"
+                            android:hint="VARCHAR(30) ex. 5|-1|60"
                             android:textColorHint="#aaaaaa"
                             />
                     </LinearLayout>
@@ -606,7 +606,7 @@
                             android:layout_height="wrap_content"
                             android:layout_weight="2"
                             android:textSize="13dp"
-                            android:hint="VARCHAR(30)"
+                            android:hint="VARCHAR(30) ex. 3|15|-1"
                             android:textColorHint="#aaaaaa"
                             />
                     </LinearLayout>
@@ -651,7 +651,7 @@
                             android:layout_height="wrap_content"
                             android:layout_weight="2"
                             android:textSize="13dp"
-                            android:hint="VARCHAR(30)"
+                            android:hint="VARCHAR(30) ex. 3|15|-1"
                             android:textColorHint="#aaaaaa"
                             />
                     </LinearLayout>
@@ -695,7 +695,7 @@
                             android:layout_height="wrap_content"
                             android:layout_weight="2"
                             android:textSize="13dp"
-                            android:hint="VARCHAR(30)"
+                            android:hint="VARCHAR(30) ex. 3|15|-1"
                             android:textColorHint="#aaaaaa"
                             />
                     </LinearLayout>
@@ -773,6 +773,28 @@
                             android:text="myrecord_name: "/>
                         <EditText
                             android:id="@+id/dbtest_edit_myrecord_name"
+                            android:layout_width="0px"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="2"
+                            android:textSize="13dp"
+                            android:hint="VARCHAR(30)"
+                            android:textColorHint="#aaaaaa"
+                            />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:orientation="horizontal"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+                        <TextView
+                            android:layout_width="0px"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:gravity="center|right"
+                            android:textSize="13dp"
+                            android:text="myrecord_datetime: "/>
+                        <EditText
+                            android:id="@+id/dbtest_edit_myrecord_datetime"
                             android:layout_width="0px"
                             android:layout_height="wrap_content"
                             android:layout_weight="2"
