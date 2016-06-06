@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 
@@ -67,6 +68,31 @@ public class MyRoutinesActivity extends AppCompatActivity {
     public void mOnClick(View v) {
         switch (v.getId()) {
             case R.id.setting_myroutine_btn_newroutine:
+                LayoutInflater inflater = getLayoutInflater();
+
+                final View dialogView = inflater.inflate(R.layout.dialog_routine, null);
+
+                AlertDialog.Builder builder = new AlertDialog.Builder(this);
+                builder.setTitle("New Routine");
+                builder.setIcon(R.drawable.nav_icon_myroutines);
+                builder.setView(dialogView);
+                builder.setPositiveButton("Save", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+
+                    }
+                });
+                builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+
+                    }
+                });
+
+                AlertDialog dialog = builder.create();
+                dialog.setCanceledOnTouchOutside(false);
+                dialog.show();
+
                 break;
             case R.id.setting_myroutine_btn_modifyroutine:
                 break;

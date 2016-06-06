@@ -17,15 +17,15 @@
         <menu>
             <item
                 android:id="@+id/nav_myequipments"
-                android:icon="@drawable/ic_menu_share"
+                android:icon="@drawable/nav_icon_myagents"
                 android:title="내 운동 기구 관리" />
             <item
                 android:id="@+id/nav_myroutine"
-                android:icon="@drawable/ic_menu_share"
+                android:icon="@drawable/nav_icon_myroutines"
                 android:title="내 운동 루틴 관리" />
             <item
                 android:id="@+id/nav_myrecord"
-                android:icon="@drawable/ic_menu_share"
+                android:icon="@drawable/nav_icon_myrecords"
                 android:title="내 운동 기록 관리" />
         </menu>
     </item>
@@ -43,7 +43,7 @@
         <menu>
             <item
                 android:id="@+id/nav_mng_myinfo"
-                android:icon="@drawable/ic_menu_share"
+                android:icon="@drawable/nav_icon_setting_myinfo"
                 android:title="내 정보 관리" />
             <item
                 android:id="@+id/nav_mng_appsetting"
@@ -55,11 +55,11 @@
         <menu>
             <item
                 android:id="@+id/nav_mng_showhelp"
-                android:icon="@drawable/ic_menu_share"
+                android:icon="@drawable/nav_icon_info_help"
                 android:title="도움말" />
             <item
                 android:id="@+id/nav_mng_showappinfo"
-                android:icon="@drawable/ic_menu_share"
+                android:icon="@drawable/nav_icon_info_appinfo"
                 android:title="어플리케이션 정보" />
         </menu>
     </item>

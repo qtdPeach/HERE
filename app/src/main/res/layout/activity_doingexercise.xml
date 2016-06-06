@@ -1,0 +1,215 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:background="@color/colorSkyBlue"
+    android:gravity="center"
+    android:paddingBottom="5dp"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <ImageView
+        android:id="@+id/doingexercise_btn_back"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@mipmap/ic_menu_arrow_back"
+        android:layout_margin="15dp"
+        android:layout_gravity="left"
+        android:onClick="mOnClick"
+        />
+
+    <LinearLayout
+        android:id="@+id/doingexercise_layout_title"
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingLeft="15dp"
+        android:paddingRight="15dp">
+
+        <ImageView
+            android:id="@+id/doingexercise_iv_current_eq"
+            android:layout_width="75dp"
+            android:layout_height="75dp"
+            android:layout_gravity="center_vertical"
+            android:src="@drawable/eq_01_dumbbell" />
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+
+            <LinearLayout
+                android:orientation="vertical"
+                android:layout_width="0px"
+                android:layout_height="wrap_content"
+                android:layout_weight="7"
+                android:layout_gravity="center_vertical|left"
+                android:paddingBottom="5dp"
+                android:paddingLeft="10dp">
+
+                <TextView
+                    android:id="@+id/doingexercise_tv_eq_order"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="First Exercise"
+                    android:textColor="#dddddd"
+                    />
+
+                <TextView
+                    android:id="@+id/doingexercise_tv_eq_name"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="이두박근 아령"
+                    android:textSize="19dp"
+                    android:textColor="#ffffff"
+                    android:textStyle="bold"/>
+
+                <TextView
+                    android:id="@+id/doingexercise_tv_eq_goal"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textSize="16dp"
+                    android:text="10개씩 8세트"
+                    android:textColor="#ffffff"
+                    />
+
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/doingexercise_tv_eq_count"
+                android:layout_width="0px"
+                android:layout_height="wrap_content"
+                android:layout_weight="3"
+                android:textSize="45dp"
+                android:text="157"
+                android:textColor="#ffffff"
+                android:layout_gravity="center_vertical|right"
+                android:gravity="right"
+                />
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingTop="15dp"
+        android:paddingLeft="10dp"
+        android:paddingRight="10dp"
+        android:paddingBottom="15dp"
+        android:background="#ffffffff"
+        >
+
+        <ViewFlipper
+            android:id = "@+id/flipper"
+            android:paddingLeft="15dp"
+            android:paddingRight="15dp"
+            android:layout_width="match_parent"
+            android:layout_height="200dp"
+            android:layout_marginBottom="10dp">
+
+            <com.jjoe64.graphview.GraphView
+                android:id="@+id/graphX"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"/>
+            <com.jjoe64.graphview.GraphView
+                android:id="@+id/graphY"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"/>
+
+        </ViewFlipper>
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingLeft="10dp"
+            android:paddingRight="10dp"
+            android:layout_marginBottom="5dp">
+
+            <TextView
+                android:layout_width="0px"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="left|center_vertical"
+                android:textSize="16dp"
+                android:text="State"
+                android:textColor="#222222"
+                android:id="@+id/state" />
+
+            <LinearLayout
+                android:layout_width="0px"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="right|center_vertical"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="16dp"
+                    android:text="Sampling Rate: "
+                    android:textColor="#222222"
+                    android:layout_gravity="center_horizontal" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="16dp"
+                    android:text="0"
+                    android:textColor="#222222"
+                    android:id="@+id/sampling_rate" />
+            </LinearLayout>
+
+        </LinearLayout>
+
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="80dp"
+            android:inputType="textMultiLine"
+            android:background="#eeeeee"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:textSize="10dp"
+            android:id="@+id/rawData"
+            android:editable="false"
+            android:focusable="false"/>
+
+        <!--<TextView-->
+        <!--android:id="@+id/startexercise_tv_myroutine"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:text="운동중인 화면\nDataViewTerminal"-->
+        <!--android:textColor="#ffffff"-->
+        <!--android:textSize="18dp"-->
+        <!--android:textStyle="bold"-->
+        <!--android:gravity="center_horizontal"/>-->
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_gravity="bottom"
+        android:paddingTop="10dp"
+        android:paddingLeft="10dp"
+        android:paddingRight="10dp">
+
+        <Button
+            android:id="@+id/doingexercise_btn_skipgonext"
+            android:layout_width="0px"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_margin="3dp"
+            android:padding="10dp"
+            android:textSize="23dp"
+            android:textColor="@color/colorSkyBlue"
+            android:text="Skip this!"
+            android:onClick="mOnClick"/>
+
+    </LinearLayout>
+
+</LinearLayout>

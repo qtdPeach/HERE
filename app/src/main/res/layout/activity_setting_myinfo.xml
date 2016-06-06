@@ -29,14 +29,14 @@
 
                 <ImageView
                     android:id="@+id/setting_myinfo_iv_character"
-                    android:layout_width="130dp"
-                    android:layout_height="130dp"
+                    android:layout_width="150dp"
+                    android:layout_height="150dp"
                     android:src="@drawable/here_logo_character"/>
 
                 <LinearLayout
                     android:orientation="vertical"
                     android:gravity="bottom|left"
-                    android:layout_marginBottom="10dp"
+                    android:layout_marginBottom="5dp"
                     android:paddingLeft="8dp"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent">
@@ -343,10 +343,10 @@
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="20dp"
                 android:layout_margin="10dp"
-                android:textColor="@color/colorAccent"
+                android:textColor="@color/colorSkyBlue"
                 android:textSize="20dp"
                 android:onClick="mOnClick"
-                android:text="SAVE"/>
+                android:text="Save/Update"/>
 
         </LinearLayout>
 

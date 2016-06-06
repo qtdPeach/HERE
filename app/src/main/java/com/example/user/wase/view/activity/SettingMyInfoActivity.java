@@ -104,10 +104,12 @@ public class SettingMyInfoActivity extends AppCompatActivity {
         android_id = Settings.Secure.getString(getApplicationContext().getContentResolver(),
                 Settings.Secure.ANDROID_ID);
 
-        String imgSrc_uri_man = "@drawable/here_logo";
+        String imgSrc_uri_man = "@drawable/here_character_simple_boy";
+        String imgSrc_uri_woman = "@drawable/here_character_simple_girl";
 
-        int img_id = getResources().getIdentifier(imgSrc_uri_man, null, getPackageName());
-        settingMyInfo_iv_img.setImageResource(img_id);
+        int img_id_man = getResources().getIdentifier(imgSrc_uri_man, null, getPackageName());
+        int img_id_woman = getResources().getIdentifier(imgSrc_uri_woman, null, getPackageName());
+
 
         //Toast.makeText(getApplicationContext(), "img_id: " + img_id, Toast.LENGTH_SHORT).show();
 
@@ -115,6 +117,7 @@ public class SettingMyInfoActivity extends AppCompatActivity {
 
         if (myInformation == null) {
             Toast.makeText(getApplicationContext(), "There is no my information", Toast.LENGTH_SHORT).show();
+            settingMyInfo_iv_img.setImageResource(img_id_man);
         } else {
             settingMyInfo_tv_nick.setText(myInformation.getUserNick());
             settingMyInfo_tv_id.setText(myInformation.getUserId());
@@ -130,6 +133,12 @@ public class SettingMyInfoActivity extends AppCompatActivity {
             settingMyInfo_et_weight.setText(String.valueOf(myInformation.getUserWeight()));
 
             settingMyInfo_tv_deviceid.setText(android_id);
+
+            if (myInformation.getUserSex() == 2) {
+                settingMyInfo_iv_img.setImageResource(img_id_woman);
+            } else {
+                settingMyInfo_iv_img.setImageResource(img_id_man);
+            }
         }
 
         //Toast.makeText(getApplicationContext(), "android_id: " + android_id, Toast.LENGTH_SHORT).show();

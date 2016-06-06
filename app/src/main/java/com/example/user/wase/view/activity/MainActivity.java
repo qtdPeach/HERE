@@ -24,8 +24,13 @@ import com.example.user.wase.controller.PagerAdapter;
 import com.example.user.wase.device.BluetoothComm;
 import com.example.user.wase.device.WorkoutRecord;
 import com.example.user.wase.device.WorkoutRecords;
+import com.example.user.wase.model.MyHereAgent;
+import com.example.user.wase.model.MyRecord;
+import com.example.user.wase.model.MyRoutine;
 import com.example.user.wase.utility.DatabaseHelper;
 import com.example.user.wase.view.fragment.SupportHelpFragment;
+
+import java.util.ArrayList;
 
 
 public class MainActivity extends AppCompatActivity
@@ -35,6 +40,12 @@ public class MainActivity extends AppCompatActivity
     private static final String TAG_DB = "MainActivityDBTag";
 
     public static DatabaseHelper hereDB;
+
+    //Global variables
+    public static ArrayList<MyHereAgent> myConnectedAgents; //My connected agents
+    public static MyHereAgent mySelectedAgent;              //My currently selected agent
+    public static MyRoutine mySelectedRoutine;              //My currently selected routine
+    public static MyRecord myTodayRecord;                   //My today's record (start-end)
 
     private TabLayout tabLayout;
     private ViewPager viewPager;
@@ -96,8 +107,13 @@ public class MainActivity extends AppCompatActivity
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
+//                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
+//                        .setAction("Action", null).show();
+
+                Toast.makeText(getApplicationContext(), "START EXERCISE", Toast.LENGTH_SHORT).show();
+
+                Intent intent_startexercise = new Intent(getApplicationContext(), StartExerciseActivity.class);
+                startActivity(intent_startexercise);
             }
         });
 
