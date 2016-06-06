@@ -144,8 +144,8 @@ public class BluetoothLeService extends Service {
                 idx = buffer.indexOf("\r\n");
 
                 if(idx >= 0){
-                    packet = buffer.substring(0, idx+1);
-                    buffer = buffer.delete(0,idx+1);
+                    packet = buffer.substring(0, idx);
+                    buffer = buffer.delete(0,idx+2);
                     if(packet != null) {
                         // getting cut off when longer, need to push on new line, 0A
                         //intent.putExtra(EXTRA_DATA, String.format("%s", new String(data)));
