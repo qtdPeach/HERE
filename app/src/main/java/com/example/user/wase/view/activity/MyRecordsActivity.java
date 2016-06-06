@@ -28,7 +28,7 @@ public class MyRecordsActivity extends AppCompatActivity {
 
         toolbar = (Toolbar) findViewById(R.id.toolbar);
 
-        toolbar.setTitle("내 운동 기록");
+        toolbar.setTitle("My Exercise Records");
         toolbar.setNavigationIcon(R.mipmap.ic_menu_arrow_back);
         toolbar.setTitleTextColor(Color.WHITE);
 
@@ -36,7 +36,7 @@ public class MyRecordsActivity extends AppCompatActivity {
 
         final ActionBar actionBar = getSupportActionBar();
 
-        actionBar.setTitle("내 운동 기록");
+        actionBar.setTitle("My Exercise Records");
         actionBar.setDefaultDisplayHomeAsUpEnabled(true);
     }
 
