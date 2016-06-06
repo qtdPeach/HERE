@@ -121,6 +121,7 @@ public class SettingMyInfoActivity extends AppCompatActivity {
             settingMyInfo_tv_name.setText(myInformation.getUserName());
 
             settingMyInfo_et_id.setText(myInformation.getUserId());
+            settingMyInfo_et_id.setEnabled(false);
             settingMyInfo_et_nick.setText(myInformation.getUserNick());
             settingMyInfo_et_name.setText(myInformation.getUserName());
             settingMyInfo_et_age.setText(String.valueOf(myInformation.getUserAge()));
@@ -153,13 +154,40 @@ public class SettingMyInfoActivity extends AppCompatActivity {
             case R.id.setting_myinfo_btn_save:
                 MyInformation myInfo = new MyInformation();
 
+                //TODO: Integer.parseInt에서 "" 처리
                 String userId = settingMyInfo_et_id.getText().toString();
                 String userNick = settingMyInfo_et_nick.getText().toString();
                 String userName = settingMyInfo_et_name.getText().toString();
-                int userAge = Integer.parseInt(settingMyInfo_et_age.getText().toString());
-                int userSex = Integer.parseInt(settingMyInfo_et_sex.getText().toString());
-                int userHeight = Integer.parseInt(settingMyInfo_et_height.getText().toString());
-                int userWeight = Integer.parseInt(settingMyInfo_et_weight.getText().toString());
+
+                int userAge;
+                int userSex;
+                int userHeight;
+                int userWeight;
+
+                if (!settingMyInfo_et_age.getText().toString().equals("")) {
+                    userAge = Integer.parseInt(settingMyInfo_et_age.getText().toString());
+                } else {
+                    userAge = 20;
+                }
+
+                if (!settingMyInfo_et_sex.getText().toString().equals("")) {
+                    userSex = Integer.parseInt(settingMyInfo_et_sex.getText().toString());
+                } else {
+                    userSex = 1;
+                }
+
+                if (!settingMyInfo_et_height.getText().toString().equals("")) {
+                    userHeight = Integer.parseInt(settingMyInfo_et_height.getText().toString());
+                } else {
+                    userHeight = 170;
+                }
+
+                if (!settingMyInfo_et_weight.getText().toString().equals("")) {
+                    userWeight = Integer.parseInt(settingMyInfo_et_weight.getText().toString());
+                } else {
+                    userWeight = 65;
+                }
+
 
                 myInfo.setUserId(userId);
                 myInfo.setUserNick(userNick);
@@ -168,8 +196,10 @@ public class SettingMyInfoActivity extends AppCompatActivity {
                 myInfo.setUserSex(userSex);
                 myInfo.setUserHeight(userHeight);
                 myInfo.setUserWeight(userWeight);
+                myInfo.setUserRegistered(1);
                 myInfo.setUserDeviceId(android_id);
 
+                //Update database
                 if (MainActivity.hereDB.getMyInformation() != null) {
                     Log.d(TAG_DB, "[DatabaseTest] User information already exists in DB.");
                     Log.d(TAG_DB, "[DatabaseTest] User information is updated.");
@@ -179,7 +209,11 @@ public class SettingMyInfoActivity extends AppCompatActivity {
                     MainActivity.hereDB.insertMyInformation(myInfo);
                 }
 
+
                 initWidgetValues();
+
+                Toast.makeText(getApplicationContext(), "My information is updated.", Toast.LENGTH_SHORT).show();
+
 
                 break;
         }

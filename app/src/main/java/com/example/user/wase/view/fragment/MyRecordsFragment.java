@@ -27,6 +27,7 @@ import com.jjoe64.graphview.helper.StaticLabelsFormatter;
 import com.jjoe64.graphview.series.DataPoint;
 import com.jjoe64.graphview.GraphView;
 import com.jjoe64.graphview.series.BarGraphSeries;
+import com.jjoe64.graphview.series.LineGraphSeries;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -103,15 +104,15 @@ public class MyRecordsFragment extends Fragment{
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 
-                final Equipment device = equipmentList.get(position);
-                if (device == null) return;
-                final Intent intent = new Intent(getActivity(), EquipmentRecordTerminal.class);
-
-                //deliver data --> should be modified
-                intent.putExtra(EquipmentRecordTerminal.EXTRAS_DEVICE_NAME, device.getEquipmentName());
-                intent.putExtra(EquipmentRecordTerminal.EXTRAS_DEVICE_RECORD, device.getEquipmentID());
-
-                startActivity(intent);
+//                final Equipment device = equipmentList.get(position);
+//                if (device == null) return;
+//                final Intent intent = new Intent(getActivity(), EquipmentRecordTerminal.class);
+//
+//                //deliver data --> should be modified
+//                intent.putExtra(EquipmentRecordTerminal.EXTRAS_DEVICE_NAME, device.getEquipmentName());
+//                intent.putExtra(EquipmentRecordTerminal.EXTRAS_DEVICE_RECORD, device.getEquipmentID());
+//
+//                startActivity(intent);
             }
         });
 
@@ -176,15 +177,38 @@ public class MyRecordsFragment extends Fragment{
             // General ListView optimization code.
             if (view == null) {
                 int res = 0;
-                res = R.layout.listitem_equipment;
+                res = R.layout.fragment_myrecord_item;
                 view = mInflator.inflate(res, viewGroup, false);
 
             }
 
-            ImageView eqTypeImage = (ImageView)view.findViewById(R.id.equiplist_img);
-            TextView eqName = (TextView)view.findViewById(R.id.equiplist_name);
-            TextView eqId = (TextView)view.findViewById(R.id.equiplist_id);
-            TextView eqSensorId = (TextView)view.findViewById(R.id.equiplist_sensorid);
+            ImageView eqTypeImage = (ImageView)view.findViewById(R.id.equipment_img);
+            TextView eqName = (TextView)view.findViewById(R.id.equipment_name);
+            GraphView gvLinear = (GraphView) view.findViewById(R.id.weekly_linear_graph);
+            Calendar calendar = Calendar.getInstance();
+
+            List<Double> workoutData = new ArrayList<Double>();
+
+            //here to input data from DB
+            workoutData.add(300.0);workoutData.add(500.0);workoutData.add(100.0);workoutData.add(300.0);workoutData.add(800.0);workoutData.add(400.0);workoutData.add(700.0);
+
+            LineGraphSeries<DataPoint> series = new LineGraphSeries<DataPoint>(new DataPoint[] {new DataPoint(1,workoutData.get(0)),
+                    new DataPoint(2,workoutData.get(1)),
+                    new DataPoint(3,workoutData.get(2)),
+                    new DataPoint(4,workoutData.get(3)),
+                    new DataPoint(5,workoutData.get(4)),
+                    new DataPoint(6,workoutData.get(5)),
+                    new DataPoint(7,workoutData.get(6))});
+
+            StaticLabelsFormatter staticLabelsFormatter = new StaticLabelsFormatter(gvLinear);
+            staticLabelsFormatter.setHorizontalLabels(new String[] {getDay(calendar.get(Calendar.DAY_OF_WEEK)-6), getDay(calendar.get(Calendar.DAY_OF_WEEK)-5), getDay(calendar.get(Calendar.DAY_OF_WEEK)-4), getDay(calendar.get(Calendar.DAY_OF_WEEK)-3), getDay(calendar.get(Calendar.DAY_OF_WEEK)-2), getDay(calendar.get(Calendar.DAY_OF_WEEK)-1), getDay(calendar.get(Calendar.DAY_OF_WEEK))});
+            gvLinear.getGridLabelRenderer().setLabelFormatter(staticLabelsFormatter);
+
+            series.setDrawDataPoints(true);
+            series.setColor(Color.rgb(135, 206, 235));
+            series.setDataPointsRadius(5);
+            series.setThickness(4);
+            gvLinear.addSeries(series);
 
             switch (equipmentList.get(i).getEquipmentType()) {
                 case 0:
@@ -203,9 +227,6 @@ public class MyRecordsFragment extends Fragment{
             }
 
             eqName.setText(equipmentList.get(i).getEquipmentName());
-            eqId.setText(equipmentList.get(i).getEquipmentID());
-            eqSensorId.setText(equipmentList.get(i).getEquipmentSensorID());
-
             return view;
         }
     }
