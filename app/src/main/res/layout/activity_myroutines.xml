@@ -67,11 +67,6 @@
 
         </LinearLayout>
 
-        <ListView
-            android:id="@+id/setting_myroutine_list_myroutines"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"></ListView>
-
         <TextView
             android:id="@+id/setting_myroutine_tv_myroutines"
             android:layout_width="match_parent"
@@ -94,5 +89,10 @@
         android:textColor="#ffffff"
         android:textStyle="bold"
         android:text="My HERE Agents"/>
+
+    <ListView
+        android:id="@+id/setting_myroutine_list_myroutines"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"></ListView>
 
 </LinearLayout>
