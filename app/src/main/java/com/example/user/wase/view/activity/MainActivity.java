@@ -43,9 +43,9 @@ public class MainActivity extends AppCompatActivity
 
     //Global variables
     public static ArrayList<MyHereAgent> myConnectedAgents; //My connected agents
-    public static MyHereAgent mySelectedAgent;              //My currently selected agent
+    public static MyHereAgent mySelectedAgent;              //My currently selected agent (exercising)
     public static MyRoutine mySelectedRoutine;              //My currently selected routine
-    public static MyRecord myTodayRecord;                   //My today's record (start-end)
+    public static MyRecord myCurrentRecord;                   //My today's record (start-end)
 
     private TabLayout tabLayout;
     private ViewPager viewPager;
@@ -107,7 +107,7 @@ public class MainActivity extends AppCompatActivity
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-//                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
+//                Snackbar.make(view, "Please select your routine first", Snackbar.LENGTH_LONG)
 //                        .setAction("Action", null).show();
 
                 Toast.makeText(getApplicationContext(), "START EXERCISE", Toast.LENGTH_SHORT).show();

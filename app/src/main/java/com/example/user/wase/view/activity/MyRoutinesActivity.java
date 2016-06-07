@@ -143,7 +143,11 @@ public class MyRoutinesActivity extends AppCompatActivity {
 
         @Override
         public int getCount() {
-            return currentAgents.size();
+            if (currentAgents != null) {
+                return currentAgents.size();
+            } else {
+                return 0;
+            }
         }
 
         @Override

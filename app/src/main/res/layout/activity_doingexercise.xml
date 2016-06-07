@@ -7,15 +7,34 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <ImageView
-        android:id="@+id/doingexercise_btn_back"
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:src="@mipmap/ic_menu_arrow_back"
-        android:layout_margin="15dp"
-        android:layout_gravity="left"
-        android:onClick="mOnClick"
-        />
+        android:layout_marginTop="15dp">
+
+        <ImageView
+            android:id="@+id/doingexercise_btn_back"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@mipmap/ic_menu_arrow_back"
+            android:layout_margin="15dp"
+            android:layout_gravity="left"
+            android:onClick="mOnClick"
+            />
+
+        <TextView
+            android:id="@+id/doingexercise_tv_timer"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="15dp"
+            android:textSize="18dp"
+            android:text="00:00"
+            android:gravity="right|bottom"
+            android:textColor="#ffffff"/>
+
+    </LinearLayout>
+
 
     <LinearLayout
         android:id="@+id/doingexercise_layout_title"
