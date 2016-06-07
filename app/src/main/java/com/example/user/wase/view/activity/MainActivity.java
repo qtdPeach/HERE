@@ -112,7 +112,21 @@ public class MainActivity extends AppCompatActivity
 
                 Toast.makeText(getApplicationContext(), "START EXERCISE", Toast.LENGTH_SHORT).show();
 
+                //TODO: 현재는 데이터베이스에서 생성하지 않고, 임시 객체(MyRoutine) 생성하여 보냄
+                //MyRoutine is serializable
+                MyRoutine selectedTmpRoutine = new MyRoutine();
+                selectedTmpRoutine.setRoutineId("ROUTINE01");
+                selectedTmpRoutine.setRoutineName("아령푸쉬업훌라후프");
+                selectedTmpRoutine.setRoutineEq1Id("11:22:33:44:55:66");
+                selectedTmpRoutine.setRoutineEq1Goal("3|15|-1");
+                selectedTmpRoutine.setRoutineEq2Id("22:33:44:55:66:77");
+                selectedTmpRoutine.setRoutineEq2Goal("2|20|-1");
+                selectedTmpRoutine.setRoutineEq3Id("33:44:55:66:77:88");
+                selectedTmpRoutine.setRoutineEq3Goal("5|-1|60");
+
+                //Send a selected routine by serializing MyRoutine object
                 Intent intent_startexercise = new Intent(getApplicationContext(), StartExerciseActivity.class);
+                intent_startexercise.putExtra("selectedRoutine", selectedTmpRoutine);
                 startActivity(intent_startexercise);
             }
         });

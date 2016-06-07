@@ -1,11 +1,12 @@
 package com.example.user.wase.model;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
 /**
  * Created by user on 2016-04-18.
  */
-public class MyRoutine {
+public class MyRoutine implements Serializable{
 
     /* myroutines table */
     /*

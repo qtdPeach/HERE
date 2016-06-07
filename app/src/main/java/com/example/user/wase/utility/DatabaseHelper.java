@@ -369,7 +369,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getReadableDatabase();
 
         String selectQuery = "SELECT * FROM " + TABLE_MYHEREAGENTS +
-                " WHERE " + ATTR_MYEQ_MACID + " = " + myeqMacId;
+                " WHERE " + ATTR_MYEQ_MACID + " = '" + myeqMacId + "'";
 
         Cursor c = db.rawQuery(selectQuery, null);
 
@@ -389,8 +389,28 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             return null;
         }
 
+    }
 
+    /**
+     * Get the device name using its mac_id
+     * @param MacId Mac ID of stored arduino agents
+     * @return      Device name (that was set by a user) of the corresponding agent
+     */
+    public String getAgentNameByMacId(String MacId) {
+        SQLiteDatabase db = this.getReadableDatabase();
 
+        String selectQuery = "SELECT " + ATTR_MYEQ_NAME + " FROM " + TABLE_MYHEREAGENTS +
+                " WHERE " + ATTR_MYEQ_MACID + " = '" + MacId +"'";
+
+        Cursor c = db.rawQuery(selectQuery, null);
+
+        if (c != null && c.getCount() != 0) {
+            c.moveToFirst();
+
+            return c.getString(c.getColumnIndex(ATTR_MYEQ_NAME));
+        } else {
+            return null;
+        }
     }
 
     /**
@@ -506,7 +526,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getReadableDatabase();
 
         String selectQuery = "SELECT * FROM " + TABLE_MYROUTINES +
-                " WHERE " + ATTR_MYROUTINE_ID + " = " + myroutineId;
+                " WHERE " + ATTR_MYROUTINE_ID + " = '" + myroutineId + "'";
 
         Cursor c = db.rawQuery(selectQuery, null);
 
@@ -683,7 +703,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getReadableDatabase();
 
         String selectQuery = "SELECT * FROM " + TABLE_MYRECORDS +
-                " WHERE " + ATTR_MYRECORD_ID + " = " + myrecordId;
+                " WHERE " + ATTR_MYRECORD_ID + " = '" + myrecordId + "'";
 
         Cursor c = db.rawQuery(selectQuery, null);
 
