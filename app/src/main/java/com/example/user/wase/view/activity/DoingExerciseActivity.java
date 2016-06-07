@@ -9,6 +9,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -23,9 +24,19 @@ import java.util.TimerTask;
  */
 public class DoingExerciseActivity extends AppCompatActivity {
 
-    ImageView startexercise_iv_start;
+    LinearLayout layout_whole;
 
     TextView tv_timer;
+
+    LinearLayout layout_title;
+    ImageView iv_current_eq;
+    TextView tv_eq_order;
+    TextView tv_eq_name;
+    TextView tv_eq_goal;
+    TextView tv_eq_count;
+
+
+    int countCurrentEq;
 
     TaskScheduler timer;
     boolean isTimerRunning;
@@ -38,23 +49,29 @@ public class DoingExerciseActivity extends AppCompatActivity {
 
         StartExerciseActivity.thisActivity.finish();
 
-        isTimerRunning = true;
-        elapsedTime = 0;
-
         initWidgets();
 
 
         timer = new TaskScheduler();
         timer.scheduleAtFixedRate(increaseTimer, 1000);
-//        new Runnable() {
-//            @Override
-//            public void run() {
-//                tv_timer.setText(secondToTimerString(elapsedTime));
-//                elapsedTime ++;
-//            }
-//        }, 1000);
 
-        //startTimer();
+    }
+
+    private void initWidgets() {
+        isTimerRunning = true;
+        elapsedTime = 0;
+        countCurrentEq = 0;
+
+        layout_whole = (LinearLayout) findViewById(R.id.doingexercise_layout_whole);
+        layout_title = (LinearLayout) findViewById(R.id.doingexercise_layout_title);
+
+        tv_timer = (TextView) findViewById(R.id.doingexercise_tv_timer);
+
+        iv_current_eq = (ImageView) findViewById(R.id.doingexercise_iv_current_eq);
+        tv_eq_order = (TextView) findViewById(R.id.doingexercise_tv_eq_order);
+        tv_eq_name = (TextView) findViewById(R.id.doingexercise_tv_eq_name);
+        tv_eq_goal = (TextView) findViewById(R.id.doingexercise_tv_eq_goal);
+        tv_eq_count = (TextView) findViewById(R.id.doingexercise_tv_eq_count);
 
     }
 
@@ -68,10 +85,7 @@ public class DoingExerciseActivity extends AppCompatActivity {
         return timerString;
     }
 
-    private void initWidgets() {
-        tv_timer = (TextView) findViewById(R.id.doingexercise_tv_timer);
 
-    }
 
     private Runnable increaseTimer = new Runnable() {
         @Override
@@ -83,32 +97,13 @@ public class DoingExerciseActivity extends AppCompatActivity {
         }
     };
 
-//    private void startTimer() {
-//        isTimerRunning = true;
-//        timer = new Timer();
-//        timer.schedule(new TimerTask() {
-//            @Override
-//            public void run() {
-//                TimerMethod();
-//            }
-//        },0, 1000);
-//    }
-//
-//    private void TimerMethod() {
-//        this.runOnUiThread(Timer_Tick);
-//    }
-//
-//    private Runnable Timer_Tick = new Runnable() {
-//        @Override
-//        public void run() {
-//            //Do something to the UI thread here
-//            doingexercise_tv_timer.setText(elapsedTime);
-//        }
-//    };
-
 
     private void initializeRecord() {
+        countCurrentEq = 0;
+        elapsedTime = 0;
 
+        //Restart exercising -> Run timer
+        isTimerRunning = true;
     }
 
     public void mOnClick(View v) {

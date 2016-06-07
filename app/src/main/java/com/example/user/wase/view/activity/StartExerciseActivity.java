@@ -2,6 +2,7 @@ package com.example.user.wase.view.activity;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.graphics.Color;
 import android.graphics.drawable.AnimationDrawable;
 import android.os.Bundle;
 import android.os.Handler;
@@ -26,6 +27,7 @@ public class StartExerciseActivity extends AppCompatActivity {
     MyRoutine selectedRoutine;
 
     public static Activity thisActivity;
+    ImageView startexercise_iv_girl;
     ImageView startexercise_iv_start;
 
     TextView tv_routine_name;
@@ -62,18 +64,20 @@ public class StartExerciseActivity extends AppCompatActivity {
 
         thisActivity = this;
 
+        startexercise_iv_girl = (ImageView) findViewById(R.id.startexercise_iv_girl);
         startexercise_iv_start = (ImageView) findViewById(R.id.startexercise_iv_start);
 
+        //For animation + activity transition
         startexercise_iv_start.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
-                startexercise_iv_start.setImageResource(R.drawable.start_exercise_anim);
+                startexercise_iv_girl.setImageResource(R.drawable.start_exercise_girl_anim);
 
                 Handler mHandler = new Handler();
                 mHandler.postDelayed(new Runnable() {
                     @Override
                     public void run() {
-                        startexercise_iv_start.setImageResource(R.drawable.start_exercise);
+                        startexercise_iv_girl.setImageResource(R.drawable.start_exercise_girl);
                         try {
                             Thread.sleep(100);
 
@@ -93,6 +97,7 @@ public class StartExerciseActivity extends AppCompatActivity {
 
 
     private void initWidgets() {
+
         tv_routine_name = (TextView) findViewById(R.id.startexercise_tv_myroutine);
         tv_routine_eq1 = (TextView) findViewById(R.id.startexercise_tv_eq1);
         tv_routine_eq2 = (TextView) findViewById(R.id.startexercise_tv_eq2);
@@ -122,27 +127,47 @@ public class StartExerciseActivity extends AppCompatActivity {
 
             if (!routine_eq1_id.equals("-1")) {
                 String routine_eq1_name = MainActivity.hereDB.getAgentNameByMacId(routine_eq1_id);
-                eq1String = routine_eq1_name;
+                if (routine_eq1_name != null) {
+                    eq1String = routine_eq1_name;
+                } else {
+                    eq1String = "DB failed";
+                }
             }
 
             if (!routine_eq2_id.equals("-1")) {
                 String routine_eq2_name = MainActivity.hereDB.getAgentNameByMacId(routine_eq2_id);
-                eq2String = routine_eq2_name;
+                if (routine_eq2_name != null) {
+                    eq2String = routine_eq2_name;
+                }else {
+                    eq2String = "DB failed";
+                }
             }
 
             if (!routine_eq3_id.equals("-1")) {
                 String routine_eq3_name = MainActivity.hereDB.getAgentNameByMacId(routine_eq3_id);
-                eq3String = routine_eq3_name;
+                if (routine_eq3_name != null) {
+                    eq3String = routine_eq3_name;
+                }else {
+                    eq3String = "DB failed";
+                }
             }
 
             if (!routine_eq4_id.equals("-1")) {
                 String routine_eq4_name = MainActivity.hereDB.getAgentNameByMacId(routine_eq4_id);
-                eq4String = routine_eq4_name;
+                if (routine_eq4_name != null) {
+                    eq4String = routine_eq4_name;
+                }else {
+                    eq4String = "DB failed";
+                }
             }
 
             if (!routine_eq5_id.equals("-1")) {
                 String routine_eq5_name = MainActivity.hereDB.getAgentNameByMacId(routine_eq5_id);
-                eq5String = routine_eq5_name;
+                if (routine_eq5_name != null) {
+                    eq5String = routine_eq5_name;
+                }else {
+                    eq5String = "DB failed";
+                }
             }
 
 
@@ -169,6 +194,8 @@ public class StartExerciseActivity extends AppCompatActivity {
             }
 
 
+        } else {
+            tv_routine_name.setText("There is no received routine.");
         }
     }
 
