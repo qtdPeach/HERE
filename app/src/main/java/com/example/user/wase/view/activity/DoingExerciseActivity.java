@@ -1,7 +1,9 @@
 package com.example.user.wase.view.activity;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -23,6 +25,8 @@ import java.util.TimerTask;
  * Created by user on 2016-06-07.
  */
 public class DoingExerciseActivity extends AppCompatActivity {
+
+    public static Activity thisActivity;
 
     LinearLayout layout_whole;
 
@@ -48,6 +52,7 @@ public class DoingExerciseActivity extends AppCompatActivity {
         setContentView(R.layout.activity_doingexercise);
 
         StartExerciseActivity.thisActivity.finish();
+        thisActivity = this;
 
         initWidgets();
 
@@ -161,7 +166,10 @@ public class DoingExerciseActivity extends AppCompatActivity {
                     public void onClick(DialogInterface dialog, int which) {
                         //TODO: Delete selected routines
                         Toast.makeText(getApplicationContext(), "Exercising is stopped.", Toast.LENGTH_SHORT).show();
-                        finish();
+
+                        Intent intent_finishexercise = new Intent(getApplicationContext(), FinishExerciseActivity.class);
+                        startActivity(intent_finishexercise);
+                        //finish();
                         dialog.dismiss();
                     }
                 })

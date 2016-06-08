@@ -12,6 +12,7 @@
         android:icon="@mipmap/here_app_icon_circle"
         android:label="@string/app_name"
         android:supportsRtl="true"
+        android:largeHeap="true"
         android:theme="@style/AppTheme">
 
         <activity android:name=".view.activity.SplashActivity">
@@ -48,6 +49,7 @@
         <activity android:name = ".deviceLE.DataViewTerminal" />
         <activity android:name=".view.activity.StartExerciseActivity"/>
         <activity android:name=".view.activity.DoingExerciseActivity"/>
+        <activity android:name=".view.activity.FinishExerciseActivity"/>
         <service android:name=".deviceLE.BluetoothLeService" android:enabled="true" />
 
     </application>

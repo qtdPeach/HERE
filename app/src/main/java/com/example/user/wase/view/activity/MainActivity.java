@@ -2,6 +2,7 @@ package com.example.user.wase.view.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.design.widget.TabLayout;
@@ -25,6 +26,7 @@ import com.example.user.wase.device.BluetoothComm;
 import com.example.user.wase.device.WorkoutRecord;
 import com.example.user.wase.device.WorkoutRecords;
 import com.example.user.wase.model.MyHereAgent;
+import com.example.user.wase.model.MyInformation;
 import com.example.user.wase.model.MyRecord;
 import com.example.user.wase.model.MyRoutine;
 import com.example.user.wase.utility.DatabaseHelper;
@@ -59,6 +61,12 @@ public class MainActivity extends AppCompatActivity
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
+        /* Initialize global variables */
+        myConnectedAgents = null;       //My connected agents
+        mySelectedAgent = null;         //My currently selected agent (exercising)
+        mySelectedRoutine = null;       //My currently selected routine
+        myCurrentRecord = null;         //My today's record (start-end)
 
         /* Initialize Database */
         hereDB = new DatabaseHelper(getApplicationContext());
@@ -111,23 +119,40 @@ public class MainActivity extends AppCompatActivity
 //                        .setAction("Action", null).show();
 
                 Toast.makeText(getApplicationContext(), "START EXERCISE", Toast.LENGTH_SHORT).show();
-
-                //TODO: 현재는 데이터베이스에서 생성하지 않고, 임시 객체(MyRoutine) 생성하여 보냄
-                //MyRoutine is serializable
-                MyRoutine selectedTmpRoutine = new MyRoutine();
-                selectedTmpRoutine.setRoutineId("ROUTINE01");
-                selectedTmpRoutine.setRoutineName("아령푸쉬업훌라후프");
-                selectedTmpRoutine.setRoutineEq1Id("11:22:33:44:55:66");
-                selectedTmpRoutine.setRoutineEq1Goal("3|15|-1");
-                selectedTmpRoutine.setRoutineEq2Id("22:33:44:55:66:77");
-                selectedTmpRoutine.setRoutineEq2Goal("2|20|-1");
-                selectedTmpRoutine.setRoutineEq3Id("33:44:55:66:77:88");
-                selectedTmpRoutine.setRoutineEq3Goal("5|-1|60");
+//
+//                //MyRoutine is serializable
+//                MyRoutine selectedTmpRoutine = new MyRoutine();
+//                selectedTmpRoutine.setRoutineId("ROUTINE01");
+//                selectedTmpRoutine.setRoutineName("아령푸쉬업훌라후프");
+//                selectedTmpRoutine.setRoutineEq1Id("11:22:33:44:55:66");
+//                selectedTmpRoutine.setRoutineEq1Goal("3|15|-1");
+//                selectedTmpRoutine.setRoutineEq2Id("22:33:44:55:66:77");
+//                selectedTmpRoutine.setRoutineEq2Goal("2|20|-1");
+//                selectedTmpRoutine.setRoutineEq3Id("33:44:55:66:77:88");
+//                selectedTmpRoutine.setRoutineEq3Goal("5|-1|60");
 
                 //Send a selected routine by serializing MyRoutine object
                 Intent intent_startexercise = new Intent(getApplicationContext(), StartExerciseActivity.class);
-                intent_startexercise.putExtra("selectedRoutine", selectedTmpRoutine);
+                intent_startexercise.putExtra("selectedRoutine", mySelectedRoutine);
                 startActivity(intent_startexercise);
+
+//                if (mySelectedRoutine == null) {
+//                    Snackbar.make(view, "Please select your routine first", Snackbar.LENGTH_LONG)
+//                            .setAction("Action", null).show();
+//
+//                    if (viewPager != null) {
+//                        viewPager.setCurrentItem(1);
+//                    }
+//                } else {
+//                    Toast.makeText(getApplicationContext(), "Selected routine:\n" + mySelectedRoutine.getRoutineName(), Toast.LENGTH_SHORT).show();
+//
+//                    //Send a selected routine by serializing MyRoutine object
+//                    Intent intent_startexercise = new Intent(getApplicationContext(), StartExerciseActivity.class);
+//                    intent_startexercise.putExtra("selectedRoutine", mySelectedRoutine);
+//                    startActivity(intent_startexercise);
+//                }
+
+
             }
         });
 
@@ -265,6 +290,80 @@ public class MainActivity extends AppCompatActivity
 
                 Intent intent_supportappinfo = new Intent(getApplicationContext(), SupportAppInfoActivity.class);
                 startActivity(intent_supportappinfo);
+                break;
+            case R.id.nav_db_add_myinformation:
+                //Android device id
+                String android_deviceId = Settings.Secure.getString(getApplicationContext().getContentResolver(),
+                        Settings.Secure.ANDROID_ID);
+
+                MyInformation tmpMyInformation = new MyInformation();
+
+                tmpMyInformation.setUserId("ThisIsAnId");
+                tmpMyInformation.setUserName("UserName");
+                tmpMyInformation.setUserNick("Nickname");
+                tmpMyInformation.setUserAge(25);
+                tmpMyInformation.setUserSex(1);
+                tmpMyInformation.setUserHeight(180);
+                tmpMyInformation.setUserWeight(75);
+                tmpMyInformation.setUserRegistered(1);
+                tmpMyInformation.setUserDeviceId(android_deviceId);
+
+                hereDB.insertMyInformation(tmpMyInformation);
+                Toast.makeText(getApplicationContext(), "MyInformation is added into DB.", Toast.LENGTH_SHORT).show();
+                break;
+            case R.id.nav_db_add_myagents:
+                MyHereAgent tmpMyHereAgent1 = new MyHereAgent();
+                tmpMyHereAgent1.setMyeqMacId("11:22:33:44:55:66");
+                tmpMyHereAgent1.setMyeqName("아령");
+                tmpMyHereAgent1.setMyeqType(1);
+                tmpMyHereAgent1.setMyeqBeaconMajorId("Major1");
+                tmpMyHereAgent1.setMyeqBeaconMinorId("Minor1");
+
+                MyHereAgent tmpMyHereAgent2 = new MyHereAgent();
+                tmpMyHereAgent2.setMyeqMacId("22:33:44:55:66:77");
+                tmpMyHereAgent2.setMyeqName("푸쉬업바");
+                tmpMyHereAgent2.setMyeqType(2);
+                tmpMyHereAgent2.setMyeqBeaconMajorId("Major2");
+                tmpMyHereAgent2.setMyeqBeaconMinorId("Minor2");
+
+                MyHereAgent tmpMyHereAgent3 = new MyHereAgent();
+                tmpMyHereAgent3.setMyeqMacId("33:44:55:66:77:88");
+                tmpMyHereAgent3.setMyeqName("훌라후프");
+                tmpMyHereAgent3.setMyeqType(4);
+                tmpMyHereAgent3.setMyeqBeaconMajorId("Major3");
+                tmpMyHereAgent3.setMyeqBeaconMinorId("Minor3");
+
+                hereDB.insertHereAgent(tmpMyHereAgent1);
+                hereDB.insertHereAgent(tmpMyHereAgent2);
+                hereDB.insertHereAgent(tmpMyHereAgent3);
+                Toast.makeText(getApplicationContext(), "Three agents are added into DB.", Toast.LENGTH_SHORT).show();
+
+                break;
+            case R.id.nav_db_add_myroutines:
+                MyRoutine tmpMyRoutine1 = new MyRoutine();
+                tmpMyRoutine1.setRoutineId("ROUTINE01");
+                tmpMyRoutine1.setRoutineName("아령푸쉬업훌라후프");
+                tmpMyRoutine1.setRoutineEq1Id("11:22:33:44:55:66");
+                tmpMyRoutine1.setRoutineEq1Goal("3|15|-1");
+                tmpMyRoutine1.setRoutineEq2Id("22:33:44:55:66:77");
+                tmpMyRoutine1.setRoutineEq2Goal("2|20|-1");
+                tmpMyRoutine1.setRoutineEq3Id("33:44:55:66:77:88");
+                tmpMyRoutine1.setRoutineEq3Goal("5|-1|60");
+
+                MyRoutine tmpMyRoutine2 = new MyRoutine();
+                tmpMyRoutine2.setRoutineId("ROUTINE02");
+                tmpMyRoutine2.setRoutineName("푸쉬업훌라후프");
+                tmpMyRoutine2.setRoutineEq1Id("22:33:44:55:66:77");
+                tmpMyRoutine2.setRoutineEq1Goal("2|20|-1");
+                tmpMyRoutine2.setRoutineEq2Id("33:44:55:66:77:88");
+                tmpMyRoutine2.setRoutineEq2Goal("1|50|-1");
+
+                hereDB.insertRoutine(tmpMyRoutine1);
+                hereDB.insertRoutine(tmpMyRoutine2);
+                Toast.makeText(getApplicationContext(), "Two routines are added into DB.", Toast.LENGTH_SHORT).show();
+
+                break;
+            case R.id.nav_db_add_myrecords:
                 break;
         }
 

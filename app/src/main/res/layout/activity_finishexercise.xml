@@ -1,0 +1,359 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:background="@drawable/splash_background_light_more"
+    android:gravity="center"
+    android:paddingBottom="20dp"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <ImageView
+        android:layout_width="160dp"
+        android:layout_height="160dp"
+        android:src="@drawable/here_logo_character_notitle"
+        />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="&quot;GOOD JOB!&quot;"
+        android:textColor="@color/colorPrimaryDark"
+        android:textSize="23dp"
+        android:gravity="center_horizontal"/>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="YOUR RECORD"
+        android:textColor="@color/colorSkyBlue"
+        android:textSize="35dp"
+        android:textStyle="bold"
+        android:gravity="center_horizontal"/>
+
+    <TextView
+        android:id="@+id/finishexercise_tv_myroutine"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:text="Routine name will be here"
+        android:layout_marginBottom="10dp"
+        android:textColor="@color/colorSkyBlue"
+        android:textSize="23dp"
+        android:textStyle="bold"
+        android:gravity="center_horizontal"/>
+
+    <!-- Description -->
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingLeft="10dp"
+        android:paddingRight="10dp"
+        android:paddingTop="3dp"
+        android:paddingBottom="3dp"
+        android:gravity="bottom|center_horizontal"
+        android:background="#11000000">
+
+        <TextView
+            android:layout_width="0px"
+            android:layout_height="wrap_content"
+            android:layout_weight="4"
+            android:textSize="12dp"
+            android:textColor="@color/colorPrimaryDark"
+            android:text="Agent"/>
+
+        <TextView
+            android:layout_width="0px"
+            android:layout_height="wrap_content"
+            android:layout_weight="7"
+            android:textSize="12dp"
+            android:textColor="@color/colorPrimaryDark"
+            android:text="Your Goal"/>
+
+        <TextView
+            android:layout_width="0px"
+            android:layout_height="wrap_content"
+            android:layout_weight="5"
+            android:textSize="12dp"
+            android:textColor="@color/colorPrimaryDark"
+            android:text="Your Record"/>
+
+        <TextView
+            android:layout_width="0px"
+            android:layout_height="wrap_content"
+            android:layout_weight="3"
+            android:textSize="12dp"
+            android:textColor="@color/colorPrimaryDark"
+            android:text="Duration"/>
+    </LinearLayout>
+
+    <!-- Line -->
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="#aaaaaa" />
+
+    <!-- Equip1 -->
+    <LinearLayout
+        android:id="@+id/finishexercise_tv_eq1"
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:layout_marginBottom="5dp">
+
+        <TextView
+            android:id="@+id/finishexercise_tv_eq1_name"
+            android:layout_width="0px"
+            android:layout_height="wrap_content"
+            android:layout_weight="4"
+            android:textSize="13dp"
+            android:textColor="#333333"
+            android:text="훌라후프"/>
+
+        <TextView
+            android:id="@+id/finishexercise_tv_eq1_goal"
+            android:layout_width="0px"
+            android:layout_height="wrap_content"
+            android:layout_weight="7"
+            android:textSize="13dp"
+            android:textColor="#333333"
+            android:text="5 SETS X 100 TIMES"/>
+
+        <TextView
+            android:id="@+id/finishexercise_tv_eq1_record_times"
+            android:layout_width="0px"
+            android:layout_height="wrap_content"
+            android:layout_weight="5"
+            android:textSize="13dp"
+            android:textStyle="bold"
+            android:textColor="@color/colorPrimaryDark"
+            android:layout_gravity="center_horizontal"
+            android:paddingLeft="5dp"
+            android:text="530"/>
+
+        <TextView
+            android:id="@+id/finishexercise_tv_eq1_record_secs"
+            android:layout_width="0px"
+            android:layout_height="wrap_content"
+            android:layout_weight="3"
+            android:textSize="13dp"
+            android:textColor="#333333"
+            android:text="180 secs"/>
+    </LinearLayout>
+
+
+    <!-- Equip1 -->
+    <LinearLayout
+        android:id="@+id/finishexercise_tv_eq2"
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:layout_marginBottom="5dp">
+
+        <TextView
+            android:id="@+id/finishexercise_tv_eq2_name"
+            android:layout_width="0px"
+            android:layout_height="wrap_content"
+            android:layout_weight="4"
+            android:textSize="13dp"
+            android:textColor="#333333"
+            android:text="훌라후프"/>
+
+        <TextView
+            android:id="@+id/finishexercise_tv_eq2_goal"
+            android:layout_width="0px"
+            android:layout_height="wrap_content"
+            android:layout_weight="7"
+            android:textSize="13dp"
+            android:textColor="#333333"
+            android:text="5 SETS X 100 TIMES"/>
+
+        <TextView
+            android:id="@+id/finishexercise_tv_eq2_record_times"
+            android:layout_width="0px"
+            android:layout_height="wrap_content"
+            android:layout_weight="5"
+            android:textSize="13dp"
+            android:textStyle="bold"
+            android:textColor="@color/colorPrimaryDark"
+            android:layout_gravity="center_horizontal"
+            android:paddingLeft="5dp"
+            android:text="530"/>
+
+        <TextView
+            android:id="@+id/finishexercise_tv_eq2_record_secs"
+            android:layout_width="0px"
+            android:layout_height="wrap_content"
+            android:layout_weight="3"
+            android:textSize="13dp"
+            android:textColor="#333333"
+            android:text="180 secs"/>
+    </LinearLayout>
+
+    <!-- Equip1 -->
+    <LinearLayout
+        android:id="@+id/finishexercise_tv_eq3"
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:layout_marginBottom="5dp">
+
+        <TextView
+            android:id="@+id/finishexercise_tv_eq3_name"
+            android:layout_width="0px"
+            android:layout_height="wrap_content"
+            android:layout_weight="4"
+            android:textSize="13dp"
+            android:textColor="#333333"
+            android:text="훌라후프"/>
+
+        <TextView
+            android:id="@+id/finishexercise_tv_eq3_goal"
+            android:layout_width="0px"
+            android:layout_height="wrap_content"
+            android:layout_weight="7"
+            android:textSize="13dp"
+            android:textColor="#333333"
+            android:text="5 SETS X 100 TIMES"/>
+
+        <TextView
+            android:id="@+id/finishexercise_tv_eq3_record_times"
+            android:layout_width="0px"
+            android:layout_height="wrap_content"
+            android:layout_weight="5"
+            android:textSize="13dp"
+            android:textStyle="bold"
+            android:textColor="@color/colorPrimaryDark"
+            android:layout_gravity="center_horizontal"
+            android:paddingLeft="5dp"
+            android:text="530"/>
+
+        <TextView
+            android:id="@+id/finishexercise_tv_eq3_record_secs"
+            android:layout_width="0px"
+            android:layout_height="wrap_content"
+            android:layout_weight="3"
+            android:textSize="13dp"
+            android:textColor="#333333"
+            android:text="180 secs"/>
+    </LinearLayout>
+
+    <!-- Equip1 -->
+    <LinearLayout
+        android:id="@+id/finishexercise_tv_eq4"
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:layout_marginBottom="5dp">
+
+        <TextView
+            android:id="@+id/finishexercise_tv_eq4_name"
+            android:layout_width="0px"
+            android:layout_height="wrap_content"
+            android:layout_weight="4"
+            android:textSize="13dp"
+            android:textColor="#333333"
+            android:text="훌라후프"/>
+
+        <TextView
+            android:id="@+id/finishexercise_tv_eq4_goal"
+            android:layout_width="0px"
+            android:layout_height="wrap_content"
+            android:layout_weight="7"
+            android:textSize="13dp"
+            android:textColor="#333333"
+            android:text="5 SETS X 100 TIMES"/>
+
+        <TextView
+            android:id="@+id/finishexercise_tv_eq4_record_times"
+            android:layout_width="0px"
+            android:layout_height="wrap_content"
+            android:layout_weight="5"
+            android:textSize="13dp"
+            android:textStyle="bold"
+            android:textColor="@color/colorPrimaryDark"
+            android:layout_gravity="center_horizontal"
+            android:paddingLeft="5dp"
+            android:text="530"/>
+
+        <TextView
+            android:id="@+id/finishexercise_tv_eq4_record_secs"
+            android:layout_width="0px"
+            android:layout_height="wrap_content"
+            android:layout_weight="3"
+            android:textSize="13dp"
+            android:textColor="#333333"
+            android:text="180 secs"/>
+    </LinearLayout>
+
+    <!-- Equip1 -->
+    <LinearLayout
+        android:id="@+id/finishexercise_tv_eq5"
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:layout_marginBottom="5dp">
+
+        <TextView
+            android:id="@+id/finishexercise_tv_eq5_name"
+            android:layout_width="0px"
+            android:layout_height="wrap_content"
+            android:layout_weight="4"
+            android:textSize="13dp"
+            android:textColor="#333333"
+            android:text="훌라후프"/>
+
+        <TextView
+            android:id="@+id/finishexercise_tv_eq5_goal"
+            android:layout_width="0px"
+            android:layout_height="wrap_content"
+            android:layout_weight="7"
+            android:textSize="13dp"
+            android:textColor="#333333"
+            android:text="5 SETS X 100 TIMES"/>
+
+        <TextView
+            android:id="@+id/finishexercise_tv_eq5_record_times"
+            android:layout_width="0px"
+            android:layout_height="wrap_content"
+            android:layout_weight="5"
+            android:textSize="13dp"
+            android:textStyle="bold"
+            android:textColor="@color/colorPrimaryDark"
+            android:layout_gravity="center_horizontal"
+            android:paddingLeft="5dp"
+            android:text="530"/>
+
+        <TextView
+            android:id="@+id/finishexercise_tv_eq5_record_secs"
+            android:layout_width="0px"
+            android:layout_height="wrap_content"
+            android:layout_weight="3"
+            android:textSize="13dp"
+            android:textColor="#333333"
+            android:text="180 secs"/>
+    </LinearLayout>
+
+
+    <Button
+        android:id="@+id/finishexercise_btn_finish"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_margin="15dp"
+        android:layout_marginRight="30dp"
+        android:background="@drawable/btn_check"
+        android:layout_gravity="center_horizontal"
+        android:onClick="mOnClick"/>
+
+
+</LinearLayout>

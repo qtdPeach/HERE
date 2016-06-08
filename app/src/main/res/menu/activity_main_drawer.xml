@@ -64,4 +64,25 @@
         </menu>
     </item>
 
+    <item android:title="데이터베이스">
+        <menu>
+            <item
+                android:id="@+id/nav_db_add_myinformation"
+                android:icon="@drawable/nav_icon_myagents"
+                android:title="Insert my information (1)" />
+            <item
+                android:id="@+id/nav_db_add_myagents"
+                android:icon="@drawable/nav_icon_myroutines"
+                android:title="Insert agents (3)" />
+            <item
+                android:id="@+id/nav_db_add_myroutines"
+                android:icon="@drawable/nav_icon_myrecords"
+                android:title="Insert routines (2)" />
+            <item
+                android:id="@+id/nav_db_add_myrecords"
+                android:icon="@drawable/nav_icon_myrecords"
+                android:title="Insert records (5)" />
+        </menu>
+    </item>
+
 </menu>
