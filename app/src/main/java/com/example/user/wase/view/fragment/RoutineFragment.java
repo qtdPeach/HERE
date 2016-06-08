@@ -50,9 +50,8 @@ public class RoutineFragment extends Fragment{
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 List<MyRoutine> routines = listViewAdapter.getRoutine();
                 TextView routineName = (TextView) viewFragmentRoutine.findViewById(R.id.selected_routine_name);
-
+                boolean isRoutineOk = true;
                 routineName.setText("Selected routine: " + routines.get(position).getRoutineId());
-                MainActivity.mySelectedRoutine = routines.get(position);
 
                 goals.clear();
 
@@ -86,66 +85,88 @@ public class RoutineFragment extends Fragment{
                 LinearLayout equipment5inList = (LinearLayout) viewFragmentRoutine.findViewById(R.id.routine_equipment5);
 
 
-                if (!routines.get(position).getRoutineEq1Id().equals("")) {
+                if (!routines.get(position).getRoutineEq1Id().equals("-1")) {
                     routineGoal.setText(goalParser(routines.get(position).getRoutineEq1Goal()));
                     MyHereAgent agent = MainActivity.hereDB.getMyHereAgent(routines.get(position).getRoutineEq1Id());
-                    routineEquip.setText(agent.getMyeqName());
-                    equipImage.setImageResource(findImage(agent.getMyeqType()));
-                    equipment1inList.setVisibility(View.VISIBLE);
+                    if (agent !=null) {
+                        routineEquip.setText(agent.getMyeqName());
+                        equipImage.setImageResource(findImage(agent.getMyeqType()));
+                        equipment1inList.setVisibility(View.VISIBLE);
+                    } else {
+                        isRoutineOk = false;
+                    }
                 } else {
                     equipment1inList.setVisibility(View.GONE);
                 }
 
-                if (!routines.get(position).getRoutineEq2Id().equals("")) {
+                if (!routines.get(position).getRoutineEq2Id().equals("-1")) {
                     routineGoal2.setText(goalParser(routines.get(position).getRoutineEq2Goal()));
                     MyHereAgent agent = MainActivity.hereDB.getMyHereAgent(routines.get(position).getRoutineEq2Id());
-                    routineEquip2.setText(agent.getMyeqName());
-                    equipImage2.setImageResource(findImage(agent.getMyeqType()));
-                    arrowOfEquipment1.setVisibility(View.VISIBLE);
-                    equipment2inList.setVisibility(View.VISIBLE);
+                    if(agent != null) {
+                        routineEquip2.setText(agent.getMyeqName());
+                        equipImage2.setImageResource(findImage(agent.getMyeqType()));
+                        arrowOfEquipment1.setVisibility(View.VISIBLE);
+                        equipment2inList.setVisibility(View.VISIBLE);
+                    } else {
+                        isRoutineOk = false;
+                    }
                 } else {
                     equipment2inList.setVisibility(View.GONE);
                     arrowOfEquipment1.setVisibility(View.GONE);
 
                 }
 
-                if (!routines.get(position).getRoutineEq3Id().equals("")) {
+                if (!routines.get(position).getRoutineEq3Id().equals("-1")) {
                     routineGoal3.setText(goalParser(routines.get(position).getRoutineEq3Goal()));
                     MyHereAgent agent = MainActivity.hereDB.getMyHereAgent(routines.get(position).getRoutineEq3Id());
-                    routineEquip3.setText(agent.getMyeqName());
-                    equipImage3.setImageResource(findImage(agent.getMyeqType()));
-                    arrowOfEquipment2.setVisibility(View.VISIBLE);
-                    equipment3inList.setVisibility(View.VISIBLE);
+                    if(agent != null) {
+                        routineEquip3.setText(agent.getMyeqName());
+                        equipImage3.setImageResource(findImage(agent.getMyeqType()));
+                        arrowOfEquipment2.setVisibility(View.VISIBLE);
+                        equipment3inList.setVisibility(View.VISIBLE);
+                    } else {
+                        isRoutineOk = false;
+                    }
                 } else {
                     equipment3inList.setVisibility(View.GONE);
                     arrowOfEquipment2.setVisibility(View.GONE);
                 }
 
-                if (!routines.get(position).getRoutineEq4Id().equals("")) {
+                if (!routines.get(position).getRoutineEq4Id().equals("-1")) {
                     routineGoal4.setText(goalParser(routines.get(position).getRoutineEq4Goal()));
                     MyHereAgent agent = MainActivity.hereDB.getMyHereAgent(routines.get(position).getRoutineEq4Id());
-                    routineEquip4.setText(agent.getMyeqName());
-                    equipImage4.setImageResource(findImage(agent.getMyeqType()));
-                    arrowOfEquipment3.setVisibility(View.VISIBLE);
-                    equipment4inList.setVisibility(View.VISIBLE);
+                    if(isRoutineOk) {
+                        routineEquip4.setText(agent.getMyeqName());
+                        equipImage4.setImageResource(findImage(agent.getMyeqType()));
+                        arrowOfEquipment3.setVisibility(View.VISIBLE);
+                        equipment4inList.setVisibility(View.VISIBLE);
+                    } else {
+                        isRoutineOk = false;
+                    }
                 } else {
                     equipment4inList.setVisibility(View.GONE);
                     arrowOfEquipment3.setVisibility(View.GONE);
 
                 }
 
-                if (!routines.get(position).getRoutineEq5Id().equals("")) {
+                if (!routines.get(position).getRoutineEq5Id().equals("-1")) {
                     routineGoal5.setText(goalParser(routines.get(position).getRoutineEq5Goal()));
                     MyHereAgent agent = MainActivity.hereDB.getMyHereAgent(routines.get(position).getRoutineEq5Id());
-                    routineEquip5.setText(agent.getMyeqName());
-                    equipImage5.setImageResource(findImage(agent.getMyeqType()));
-                    arrowOfEquipment4.setVisibility(View.VISIBLE);
-                    equipment5inList.setVisibility(View.VISIBLE);
+                    if(agent != null) {
+                        routineEquip5.setText(agent.getMyeqName());
+                        equipImage5.setImageResource(findImage(agent.getMyeqType()));
+                        arrowOfEquipment4.setVisibility(View.VISIBLE);
+                        equipment5inList.setVisibility(View.VISIBLE);
+                    } else {
+                        isRoutineOk = false;
+                    }
                 } else {
                     equipment5inList.setVisibility(View.GONE);
                     arrowOfEquipment4.setVisibility(View.GONE);
                 }
 
+                if(isRoutineOk)
+                    MainActivity.mySelectedRoutine = routines.get(position);
             }
         });
         listViewAdapter.notifyDataSetChanged();
