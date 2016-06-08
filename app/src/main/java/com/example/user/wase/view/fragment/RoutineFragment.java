@@ -49,8 +49,9 @@ public class RoutineFragment extends Fragment{
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 List<MyRoutine> routines = listViewAdapter.getRoutine();
                 TextView routineName = (TextView) viewFragmentRoutine.findViewById(R.id.selected_routine_name);
-                routineName.setText("asdf");
+
                 routineName.setText("Selected routine: " + routines.get(position).getRoutineId());
+                MainActivity.mySelectedRoutine = routines.get(position);
 
                 goals.clear();
 
