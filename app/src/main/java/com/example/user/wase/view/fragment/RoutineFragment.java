@@ -34,13 +34,14 @@ import java.util.StringTokenizer;
 public class RoutineFragment extends Fragment{
 
     public List<Goal> goals;
+    ListViewAdapter listViewAdapter;
     @Nullable
     @Override
     public View onCreateView(final LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
         goals = new ArrayList<Goal>();
 
-        final ListViewAdapter listViewAdapter = new ListViewAdapter();
+        listViewAdapter = new ListViewAdapter();
         final View viewFragmentRoutine = inflater.inflate(R.layout.fragment_routine, container, false);
         ListView listView = (ListView) viewFragmentRoutine.findViewById(R.id.routine_list);
         listView.setAdapter(listViewAdapter);
@@ -153,6 +154,17 @@ public class RoutineFragment extends Fragment{
         //return super.onCreateView(inflater, container, savedInstanceState);
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        //if(MainActivity.hereDB.getAllMyRoutines() !=null) {
+            listViewAdapter.setRoutine(MainActivity.hereDB.getAllMyRoutines());
+//        } else {
+//            myRoutines.clear();
+//        }
+        listViewAdapter.notifyDataSetChanged();
+    }
+
     public int findImage (int type){
         switch (type) {
             case 1:
@@ -216,17 +228,26 @@ public class RoutineFragment extends Fragment{
             return myRoutines;
         }
 
+        public void setRoutine(List<MyRoutine> routines){
+            this.myRoutines = routines;
+        }
+
         public ListViewAdapter() {
             super();
-            if(MainActivity.hereDB.getAllMyHereAgents() !=null)
+            if(MainActivity.hereDB.getAllMyRoutines() !=null) {
                 myRoutines = MainActivity.hereDB.getAllMyRoutines();
-            System.out.println("this is routine ID: "+myRoutines.get(0).getRoutineId());
+            } else {
+                myRoutines.clear();
+            }
             mInflator = getActivity().getLayoutInflater();
         }
 
         @Override
         public int getCount() {
-            return myRoutines.size();
+            if (myRoutines != null)
+                return myRoutines.size();
+            else
+                return 0;
         }
 
         @Override
@@ -241,6 +262,7 @@ public class RoutineFragment extends Fragment{
 
         @Override
         public View getView(int i, View view, ViewGroup viewGroup) {
+
             // General ListView optimization code.
             if (view == null) {
                 int res = 0;
