@@ -143,6 +143,7 @@ public class MyRoutinesActivity extends AppCompatActivity {
         public List<MyHereAgent> myHereAgents = new ArrayList<MyHereAgent>();
 
         public ListViewAdapter () {
+            super();
             if(MainActivity.hereDB.getAllMyHereAgents() !=null)
                 myHereAgents = MainActivity.hereDB.getAllMyHereAgents();
         }

@@ -5,6 +5,7 @@
     android:layout_height="match_parent">
 
     <TextView
+        android:id="@+id/selected_routine_name"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:paddingLeft="15dp"
@@ -37,6 +38,7 @@
 
             <!-- EQ 1 -->
             <LinearLayout
+                android:id="@+id/routine_equipment1"
                 android:orientation="vertical"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -44,11 +46,13 @@
                 android:layout_marginRight="10dp">
 
                 <ImageView
+                    android:id="@+id/routine_equipment1_image"
                     android:layout_width="80dp"
                     android:layout_height="80dp"
                     android:src="@drawable/here_logo_character"/>
 
                 <TextView
+                    android:id="@+id/selected_routine_equip1"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Equip1"
@@ -58,6 +62,7 @@
                     android:textColor="@color/colorPrimaryDark"/>
 
                 <TextView
+                    android:id="@+id/selected_routine_goal1"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="30 X 2 SETS"
@@ -67,6 +72,7 @@
             </LinearLayout>
 
             <TextView
+                android:id="@+id/routine_equipment1_arrow"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:text=">"
@@ -76,6 +82,7 @@
 
             <!-- EQ 2 -->
             <LinearLayout
+                android:id="@+id/routine_equipment2"
                 android:orientation="vertical"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -83,11 +90,13 @@
                 android:layout_marginRight="10dp">
 
                 <ImageView
+                    android:id="@+id/routine_equipment2_image"
                     android:layout_width="80dp"
                     android:layout_height="80dp"
                     android:src="@drawable/here_logo_character"/>
 
                 <TextView
+                    android:id="@+id/selected_routine_equip2"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Equip2"
@@ -97,6 +106,7 @@
                     android:textColor="@color/colorPrimaryDark"/>
 
                 <TextView
+                    android:id="@+id/selected_routine_goal2"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="60s X 10 SETS"
@@ -106,6 +116,7 @@
             </LinearLayout>
 
             <TextView
+                android:id="@+id/routine_equipment2_arrow"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:text=">"
@@ -115,6 +126,7 @@
 
             <!-- EQ 3 -->
             <LinearLayout
+                android:id="@+id/routine_equipment3"
                 android:orientation="vertical"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -122,11 +134,13 @@
                 android:layout_marginRight="10dp">
 
                 <ImageView
+                    android:id="@+id/routine_equipment3_image"
                     android:layout_width="80dp"
                     android:layout_height="80dp"
                     android:src="@drawable/here_logo_character"/>
 
                 <TextView
+                    android:id="@+id/selected_routine_equip3"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Equip3"
@@ -136,6 +150,7 @@
                     android:textColor="@color/colorPrimaryDark"/>
 
                 <TextView
+                    android:id="@+id/selected_routine_goal3"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="50 X 1 SETS"
@@ -145,6 +160,7 @@
             </LinearLayout>
 
             <TextView
+                android:id="@+id/routine_equipment3_arrow"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:text=">"
@@ -154,6 +170,7 @@
 
             <!-- EQ 4 -->
             <LinearLayout
+                android:id="@+id/routine_equipment4"
                 android:orientation="vertical"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -161,11 +178,13 @@
                 android:layout_marginRight="10dp">
 
                 <ImageView
+                    android:id="@+id/routine_equipment4_image"
                     android:layout_width="80dp"
                     android:layout_height="80dp"
                     android:src="@drawable/here_logo_character"/>
 
                 <TextView
+                    android:id="@+id/selected_routine_equip4"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Equip4"
@@ -175,6 +194,7 @@
                     android:textColor="@color/colorPrimaryDark"/>
 
                 <TextView
+                    android:id="@+id/selected_routine_goal4"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="30 X 2 SETS"
@@ -184,6 +204,7 @@
             </LinearLayout>
 
             <TextView
+                android:id="@+id/routine_equipment4_arrow"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:text=">"
@@ -193,6 +214,7 @@
 
             <!-- EQ 5 -->
             <LinearLayout
+                android:id="@+id/routine_equipment5"
                 android:orientation="vertical"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -200,11 +222,13 @@
                 android:layout_marginRight="10dp">
 
                 <ImageView
+                    android:id="@+id/routine_equipment5_image"
                     android:layout_width="80dp"
                     android:layout_height="80dp"
                     android:src="@drawable/here_logo_character"/>
 
                 <TextView
+                    android:id="@+id/selected_routine_equip5"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Equip5"
@@ -214,6 +238,7 @@
                     android:textColor="@color/colorPrimaryDark"/>
 
                 <TextView
+                    android:id="@+id/selected_routine_goal5"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="30 X 2 SETS"
@@ -243,6 +268,7 @@
         android:background="@color/colorSkyBlue"/>
 
     <ListView
+        android:id="@+id/routine_list"
         android:background="#eeeeee"
         android:layout_width="match_parent"
         android:layout_height="match_parent"></ListView>

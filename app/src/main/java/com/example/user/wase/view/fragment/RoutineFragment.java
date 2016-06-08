@@ -1,23 +1,281 @@
 package com.example.user.wase.view.fragment;
 
+import android.database.Cursor;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.BaseAdapter;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.ListView;
+import android.widget.TextView;
 
 import com.example.user.wase.R;
+import com.example.user.wase.model.Equipment;
+import com.example.user.wase.model.MyHereAgent;
+import com.example.user.wase.model.MyRecord;
+import com.example.user.wase.model.MyRoutine;
+import com.example.user.wase.utility.DatabaseHelper;
+import com.example.user.wase.view.activity.MainActivity;
+import com.example.user.wase.view.activity.MyEquipmentsActivity;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.StringTokenizer;
 
 /**
  * Created by ymbae on 2016-04-18.
  */
 public class RoutineFragment extends Fragment{
 
+    public List<Goal> goals;
     @Nullable
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_routine, container, false);
+    public View onCreateView(final LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+
+        goals = new ArrayList<Goal>();
+
+        final ListViewAdapter listViewAdapter = new ListViewAdapter();
+        final View viewFragmentRoutine = inflater.inflate(R.layout.fragment_routine, container, false);
+        ListView listView = (ListView) viewFragmentRoutine.findViewById(R.id.routine_list);
+        listView.setAdapter(listViewAdapter);
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                List<MyRoutine> routines = listViewAdapter.getRoutine();
+                TextView routineName = (TextView) viewFragmentRoutine.findViewById(R.id.selected_routine_name);
+                routineName.setText("asdf");
+                routineName.setText("Selected routine: " + routines.get(position).getRoutineId());
+
+                goals.clear();
+
+                TextView routineGoal = (TextView) viewFragmentRoutine.findViewById(R.id.selected_routine_goal1);
+                TextView routineEquip = (TextView) viewFragmentRoutine.findViewById(R.id.selected_routine_equip1);
+                ImageView equipImage = (ImageView) viewFragmentRoutine.findViewById(R.id.routine_equipment1_image);
+                LinearLayout equipment1inList = (LinearLayout) viewFragmentRoutine.findViewById(R.id.routine_equipment1);
+                TextView arrowOfEquipment1 = (TextView) viewFragmentRoutine.findViewById(R.id.routine_equipment1_arrow);
+
+                TextView routineGoal2 = (TextView) viewFragmentRoutine.findViewById(R.id.selected_routine_goal2);
+                TextView routineEquip2 = (TextView) viewFragmentRoutine.findViewById(R.id.selected_routine_equip2);
+                ImageView equipImage2 = (ImageView) viewFragmentRoutine.findViewById(R.id.routine_equipment2_image);
+                LinearLayout equipment2inList = (LinearLayout) viewFragmentRoutine.findViewById(R.id.routine_equipment2);
+                TextView arrowOfEquipment2 = (TextView) viewFragmentRoutine.findViewById(R.id.routine_equipment2_arrow);
+
+                TextView routineGoal3 = (TextView) viewFragmentRoutine.findViewById(R.id.selected_routine_goal3);
+                TextView routineEquip3 = (TextView) viewFragmentRoutine.findViewById(R.id.selected_routine_equip3);
+                ImageView equipImage3 = (ImageView) viewFragmentRoutine.findViewById(R.id.routine_equipment3_image);
+                LinearLayout equipment3inList = (LinearLayout) viewFragmentRoutine.findViewById(R.id.routine_equipment3);
+                TextView arrowOfEquipment3 = (TextView) viewFragmentRoutine.findViewById(R.id.routine_equipment3_arrow);
+
+                TextView routineGoal4 = (TextView) viewFragmentRoutine.findViewById(R.id.selected_routine_goal4);
+                TextView routineEquip4 = (TextView) viewFragmentRoutine.findViewById(R.id.selected_routine_equip4);
+                ImageView equipImage4 = (ImageView) viewFragmentRoutine.findViewById(R.id.routine_equipment4_image);
+                LinearLayout equipment4inList = (LinearLayout) viewFragmentRoutine.findViewById(R.id.routine_equipment4);
+                TextView arrowOfEquipment4 = (TextView) viewFragmentRoutine.findViewById(R.id.routine_equipment4_arrow);
+
+                TextView routineGoal5 = (TextView) viewFragmentRoutine.findViewById(R.id.selected_routine_goal5);
+                TextView routineEquip5 = (TextView) viewFragmentRoutine.findViewById(R.id.selected_routine_equip5);
+                ImageView equipImage5 = (ImageView) viewFragmentRoutine.findViewById(R.id.routine_equipment5_image);
+                LinearLayout equipment5inList = (LinearLayout) viewFragmentRoutine.findViewById(R.id.routine_equipment5);
+
+
+                if (!routines.get(position).getRoutineEq1Id().equals("")) {
+                    routineGoal.setText(goalParser(routines.get(position).getRoutineEq1Goal()));
+                    MyHereAgent agent = MainActivity.hereDB.getMyHereAgent(routines.get(position).getRoutineEq1Id());
+                    routineEquip.setText(agent.getMyeqName());
+                    equipImage.setImageResource(findImage(agent.getMyeqType()));
+                    equipment1inList.setVisibility(View.VISIBLE);
+                } else {
+                    equipment1inList.setVisibility(View.GONE);
+                }
+
+                if (!routines.get(position).getRoutineEq2Id().equals("")) {
+                    routineGoal2.setText(goalParser(routines.get(position).getRoutineEq2Goal()));
+                    MyHereAgent agent = MainActivity.hereDB.getMyHereAgent(routines.get(position).getRoutineEq2Id());
+                    routineEquip2.setText(agent.getMyeqName());
+                    equipImage2.setImageResource(findImage(agent.getMyeqType()));
+                    arrowOfEquipment1.setVisibility(View.VISIBLE);
+                    equipment2inList.setVisibility(View.VISIBLE);
+                } else {
+                    equipment2inList.setVisibility(View.GONE);
+                    arrowOfEquipment1.setVisibility(View.GONE);
+
+                }
+
+                if (!routines.get(position).getRoutineEq3Id().equals("")) {
+                    routineGoal3.setText(goalParser(routines.get(position).getRoutineEq3Goal()));
+                    MyHereAgent agent = MainActivity.hereDB.getMyHereAgent(routines.get(position).getRoutineEq3Id());
+                    routineEquip3.setText(agent.getMyeqName());
+                    equipImage3.setImageResource(findImage(agent.getMyeqType()));
+                    arrowOfEquipment2.setVisibility(View.VISIBLE);
+                    equipment3inList.setVisibility(View.VISIBLE);
+                } else {
+                    equipment3inList.setVisibility(View.GONE);
+                    arrowOfEquipment2.setVisibility(View.GONE);
+                }
+
+                if (!routines.get(position).getRoutineEq4Id().equals("")) {
+                    routineGoal4.setText(goalParser(routines.get(position).getRoutineEq4Goal()));
+                    MyHereAgent agent = MainActivity.hereDB.getMyHereAgent(routines.get(position).getRoutineEq4Id());
+                    routineEquip4.setText(agent.getMyeqName());
+                    equipImage4.setImageResource(findImage(agent.getMyeqType()));
+                    arrowOfEquipment3.setVisibility(View.VISIBLE);
+                    equipment4inList.setVisibility(View.VISIBLE);
+                } else {
+                    equipment4inList.setVisibility(View.GONE);
+                    arrowOfEquipment3.setVisibility(View.GONE);
+
+                }
+
+                if (!routines.get(position).getRoutineEq5Id().equals("")) {
+                    routineGoal5.setText(goalParser(routines.get(position).getRoutineEq5Goal()));
+                    MyHereAgent agent = MainActivity.hereDB.getMyHereAgent(routines.get(position).getRoutineEq5Id());
+                    routineEquip5.setText(agent.getMyeqName());
+                    equipImage5.setImageResource(findImage(agent.getMyeqType()));
+                    arrowOfEquipment4.setVisibility(View.VISIBLE);
+                    equipment5inList.setVisibility(View.VISIBLE);
+                } else {
+                    equipment5inList.setVisibility(View.GONE);
+                    arrowOfEquipment4.setVisibility(View.GONE);
+                }
+
+            }
+        });
+        listViewAdapter.notifyDataSetChanged();
+
+        return viewFragmentRoutine;
         //return super.onCreateView(inflater, container, savedInstanceState);
+    }
+
+    public int findImage (int type){
+        switch (type) {
+            case 1:
+                return R.mipmap.ic_setting_update_alarm;
+            case 2:
+                return R.mipmap.ic_setting_best_interest;
+            case 3:
+                return R.mipmap.ic_setting_user_information;
+            case 4:
+                return R.mipmap.ic_setting_user_information;
+            case 5:
+                return R.mipmap.ic_setting_user_information;
+        }
+        return 0;
+    }
+
+    public String goalParser(String goal){
+        StringTokenizer st = new StringTokenizer(goal,"|");
+        String token = "";
+        Goal exerciseGoal = new Goal();
+        String text = "";
+        while(st.hasMoreElements()){
+            token = st.nextToken();
+            exerciseGoal.set = token;
+            token = st.nextToken();
+            if(token.equals("-1")){
+                exerciseGoal.number = null;
+            } else {
+                exerciseGoal.number = token;
+            }
+            token = st.nextToken();
+            if(token.equals("-1")){
+                exerciseGoal.time = null;
+            } else {
+                exerciseGoal.time = token;
+            }
+        }
+        goals.add(exerciseGoal);
+
+        if(exerciseGoal.number!=null)
+            text = text + exerciseGoal.number + " X ";
+        if(exerciseGoal.time !=null)
+            text = text + exerciseGoal.time + "s X ";
+        if(exerciseGoal.set != null)
+            text = text +exerciseGoal.set + " SETS";
+
+        return text;
+    }
+
+    public class Goal{
+        String set;
+        String number;
+        String time;
+    }
+
+    private class ListViewAdapter extends BaseAdapter {
+        private LayoutInflater mInflator;
+        private List<MyRoutine> myRoutines = new ArrayList<MyRoutine>();
+
+        public List<MyRoutine> getRoutine(){
+            return myRoutines;
+        }
+
+        public ListViewAdapter() {
+            super();
+            if(MainActivity.hereDB.getAllMyHereAgents() !=null)
+                myRoutines = MainActivity.hereDB.getAllMyRoutines();
+            System.out.println("this is routine ID: "+myRoutines.get(0).getRoutineId());
+            mInflator = getActivity().getLayoutInflater();
+        }
+
+        @Override
+        public int getCount() {
+            return myRoutines.size();
+        }
+
+        @Override
+        public Object getItem(int i) {
+            return myRoutines.get(i);
+        }
+
+        @Override
+        public long getItemId(int i) {
+            return i;
+        }
+
+        @Override
+        public View getView(int i, View view, ViewGroup viewGroup) {
+            // General ListView optimization code.
+            if (view == null) {
+                int res = 0;
+                res = R.layout.listitem_equipment;
+                view = mInflator.inflate(res, viewGroup, false);
+
+            }
+
+            ImageView routineImage = (ImageView) view.findViewById(R.id.equiplist_img);
+            TextView routineName = (TextView) view.findViewById(R.id.equiplist_name);
+            TextView routineId = (TextView) view.findViewById(R.id.equiplist_id);
+            //TextView eqSensorId = (TextView) view.findViewById(R.id.equiplist_sensorid);
+
+//            switch (pairedEquipList.get(i).getEquipmentType()) {
+//                case 0:
+//                    eqTypeImage.setImageResource(R.mipmap.ic_setting_update_alarm);
+//                    break;
+//                case 1:
+//                    eqTypeImage.setImageResource(R.mipmap.ic_setting_best_interest);
+//                    break;
+//                case 2:
+//                    eqTypeImage.setImageResource(R.mipmap.ic_setting_user_information);
+//                    break;
+//                case 3:
+//                    break;
+//                default:
+//                    break;
+//            }
+
+            routineImage.setImageResource(R.mipmap.ic_setting_update_alarm);
+
+            routineName.setText(myRoutines.get(i).getRoutineId());
+            routineId.setText(myRoutines.get(i).getRoutineName());
+            //eqSensorId.setText(pairedEquipList.get(i).getEquipmentSensorID());
+
+            return view;
+        }
     }
 }
