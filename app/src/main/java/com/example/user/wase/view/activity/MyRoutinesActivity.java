@@ -32,7 +32,7 @@ public class MyRoutinesActivity extends AppCompatActivity {
 
     private Toolbar toolbar;
 
-    public static List<MyHereAgent> currentAgents = MainActivity.hereDB.getAllMyHereAgents();
+    //public static List<MyHereAgent> currentAgents = MainActivity.hereDB.getAllMyHereAgents();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,6 +55,7 @@ public class MyRoutinesActivity extends AppCompatActivity {
         ListView listView = (ListView) findViewById(R.id.setting_myroutine_list_myroutines);
         ListViewAdapter adapter = new ListViewAdapter();
         listView.setAdapter(adapter);
+        adapter.notifyDataSetChanged();
     }
 
 
@@ -141,18 +142,19 @@ public class MyRoutinesActivity extends AppCompatActivity {
 
         public List<MyHereAgent> myHereAgents = new ArrayList<MyHereAgent>();
 
+        public ListViewAdapter () {
+            if(MainActivity.hereDB.getAllMyHereAgents() !=null)
+                myHereAgents = MainActivity.hereDB.getAllMyHereAgents();
+        }
+
         @Override
         public int getCount() {
-            if (currentAgents != null) {
-                return currentAgents.size();
-            } else {
-                return 0;
-            }
+                return myHereAgents.size();
         }
 
         @Override
         public Object getItem(int position) {
-            return currentAgents.get(position);
+            return myHereAgents.get(position);
         }
 
         @Override
@@ -174,7 +176,7 @@ public class MyRoutinesActivity extends AppCompatActivity {
             TextView eqId = (TextView) convertView.findViewById(R.id.equiplist_id);
             TextView eqSensorType = (TextView) convertView.findViewById(R.id.equiplist_sensorid);
 
-            switch (currentAgents.get(pos).getMyeqType()) {
+            switch (myHereAgents.get(pos).getMyeqType()) {
                 case 0:
                     eqTypeImage.setImageResource(R.mipmap.ic_setting_update_alarm);
                     break;
@@ -190,8 +192,8 @@ public class MyRoutinesActivity extends AppCompatActivity {
                     break;
             }
 
-            eqName.setText(currentAgents.get(pos).getMyeqName());
-            eqId.setText(currentAgents.get(pos).getMyeqMacId());
+            eqName.setText(myHereAgents.get(pos).getMyeqName());
+            eqId.setText(myHereAgents.get(pos).getMyeqMacId());
             //eqSensorType.setText(registeredAgents.get(pos).getMyeqType());
 
             return convertView;

@@ -55,8 +55,6 @@ public class MyEquipmentsActivity extends AppCompatActivity {
     // Stops scanning after 10 seconds.
     private static final long SCAN_PERIOD = 10000;
 
-    public static List<MyHereAgent> registeredAgents = MainActivity.hereDB.getAllMyHereAgents();
-
     //Toolbar
     private Toolbar toolbar;
 
@@ -81,12 +79,7 @@ public class MyEquipmentsActivity extends AppCompatActivity {
         ListView listView = (ListView) findViewById(R.id.setting_myeq_list_registered);
         ListViewAdapter adapter = new ListViewAdapter();
         listView.setAdapter(adapter);
-
-        TextView textView = (TextView) findViewById(R.id.setting_myeq_tv_registered);
-        if(registeredAgents.size() != 0){
-            textView.setVisibility(View.GONE);
-        }
-
+        adapter.notifyDataSetChanged();
         mHandler = new Handler();
 
         // Use this check to determine whether BLE is supported on the device.  Then you can
@@ -148,14 +141,24 @@ public class MyEquipmentsActivity extends AppCompatActivity {
 
         public List<MyHereAgent> myHereAgents = new ArrayList<MyHereAgent>();
 
+        public ListViewAdapter() {
+            if(MainActivity.hereDB.getAllMyHereAgents() !=null)
+                myHereAgents = MainActivity.hereDB.getAllMyHereAgents();
+
+            TextView textView = (TextView) findViewById(R.id.setting_myeq_tv_registered);
+            if (myHereAgents.size() != 0) {
+                textView.setVisibility(View.GONE);
+            }
+        }
+
         @Override
         public int getCount() {
-            return registeredAgents.size();
+            return myHereAgents.size();
         }
 
         @Override
         public Object getItem(int position) {
-            return registeredAgents.get(position);
+            return myHereAgents.get(position);
         }
 
         @Override
@@ -177,7 +180,7 @@ public class MyEquipmentsActivity extends AppCompatActivity {
             TextView eqId = (TextView) convertView.findViewById(R.id.equiplist_id);
             TextView eqSensorType = (TextView) convertView.findViewById(R.id.equiplist_sensorid);
 
-            switch (registeredAgents.get(pos).getMyeqType()) {
+            switch (myHereAgents.get(pos).getMyeqType()) {
                 case 0:
                     eqTypeImage.setImageResource(R.mipmap.ic_setting_update_alarm);
                     break;
@@ -193,8 +196,8 @@ public class MyEquipmentsActivity extends AppCompatActivity {
                     break;
             }
 
-            eqName.setText(registeredAgents.get(pos).getMyeqName());
-            eqId.setText(registeredAgents.get(pos).getMyeqMacId());
+            eqName.setText(myHereAgents.get(pos).getMyeqName());
+            eqId.setText(myHereAgents.get(pos).getMyeqMacId());
             //eqSensorType.setText(registeredAgents.get(pos).getMyeqType());
 
             return convertView;
@@ -210,7 +213,11 @@ public class MyEquipmentsActivity extends AppCompatActivity {
 
     @Override
     public void onResume() {
+
         super.onResume();
+//        if(registeredAgents!=null)
+//            registeredAgents.clear();
+//        registeredAgents = MainActivity.hereDB.getAllMyHereAgents();
 
         Log.d(TAG, "onResume");
         // Ensures Bluetooth is enabled on the device.  If Bluetooth is not currently enabled,
@@ -231,6 +238,10 @@ public class MyEquipmentsActivity extends AppCompatActivity {
         equipListAdapter.clear();
     }
 
+    @Override
+    public void onRestart(){
+        super.onRestart();
+    }
 
     private void scanLeDevice(final boolean enable) {
         if (enable) {
