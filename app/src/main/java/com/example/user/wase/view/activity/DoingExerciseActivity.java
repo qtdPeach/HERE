@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.ImageView;
@@ -16,8 +17,13 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.user.wase.R;
+import com.example.user.wase.model.AgentRecord;
+import com.example.user.wase.model.MyHereAgent;
+import com.example.user.wase.model.MyRoutine;
 import com.example.user.wase.utility.TaskScheduler;
 
+import java.util.ArrayList;
+import java.util.StringTokenizer;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -26,7 +32,12 @@ import java.util.TimerTask;
  */
 public class DoingExerciseActivity extends AppCompatActivity {
 
+    private static final int GOAL_SET = 51;
+    private static final int GOAL_COUNT = 52;
+    private static final int GOAL_TIME = 53;
+
     public static Activity thisActivity;
+    MyRoutine myRoutine;
 
     LinearLayout layout_whole;
 
@@ -39,6 +50,8 @@ public class DoingExerciseActivity extends AppCompatActivity {
     TextView tv_eq_goal;
     TextView tv_eq_count;
 
+    ArrayList<AgentRecord> agentRecords;
+    int numAgents;
 
     int countCurrentEq;
 
@@ -54,7 +67,16 @@ public class DoingExerciseActivity extends AppCompatActivity {
         StartExerciseActivity.thisActivity.finish();
         thisActivity = this;
 
+        //Obtain a selected user routine
+        myRoutine = MainActivity.mySelectedRoutine;
+
+        //Arraylist to save the user's records
+        agentRecords = new ArrayList<>();
+        numAgents = 0;
+
         initWidgets();
+
+        initAgentRecords();
 
 
         timer = new TaskScheduler();
@@ -78,6 +100,219 @@ public class DoingExerciseActivity extends AppCompatActivity {
         tv_eq_goal = (TextView) findViewById(R.id.doingexercise_tv_eq_goal);
         tv_eq_count = (TextView) findViewById(R.id.doingexercise_tv_eq_count);
 
+    }
+
+
+    private void initAgentRecords() {
+
+        agentRecords.clear();
+        numAgents = 0;
+
+        boolean isMoreAgent = true;
+
+        if (myRoutine == null) {
+            return;
+        }
+
+        /* EQ1 */
+        if ((myRoutine.getRoutineEq1Id().equals("-1") ||
+                        myRoutine.getRoutineEq1Id().equals("") ||
+                        myRoutine.getRoutineEq1Id() == null)) {
+            isMoreAgent = false;
+            return;
+        } else {
+            numAgents ++;
+            AgentRecord tmpAgentRecord1 = new AgentRecord();
+            String agent1MacId = myRoutine.getRoutineEq1Id();
+            tmpAgentRecord1.setAgentMacId(agent1MacId);
+            tmpAgentRecord1.setAgentName(MainActivity.hereDB.getMyHereAgent(agent1MacId).getMyeqName());
+            tmpAgentRecord1.setAgentType(MainActivity.hereDB.getMyHereAgent(agent1MacId).getMyeqType());
+
+            tmpAgentRecord1.setGoalSet(getIntFromGoal(GOAL_SET, myRoutine.getRoutineEq1Goal()));
+            tmpAgentRecord1.setGoalCount(getIntFromGoal(GOAL_COUNT, myRoutine.getRoutineEq1Goal()));
+            tmpAgentRecord1.setGoalTime(getIntFromGoal(GOAL_TIME, myRoutine.getRoutineEq1Goal()));
+
+            tmpAgentRecord1.setRecordCount(0);
+            tmpAgentRecord1.setRecordTime(0);
+
+            agentRecords.add(tmpAgentRecord1);
+            Log.d("InitializeAgentRecords", "A record is added: "
+                    + tmpAgentRecord1.getAgentName() + " ["
+                    + tmpAgentRecord1.getGoalSet() + "|"
+                    + tmpAgentRecord1.getGoalCount() + "|"
+                    + tmpAgentRecord1.getGoalTime() + "]");
+            Log.d("InitializeAgentRecords", "Agent num: " + numAgents);
+
+        }
+
+        if(!isMoreAgent)    return;
+
+        /* EQ2 */
+        if ((myRoutine.getRoutineEq2Id().equals("-1") ||
+                        myRoutine.getRoutineEq2Id().equals("") ||
+                        myRoutine.getRoutineEq2Id() == null)) {
+            isMoreAgent = false;
+            return;
+        } else {
+            numAgents ++;
+            AgentRecord tmpAgentRecord2 = new AgentRecord();
+            String agent2MacId = myRoutine.getRoutineEq2Id();
+            tmpAgentRecord2.setAgentMacId(agent2MacId);
+            tmpAgentRecord2.setAgentName(MainActivity.hereDB.getMyHereAgent(agent2MacId).getMyeqName());
+            tmpAgentRecord2.setAgentType(MainActivity.hereDB.getMyHereAgent(agent2MacId).getMyeqType());
+
+            tmpAgentRecord2.setGoalSet(getIntFromGoal(GOAL_SET, myRoutine.getRoutineEq2Goal()));
+            tmpAgentRecord2.setGoalCount(getIntFromGoal(GOAL_COUNT, myRoutine.getRoutineEq2Goal()));
+            tmpAgentRecord2.setGoalTime(getIntFromGoal(GOAL_TIME, myRoutine.getRoutineEq2Goal()));
+
+            tmpAgentRecord2.setRecordCount(0);
+            tmpAgentRecord2.setRecordTime(0);
+
+            agentRecords.add(tmpAgentRecord2);
+            Log.d("InitializeAgentRecords", "A record is added: "
+                    + tmpAgentRecord2.getAgentName() + " ["
+                    + tmpAgentRecord2.getGoalSet() + "|"
+                    + tmpAgentRecord2.getGoalCount() + "|"
+                    + tmpAgentRecord2.getGoalTime() + "]");
+            Log.d("InitializeAgentRecords", "Agent num: " + numAgents);
+
+        }
+
+        if(!isMoreAgent)    return;
+
+        /* EQ3 */
+        if ((myRoutine.getRoutineEq3Id().equals("-1") ||
+                        myRoutine.getRoutineEq3Id().equals("") ||
+                        myRoutine.getRoutineEq3Id() == null)) {
+            isMoreAgent = false;
+            return;
+        } else {
+            numAgents ++;
+            AgentRecord tmpAgentRecord3 = new AgentRecord();
+            String agent3MacId = myRoutine.getRoutineEq3Id();
+            tmpAgentRecord3.setAgentMacId(agent3MacId);
+            tmpAgentRecord3.setAgentName(MainActivity.hereDB.getMyHereAgent(agent3MacId).getMyeqName());
+            tmpAgentRecord3.setAgentType(MainActivity.hereDB.getMyHereAgent(agent3MacId).getMyeqType());
+
+            tmpAgentRecord3.setGoalSet(getIntFromGoal(GOAL_SET, myRoutine.getRoutineEq3Goal()));
+            tmpAgentRecord3.setGoalCount(getIntFromGoal(GOAL_COUNT, myRoutine.getRoutineEq3Goal()));
+            tmpAgentRecord3.setGoalTime(getIntFromGoal(GOAL_TIME, myRoutine.getRoutineEq3Goal()));
+
+            tmpAgentRecord3.setRecordCount(0);
+            tmpAgentRecord3.setRecordTime(0);
+
+            agentRecords.add(tmpAgentRecord3);
+            Log.d("InitializeAgentRecords", "A record is added: "
+                    + tmpAgentRecord3.getAgentName() + " ["
+                    + tmpAgentRecord3.getGoalSet() + "|"
+                    + tmpAgentRecord3.getGoalCount() + "|"
+                    + tmpAgentRecord3.getGoalTime() + "]");
+            Log.d("InitializeAgentRecords", "Agent num: " + numAgents);
+
+        }
+
+        if(!isMoreAgent)    return;
+
+        /* EQ4 */
+        if ((myRoutine.getRoutineEq4Id().equals("-1") ||
+                        myRoutine.getRoutineEq4Id().equals("") ||
+                        myRoutine.getRoutineEq4Id() == null)) {
+            isMoreAgent = false;
+            return;
+        } else {
+            numAgents ++;
+            AgentRecord tmpAgentRecord4 = new AgentRecord();
+            String agent4MacId = myRoutine.getRoutineEq4Id();
+            tmpAgentRecord4.setAgentMacId(agent4MacId);
+            tmpAgentRecord4.setAgentName(MainActivity.hereDB.getMyHereAgent(agent4MacId).getMyeqName());
+            tmpAgentRecord4.setAgentType(MainActivity.hereDB.getMyHereAgent(agent4MacId).getMyeqType());
+
+            tmpAgentRecord4.setGoalSet(getIntFromGoal(GOAL_SET, myRoutine.getRoutineEq4Goal()));
+            tmpAgentRecord4.setGoalCount(getIntFromGoal(GOAL_COUNT, myRoutine.getRoutineEq4Goal()));
+            tmpAgentRecord4.setGoalTime(getIntFromGoal(GOAL_TIME, myRoutine.getRoutineEq4Goal()));
+
+            tmpAgentRecord4.setRecordCount(0);
+            tmpAgentRecord4.setRecordTime(0);
+
+            agentRecords.add(tmpAgentRecord4);
+            Log.d("InitializeAgentRecords", "A record is added: "
+                    + tmpAgentRecord4.getAgentName() + " ["
+                    + tmpAgentRecord4.getGoalSet() + "|"
+                    + tmpAgentRecord4.getGoalCount() + "|"
+                    + tmpAgentRecord4.getGoalTime() + "]");
+            Log.d("InitializeAgentRecords", "Agent num: " + numAgents);
+
+        }
+
+        if(!isMoreAgent)    return;
+
+        /* EQ5 */
+        if ((myRoutine.getRoutineEq5Id().equals("-1") ||
+                        myRoutine.getRoutineEq5Id().equals("") ||
+                        myRoutine.getRoutineEq5Id() == null)) {
+            isMoreAgent = false;
+            return;
+        } else {
+            numAgents ++;
+            AgentRecord tmpAgentRecord5 = new AgentRecord();
+            String agent5MacId = myRoutine.getRoutineEq5Id();
+            tmpAgentRecord5.setAgentMacId(agent5MacId);
+            tmpAgentRecord5.setAgentName(MainActivity.hereDB.getMyHereAgent(agent5MacId).getMyeqName());
+            tmpAgentRecord5.setAgentType(MainActivity.hereDB.getMyHereAgent(agent5MacId).getMyeqType());
+
+            tmpAgentRecord5.setGoalSet(getIntFromGoal(GOAL_SET, myRoutine.getRoutineEq5Goal()));
+            tmpAgentRecord5.setGoalCount(getIntFromGoal(GOAL_COUNT, myRoutine.getRoutineEq5Goal()));
+            tmpAgentRecord5.setGoalTime(getIntFromGoal(GOAL_TIME, myRoutine.getRoutineEq5Goal()));
+
+            tmpAgentRecord5.setRecordCount(0);
+            tmpAgentRecord5.setRecordTime(0);
+
+            agentRecords.add(tmpAgentRecord5);
+            Log.d("InitializeAgentRecords", "A record is added: "
+                    + tmpAgentRecord5.getAgentName() + " ["
+                    + tmpAgentRecord5.getGoalSet() + "|"
+                    + tmpAgentRecord5.getGoalCount() + "|"
+                    + tmpAgentRecord5.getGoalTime() + "]");
+            Log.d("InitializeAgentRecords", "Agent num: " + numAgents);
+
+        }
+
+        Log.d("InitializeAgentRecords", "Agent num: " + numAgents);
+
+    }
+
+
+    private int getIntFromGoal(int target, String rawGoal) {
+
+        //Type 1. 3|15|-1
+        //Type 2. 2|-1|60
+
+        int goalType = 0;   //1: count times, 2: count secs, 3: count times & secs
+
+        String set = "";    //sets
+        String count = "";  //times
+        String time = "";   //secs
+
+        StringTokenizer tokens = new StringTokenizer(rawGoal, "|");
+        set = tokens.nextToken();
+        count = tokens.nextToken();
+        time = tokens.nextToken();
+
+        //Single or multiple
+        int intSet = Integer.parseInt(set);
+        int intCount = Integer.parseInt(count);
+        int intTime = Integer.parseInt(time);
+
+        switch (target) {
+            case 51:
+                return intSet;
+            case 52:
+                return intCount;
+            case 53:
+                return intTime;
+            default:
+                return -1;
+        }
     }
 
     private String secondToTimerString(int seconds) {

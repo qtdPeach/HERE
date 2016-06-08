@@ -345,12 +345,25 @@
     </LinearLayout>
 
 
+    <EditText
+        android:id="@+id/finishexercise_et_recordname"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="5dp"
+        android:layout_marginBottom="5dp"
+        android:layout_marginRight="20dp"
+        android:layout_marginLeft="20dp"
+        android:hint="Insert this record name"
+        android:gravity="center"
+        android:textSize="18dp"
+        android:textColorHint="#aaaaaa"
+        android:shadowColor="@color/colorSkyBlue"
+        android:textColorHighlight="@color/colorSkyBlue"/>
+
     <Button
         android:id="@+id/finishexercise_btn_finish"
         android:layout_width="50dp"
         android:layout_height="50dp"
-        android:layout_margin="15dp"
-        android:layout_marginRight="30dp"
         android:background="@drawable/btn_check"
         android:layout_gravity="center_horizontal"
         android:onClick="mOnClick"/>
