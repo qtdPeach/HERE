@@ -6,6 +6,8 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
+import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.example.user.wase.R;
 
@@ -38,7 +40,11 @@ public class MyRecordsActivity extends AppCompatActivity {
 
         actionBar.setTitle("My Exercise Records");
         actionBar.setDefaultDisplayHomeAsUpEnabled(true);
+
+
     }
+
+
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {

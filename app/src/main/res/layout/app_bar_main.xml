@@ -25,10 +25,10 @@
 
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/fab"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
         android:layout_gravity="bottom|end"
         android:layout_margin="@dimen/fab_margin"
-        android:src="@drawable/here_character_simple_boy" />
+        android:src="@drawable/icon_play" />
 
 </android.support.design.widget.CoordinatorLayout>

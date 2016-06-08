@@ -22,7 +22,17 @@
         android:layout_height="1dp"
         android:background="@color/colorSkyBlue"/>
 
+    <TextView
+        android:id="@+id/routine_noroutine"
+        android:layout_width="match_parent"
+        android:layout_height="120dp"
+        android:text="Please select your routine below"
+        android:background="#eeeeee"
+        android:textColor="#aaaaaa"
+        android:gravity="center"/>
+
     <HorizontalScrollView
+        android:id="@+id/routine_hscrollview"
         android:background="#eeeeee"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -250,17 +260,42 @@
         </LinearLayout>
     </HorizontalScrollView>
 
-    <TextView
+    <LinearLayout
+        android:orientation="horizontal"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:paddingLeft="15dp"
-        android:paddingTop="5dp"
-        android:paddingBottom="5dp"
-        android:layout_marginTop="10dp"
-        android:textColor="@color/colorSkyBlue"
-        android:textStyle="bold"
-        android:textSize="18dp"
-        android:text="My registered routines"/>
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:layout_width="0px"
+            android:layout_height="wrap_content"
+            android:layout_weight="6"
+            android:paddingLeft="15dp"
+            android:paddingTop="5dp"
+            android:paddingBottom="5dp"
+            android:layout_marginTop="10dp"
+            android:textColor="@color/colorSkyBlue"
+            android:textStyle="bold"
+            android:textSize="18dp"
+            android:text="My registered routines"/>
+
+        <LinearLayout
+            android:layout_width="0px"
+            android:layout_height="wrap_content"
+            android:layout_gravity="right|center_vertical"
+            android:layout_weight="1">
+            <Button
+                android:id="@+id/routine_btn_refresh"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:background="@drawable/icon_refresh"
+                android:layout_marginRight="10dp"
+                />
+        </LinearLayout>
+
+
+    </LinearLayout>
+
+
 
     <View
         android:layout_width="match_parent"

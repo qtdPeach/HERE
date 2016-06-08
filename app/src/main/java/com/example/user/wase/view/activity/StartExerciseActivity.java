@@ -175,22 +175,32 @@ public class StartExerciseActivity extends AppCompatActivity {
             if (!eq1String.equals("")) {
                 eq1String += ": " + parseRoutineGoal(3, selectedRoutine.getRoutineEq1Goal());
                 tv_routine_eq1.setText(eq1String);
+            } else {
+                tv_routine_eq1.setVisibility(View.INVISIBLE);
             }
             if (!eq2String.equals("")) {
                 eq2String += ": " + parseRoutineGoal(3, selectedRoutine.getRoutineEq2Goal());
                 tv_routine_eq2.setText(eq2String);
+            } else {
+                tv_routine_eq2.setVisibility(View.INVISIBLE);
             }
             if (!eq3String.equals("")) {
                 eq3String += ": " + parseRoutineGoal(3, selectedRoutine.getRoutineEq3Goal());
                 tv_routine_eq3.setText(eq3String);
+            } else {
+                tv_routine_eq3.setVisibility(View.INVISIBLE);
             }
             if (!eq4String.equals("")) {
                 eq4String += ": " + parseRoutineGoal(3, selectedRoutine.getRoutineEq4Goal());
                 tv_routine_eq4.setText(eq4String);
+            } else {
+                tv_routine_eq4.setVisibility(View.INVISIBLE);
             }
             if (!eq5String.equals("")) {
                 eq5String += ": " + parseRoutineGoal(3, selectedRoutine.getRoutineEq5Goal());
                 tv_routine_eq5.setText(eq5String);
+            }else {
+                tv_routine_eq5.setVisibility(View.INVISIBLE);
             }
 
 

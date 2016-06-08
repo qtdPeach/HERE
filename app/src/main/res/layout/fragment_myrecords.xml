@@ -24,7 +24,7 @@
                 android:background="#eeeeee">
 
                 <ImageView
-                    android:id="@+id/character_img"
+                    android:id="@+id/record_character_img"
                     android:layout_width="100dp"
                     android:layout_height="100dp"
                     android:src="@drawable/here_character_simple_boy"/>
@@ -37,7 +37,7 @@
                     android:gravity="left|center_vertical">
 
                     <TextView
-                        android:id = "@+id/character_name"
+                        android:id = "@+id/record_nick_name"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginBottom="10dp"
@@ -53,7 +53,7 @@
                         android:textColor="@color/colorPrimaryDark"/>
 
                     <TextView
-                        android:id ="@+id/character_msg"
+                        android:id ="@+id/record_msg"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="You have to do more! :)"

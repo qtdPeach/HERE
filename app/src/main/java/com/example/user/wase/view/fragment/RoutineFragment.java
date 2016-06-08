@@ -10,10 +10,13 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.BaseAdapter;
+import android.widget.Button;
+import android.widget.HorizontalScrollView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.user.wase.R;
 import com.example.user.wase.model.Equipment;
@@ -35,6 +38,12 @@ public class RoutineFragment extends Fragment{
 
     public List<Goal> goals;
     ListViewAdapter listViewAdapter;
+
+    TextView tv_noroutine;
+    HorizontalScrollView horizontalScrollView;
+
+    Button btn_refresh;
+
     @Nullable
     @Override
     public View onCreateView(final LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -43,6 +52,9 @@ public class RoutineFragment extends Fragment{
 
         listViewAdapter = new ListViewAdapter();
         final View viewFragmentRoutine = inflater.inflate(R.layout.fragment_routine, container, false);
+
+        initWidgets(viewFragmentRoutine);
+
         ListView listView = (ListView) viewFragmentRoutine.findViewById(R.id.routine_list);
         listView.setAdapter(listViewAdapter);
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -83,6 +95,17 @@ public class RoutineFragment extends Fragment{
                 TextView routineEquip5 = (TextView) viewFragmentRoutine.findViewById(R.id.selected_routine_equip5);
                 ImageView equipImage5 = (ImageView) viewFragmentRoutine.findViewById(R.id.routine_equipment5_image);
                 LinearLayout equipment5inList = (LinearLayout) viewFragmentRoutine.findViewById(R.id.routine_equipment5);
+
+                btn_refresh = (Button) viewFragmentRoutine.findViewById(R.id.routine_btn_refresh);
+                btn_refresh.setBackgroundResource(R.drawable.effect_refresh_press);
+
+                btn_refresh.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        listViewAdapter.notifyDataSetChanged();
+                        Toast.makeText(viewFragmentRoutine.getContext(), "List is updated", Toast.LENGTH_SHORT).show();
+                    }
+                });
 
 
                 if (!routines.get(position).getRoutineEq1Id().equals("-1")) {
@@ -165,14 +188,27 @@ public class RoutineFragment extends Fragment{
                     arrowOfEquipment4.setVisibility(View.GONE);
                 }
 
-                if(isRoutineOk)
+                if(isRoutineOk){
                     MainActivity.mySelectedRoutine = routines.get(position);
+
+                    tv_noroutine.setVisibility(View.GONE);
+                    horizontalScrollView.setVisibility(View.VISIBLE);
+                }
             }
         });
         listViewAdapter.notifyDataSetChanged();
 
         return viewFragmentRoutine;
         //return super.onCreateView(inflater, container, savedInstanceState);
+    }
+
+
+    private void initWidgets(View fragmentView) {
+        tv_noroutine = (TextView) fragmentView.findViewById(R.id.routine_noroutine);
+        horizontalScrollView = (HorizontalScrollView) fragmentView.findViewById(R.id.routine_hscrollview);
+
+        tv_noroutine.setVisibility(View.VISIBLE);
+        horizontalScrollView.setVisibility(View.GONE);
     }
 
     @Override
@@ -322,4 +358,5 @@ public class RoutineFragment extends Fragment{
             return view;
         }
     }
+
 }

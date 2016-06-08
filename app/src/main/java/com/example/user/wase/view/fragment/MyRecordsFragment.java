@@ -6,6 +6,7 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,6 +22,8 @@ import com.example.user.wase.device.EquipmentRecordTerminal;
 import com.example.user.wase.deviceLE.DataViewTerminal;
 import com.example.user.wase.model.Equipment;
 import com.example.user.wase.model.EquipmentRecord;
+import com.example.user.wase.model.MyInformation;
+import com.example.user.wase.view.activity.MainActivity;
 import com.jjoe64.graphview.DefaultLabelFormatter;
 import com.jjoe64.graphview.ValueDependentColor;
 import com.jjoe64.graphview.helper.StaticLabelsFormatter;
@@ -40,6 +43,10 @@ public class MyRecordsFragment extends Fragment{
     private HERE_DeviceListAdapter equipListAdapter;
     private ListView lvEquipList;
     private ArrayList<Equipment> equipmentList;
+
+    ImageView iv_character_img;
+    TextView tv_nick_name;
+    TextView tv_msg;
 
     @Nullable
     @Override
@@ -116,11 +123,47 @@ public class MyRecordsFragment extends Fragment{
             }
         });
 
-
+        initWidgets(currentView);
 
         return currentView;
         //return super.onCreateView(inflater, container, savedInstanceState);
     }
+
+    private void initWidgets(View fragmentView) {
+        iv_character_img = (ImageView) fragmentView.findViewById(R.id.record_character_img);
+        tv_nick_name = (TextView) fragmentView.findViewById(R.id.record_nick_name);
+        tv_msg = (TextView) fragmentView.findViewById(R.id.record_msg);
+
+        if (iv_character_img == null | tv_nick_name == null | tv_msg == null) {
+            Log.d("RecordInitWidgets", "Widget initialization is failed.");
+        } else {
+            MyInformation tmpMyInformation = MainActivity.hereDB.getMyInformation();
+
+            if (tmpMyInformation == null) {
+                iv_character_img.setImageResource(R.drawable.here_logo_character_notitle);
+                tv_nick_name.setText("User (not registered)");
+                tv_msg.setText("Insert user information");
+            } else {
+                Log.d("RecordInitWidgets", "initMyInfo() is called");
+                Log.d("RecordInitWidgets", "user_sex: " + tmpMyInformation.getUserSex());
+                Log.d("RecordInitWidgets", "user_name: " + tmpMyInformation.getUserName());
+                Log.d("RecordInitWidgets", "user_nick: " + tmpMyInformation.getUserNick());
+
+                if (tmpMyInformation.getUserSex() == 2) {
+                    iv_character_img.setImageResource(R.drawable.here_character_simple_girl);
+                } else {
+                    iv_character_img.setImageResource(R.drawable.here_character_simple_boy);
+                }
+
+                tv_nick_name.setText(tmpMyInformation.getUserNick() + " (" + tmpMyInformation.getUserName() + ")");
+
+                //TODO: Record를 분석하여 Message를 출력해줄 수 있도록 수정
+                tv_msg.setText("Lazy! Do your best!");
+            }
+        }
+    }
+
+
 
     String getDay (int date){
         int modulo = date%7;

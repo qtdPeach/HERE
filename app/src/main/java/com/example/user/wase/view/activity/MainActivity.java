@@ -1,6 +1,7 @@
 package com.example.user.wase.view.activity;
 
 import android.content.Intent;
+import android.media.Image;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.support.design.widget.FloatingActionButton;
@@ -18,6 +19,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.user.wase.R;
@@ -30,6 +33,7 @@ import com.example.user.wase.model.MyInformation;
 import com.example.user.wase.model.MyRecord;
 import com.example.user.wase.model.MyRoutine;
 import com.example.user.wase.utility.DatabaseHelper;
+import com.example.user.wase.view.fragment.RoutineFragment;
 import com.example.user.wase.view.fragment.SupportHelpFragment;
 
 import java.util.ArrayList;
@@ -52,6 +56,11 @@ public class MainActivity extends AppCompatActivity
     private TabLayout tabLayout;
     private ViewPager viewPager;
 
+    private ImageView nav_header_icon;
+    private TextView nav_header_nick;
+    private TextView nav_header_name_id;
+
+    private View header;
 
     // Modification
 
@@ -115,21 +124,8 @@ public class MainActivity extends AppCompatActivity
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-//                Snackbar.make(view, "Please select your routine first", Snackbar.LENGTH_LONG)
-//                        .setAction("Action", null).show();
 
                 Toast.makeText(getApplicationContext(), "START EXERCISE", Toast.LENGTH_SHORT).show();
-//
-//                //MyRoutine is serializable
-//                MyRoutine selectedTmpRoutine = new MyRoutine();
-//                selectedTmpRoutine.setRoutineId("ROUTINE01");
-//                selectedTmpRoutine.setRoutineName("아령푸쉬업훌라후프");
-//                selectedTmpRoutine.setRoutineEq1Id("11:22:33:44:55:66");
-//                selectedTmpRoutine.setRoutineEq1Goal("3|15|-1");
-//                selectedTmpRoutine.setRoutineEq2Id("22:33:44:55:66:77");
-//                selectedTmpRoutine.setRoutineEq2Goal("2|20|-1");
-//                selectedTmpRoutine.setRoutineEq3Id("33:44:55:66:77:88");
-//                selectedTmpRoutine.setRoutineEq3Goal("5|-1|60");
 
                 //Send a selected routine by serializing MyRoutine object
                 Intent intent_startexercise = new Intent(getApplicationContext(), StartExerciseActivity.class);
@@ -164,8 +160,55 @@ public class MainActivity extends AppCompatActivity
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+        header = navigationView.getHeaderView(0);
+
+        initWidgets();
 
 
+    }
+
+
+    private void initWidgets() {
+
+        nav_header_icon = (ImageView) header.findViewById(R.id.nav_header_icon);
+        nav_header_nick = (TextView) header.findViewById(R.id.nav_header_usernick);
+        nav_header_name_id = (TextView) header.findViewById(R.id.nav_header_username_id);
+
+        initMyInfo();
+    }
+
+    private void initMyInfo() {
+        MyInformation tmpMyInformation = hereDB.getMyInformation();
+        if (tmpMyInformation == null) {
+            nav_header_icon.setVisibility(View.INVISIBLE);
+            nav_header_nick.setText("User");
+            nav_header_name_id.setText("Insert user information");
+        } else {
+            Log.d("MainInitWidgets", "initMyInfo() is called");
+            Log.d("MainInitWidgets", "user_sex: " + tmpMyInformation.getUserSex());
+            Log.d("MainInitWidgets", "user_name: " + tmpMyInformation.getUserName());
+            Log.d("MainInitWidgets", "user_nick: " + tmpMyInformation.getUserNick());
+
+            if (tmpMyInformation.getUserSex() == 2) {
+                nav_header_icon.setVisibility(View.VISIBLE);
+                nav_header_icon.setImageResource(R.drawable.here_character_simple_girl);
+            } else {
+                nav_header_icon.setVisibility(View.VISIBLE);
+                nav_header_icon.setImageResource(R.drawable.here_character_simple_boy);
+            }
+
+            nav_header_nick.setText(tmpMyInformation.getUserNick());
+            String name_id = "";
+            name_id = tmpMyInformation.getUserName() + " (" + tmpMyInformation.getUserId() + ")";
+            nav_header_name_id.setText(name_id);
+        }
+    }
+
+    @Override
+    protected void onResume() {
+        Log.d("MainInitWidgets", "onResume() is called");
+        initMyInfo();
+        super.onResume();
     }
 
     @Override
@@ -310,6 +353,8 @@ public class MainActivity extends AppCompatActivity
 
                 hereDB.insertMyInformation(tmpMyInformation);
                 Toast.makeText(getApplicationContext(), "MyInformation is added into DB.", Toast.LENGTH_SHORT).show();
+
+                initMyInfo();
                 break;
             case R.id.nav_db_add_myagents:
                 MyHereAgent tmpMyHereAgent1 = new MyHereAgent();
