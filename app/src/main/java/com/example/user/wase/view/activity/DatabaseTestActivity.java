@@ -461,16 +461,26 @@ public class DatabaseTestActivity extends AppCompatActivity {
 
                 tmpMyRoutine.setRoutineId(myroutine_id);
                 tmpMyRoutine.setRoutineName(myroutine_name);
-                tmpMyRoutine.setRoutineEq1Id(myroutine_eq1_id);
-                tmpMyRoutine.setRoutineEq1Goal(myroutine_eq1_goal);
-                tmpMyRoutine.setRoutineEq2Id(myroutine_eq2_id);
-                tmpMyRoutine.setRoutineEq2Goal(myroutine_eq2_goal);
-                tmpMyRoutine.setRoutineEq3Id(myroutine_eq3_id);
-                tmpMyRoutine.setRoutineEq3Goal(myroutine_eq3_goal);
-                tmpMyRoutine.setRoutineEq4Id(myroutine_eq4_id);
-                tmpMyRoutine.setRoutineEq4Goal(myroutine_eq4_goal);
-                tmpMyRoutine.setRoutineEq5Id(myroutine_eq5_id);
-                tmpMyRoutine.setRoutineEq5Goal(myroutine_eq5_goal);
+                if (!myroutine_eq1_id.equals("") && myroutine_eq1_id != null) {
+                    tmpMyRoutine.setRoutineEq1Id(myroutine_eq1_id);
+                    tmpMyRoutine.setRoutineEq1Goal(myroutine_eq1_goal);
+                }
+                if (!myroutine_eq2_id.equals("") && myroutine_eq2_id != null) {
+                    tmpMyRoutine.setRoutineEq2Id(myroutine_eq2_id);
+                    tmpMyRoutine.setRoutineEq2Goal(myroutine_eq2_goal);
+                }
+                if (!myroutine_eq3_id.equals("") && myroutine_eq3_id != null) {
+                    tmpMyRoutine.setRoutineEq3Id(myroutine_eq3_id);
+                    tmpMyRoutine.setRoutineEq3Goal(myroutine_eq3_goal);
+                }
+                if (!myroutine_eq4_id.equals("") && myroutine_eq4_id != null) {
+                    tmpMyRoutine.setRoutineEq4Id(myroutine_eq4_id);
+                    tmpMyRoutine.setRoutineEq4Goal(myroutine_eq4_goal);
+                }
+                if (!myroutine_eq5_id.equals("") && myroutine_eq5_id != null) {
+                    tmpMyRoutine.setRoutineEq5Id(myroutine_eq5_id);
+                    tmpMyRoutine.setRoutineEq5Goal(myroutine_eq5_goal);
+                }
 
                 MainActivity.hereDB.insertRoutine(tmpMyRoutine);
 
