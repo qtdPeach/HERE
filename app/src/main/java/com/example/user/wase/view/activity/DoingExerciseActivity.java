@@ -5,11 +5,8 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Message;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
-import android.view.MotionEvent;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -18,14 +15,12 @@ import android.widget.Toast;
 
 import com.example.user.wase.R;
 import com.example.user.wase.model.AgentRecord;
-import com.example.user.wase.model.MyHereAgent;
 import com.example.user.wase.model.MyRoutine;
 import com.example.user.wase.utility.TaskScheduler;
 
 import java.util.ArrayList;
+import java.util.Random;
 import java.util.StringTokenizer;
-import java.util.Timer;
-import java.util.TimerTask;
 
 /**
  * Created by user on 2016-06-07.
@@ -35,6 +30,9 @@ public class DoingExerciseActivity extends AppCompatActivity {
     private static final int GOAL_SET = 51;
     private static final int GOAL_COUNT = 52;
     private static final int GOAL_TIME = 53;
+
+    private static final int RAND_MIN = 0;
+    private static final int RAND_MAX = 3;
 
     public static Activity thisActivity;
     MyRoutine myRoutine;
@@ -51,13 +49,18 @@ public class DoingExerciseActivity extends AppCompatActivity {
     TextView tv_eq_count;
 
     ArrayList<AgentRecord> agentRecords;
+    AgentRecord currentAgent;
     int numAgents;
+    int currentOrder;
 
     int countCurrentEq;
 
+    int currentRecordCount;
+    int currentRecordTime;
+
     TaskScheduler timer;
     boolean isTimerRunning;
-    int elapsedTime;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -73,10 +76,11 @@ public class DoingExerciseActivity extends AppCompatActivity {
         //Arraylist to save the user's records
         agentRecords = new ArrayList<>();
         numAgents = 0;
+        currentOrder = 0;
 
         initWidgets();
-
         initAgentRecords();
+        initAgentValues();
 
 
         timer = new TaskScheduler();
@@ -86,8 +90,6 @@ public class DoingExerciseActivity extends AppCompatActivity {
 
     private void initWidgets() {
         isTimerRunning = true;
-        elapsedTime = 0;
-        countCurrentEq = 0;
 
         layout_whole = (LinearLayout) findViewById(R.id.doingexercise_layout_whole);
         layout_title = (LinearLayout) findViewById(R.id.doingexercise_layout_title);
@@ -99,6 +101,34 @@ public class DoingExerciseActivity extends AppCompatActivity {
         tv_eq_name = (TextView) findViewById(R.id.doingexercise_tv_eq_name);
         tv_eq_goal = (TextView) findViewById(R.id.doingexercise_tv_eq_goal);
         tv_eq_count = (TextView) findViewById(R.id.doingexercise_tv_eq_count);
+
+        initMeasureValues();
+
+    }
+
+    private void initMeasureValues() {
+        currentRecordTime = 0;
+        currentRecordCount = 0;
+
+        countCurrentEq = 0;
+
+        tv_timer.setText(secondToTimerString(currentRecordTime));
+        tv_eq_count.setText(String.format("%d", currentRecordCount));
+    }
+
+    private void initAgentValues() {
+        if (currentOrder == 0) {
+            tv_eq_order.setText(String.format("%dst",currentOrder + 1) + " Exercise");
+        }else if (currentOrder == 1) {
+            tv_eq_order.setText(String.format("%dnd",currentOrder + 1) + " Exercise");
+        }else if (currentOrder == 2) {
+            tv_eq_order.setText(String.format("%drd", currentOrder + 1) + " Exercise");
+        } else {
+            tv_eq_order.setText(String.format("%dth", currentOrder + 1) + " Exercise");
+        }
+
+        tv_eq_name.setText(agentRecords.get(currentOrder).getAgentName());
+        tv_eq_goal.setText(agentRecords.get(currentOrder).makeGoalString());
 
     }
 
@@ -330,17 +360,32 @@ public class DoingExerciseActivity extends AppCompatActivity {
     private Runnable increaseTimer = new Runnable() {
         @Override
         public void run() {
-            tv_timer.setText(secondToTimerString(elapsedTime));
-            if (isTimerRunning) {
-                elapsedTime++;
+
+            //Obtain a current AgentRecord for recording
+            if (numAgents > 0) {
+                currentAgent = agentRecords.get(currentOrder);
             }
+
+
+
+            Random rand = new Random();
+            int randNum;
+
+            //TODO: tv_eq_count와 currentRecordCount는 성근이형 코드로 대체
+            if (isTimerRunning) {
+                currentRecordTime++;
+                randNum = rand.nextInt((RAND_MAX - RAND_MIN) + 1) + RAND_MIN;
+                currentRecordCount += randNum;
+            }
+            tv_timer.setText(secondToTimerString(currentRecordTime));
+            tv_eq_count.setText(String.format("%d", currentRecordCount));
         }
     };
 
 
     private void initializeRecord() {
         countCurrentEq = 0;
-        elapsedTime = 0;
+        currentRecordTime = 0;
 
         //Restart exercising -> Run timer
         isTimerRunning = true;
@@ -358,10 +403,22 @@ public class DoingExerciseActivity extends AppCompatActivity {
                 }
                 //timer.stop(increaseTimer);
 
-                AlertDialog goToNextExerciseAlert = askGoToNextExercise();
-                goToNextExerciseAlert.show();
+                Log.d("DoingExerciseOrder", "currentOrder: " + currentOrder + ", agentRecords.size(): " + agentRecords.size());
 
-                Toast.makeText(getApplicationContext(), "Skip this equipment\nor Go to next step", Toast.LENGTH_SHORT).show();
+                //If there is any remaining equipment (or now doing the last one)
+                if (currentOrder + 1 < numAgents) {
+                    AlertDialog goToNextExerciseAlert = askGoToNextExercise();
+                    goToNextExerciseAlert.show();
+                }
+                //If there is no remaining equipment to do
+                else {
+                    AlertDialog finishExerciseAlert = askFinishExercise();
+                    finishExerciseAlert.show();
+                }
+
+
+
+                //Toast.makeText(getApplicationContext(), "Skip this equipment\nor Go to next step", Toast.LENGTH_SHORT).show();
                 break;
         }
     }
@@ -375,7 +432,6 @@ public class DoingExerciseActivity extends AppCompatActivity {
                 .setPositiveButton("Give up", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        //TODO: Delete selected routines
                         Toast.makeText(getApplicationContext(), "Exercising is stopped.", Toast.LENGTH_SHORT).show();
                         finish();
                         dialog.dismiss();
@@ -389,6 +445,8 @@ public class DoingExerciseActivity extends AppCompatActivity {
                 })
                 .create();
 
+        myDeleteDialogBox.setCanceledOnTouchOutside(false);
+
         return myDeleteDialogBox;
     }
 
@@ -399,24 +457,85 @@ public class DoingExerciseActivity extends AppCompatActivity {
                 .setPositiveButton("Go next!", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        //TODO: Delete selected routines
                         Toast.makeText(getApplicationContext(), "Exercising is stopped.", Toast.LENGTH_SHORT).show();
 
-                        Intent intent_finishexercise = new Intent(getApplicationContext(), FinishExerciseActivity.class);
-                        startActivity(intent_finishexercise);
-                        //finish();
+                        //TODO: Store previous exercise record to agentRecords
+                        agentRecords.get(currentOrder).setRecordCount(currentRecordCount);
+                        agentRecords.get(currentOrder).setRecordTime(currentRecordTime);
+
+                        //if currentOrder = 2, numAgent = 4
+                        currentOrder++;
+
+                        //TODO: Initialize DoingExerciseActivity
+                        //TODO: Restart timer & measuring sensor
+                        isTimerRunning = true;
+                        initMeasureValues();
+                        initAgentValues();
+
+                        Log.d("DoingExerciseOrder", "currentOrder: " + currentOrder + ", agentRecords.size(): " + agentRecords.size());
+
+
                         dialog.dismiss();
                     }
                 })
                 .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
+                        if (!isTimerRunning) {
+                            isTimerRunning = true;
+                        }
                         dialog.dismiss();
                     }
                 })
                 .create();
 
+        myGoNextDialogBox.setCanceledOnTouchOutside(false);
+
         return myGoNextDialogBox;
+    }
+
+    private AlertDialog askFinishExercise() {
+        AlertDialog myFinishDialogBox = new AlertDialog.Builder(this)
+                .setTitle("Finish exercising")
+                .setMessage("This is the last step of your routine.\nDo you want to finish exercising?")
+                .setPositiveButton("Finish", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        Toast.makeText(getApplicationContext(), "Exercising is stopped.", Toast.LENGTH_SHORT).show();
+
+                        //TODO: Store previous exercise record to agentRecords
+                        agentRecords.get(currentOrder).setRecordCount(currentRecordCount);
+                        agentRecords.get(currentOrder).setRecordTime(currentRecordTime);
+
+                        Log.d("agentRecords", "Exercise is finished.");
+                        for (int i = 0; i < numAgents; i++) {
+                            Log.d("agentRecords", "agentRecords[" + i + "]: " + agentRecords.get(i).getRecordCount() + " / " + agentRecords.get(i).getRecordTime());
+                        }
+
+
+                        //Go to FinishExerciseActivity
+                        Intent intent_finishexercise = new Intent(getApplicationContext(), FinishExerciseActivity.class);
+                        intent_finishexercise.putExtra("agentRecords", agentRecords);
+                        intent_finishexercise.putExtra("routineName", myRoutine.getRoutineName());
+                        startActivity(intent_finishexercise);
+
+                        dialog.dismiss();
+                    }
+                })
+                .setNegativeButton("Do more!", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        if (!isTimerRunning) {
+                            isTimerRunning = true;
+                        }
+                        dialog.dismiss();
+                    }
+                })
+                .create();
+
+        myFinishDialogBox.setCanceledOnTouchOutside(false);
+
+        return myFinishDialogBox;
     }
 
     @Override

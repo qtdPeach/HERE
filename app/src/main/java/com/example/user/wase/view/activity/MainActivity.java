@@ -125,28 +125,28 @@ public class MainActivity extends AppCompatActivity
             @Override
             public void onClick(View view) {
 
-                Toast.makeText(getApplicationContext(), "START EXERCISE", Toast.LENGTH_SHORT).show();
+//                Toast.makeText(getApplicationContext(), "START EXERCISE", Toast.LENGTH_SHORT).show();
 
-                //Send a selected routine by serializing MyRoutine object
-                Intent intent_startexercise = new Intent(getApplicationContext(), StartExerciseActivity.class);
-                intent_startexercise.putExtra("selectedRoutine", mySelectedRoutine);
-                startActivity(intent_startexercise);
+//                //Send a selected routine by serializing MyRoutine object
+//                Intent intent_startexercise = new Intent(getApplicationContext(), StartExerciseActivity.class);
+//                intent_startexercise.putExtra("selectedRoutine", mySelectedRoutine);
+//                startActivity(intent_startexercise);
 
-//                if (mySelectedRoutine == null) {
-//                    Snackbar.make(view, "Please select your routine first", Snackbar.LENGTH_LONG)
-//                            .setAction("Action", null).show();
-//
-//                    if (viewPager != null) {
-//                        viewPager.setCurrentItem(1);
-//                    }
-//                } else {
+                if (mySelectedRoutine == null) {
+                    Snackbar.make(view, "Please select your routine first", Snackbar.LENGTH_LONG)
+                            .setAction("Action", null).show();
+
+                    if (viewPager != null) {
+                        viewPager.setCurrentItem(1);
+                    }
+                } else {
 //                    Toast.makeText(getApplicationContext(), "Selected routine:\n" + mySelectedRoutine.getRoutineName(), Toast.LENGTH_SHORT).show();
-//
-//                    //Send a selected routine by serializing MyRoutine object
-//                    Intent intent_startexercise = new Intent(getApplicationContext(), StartExerciseActivity.class);
-//                    intent_startexercise.putExtra("selectedRoutine", mySelectedRoutine);
-//                    startActivity(intent_startexercise);
-//                }
+
+                    //Send a selected routine by serializing MyRoutine object
+                    Intent intent_startexercise = new Intent(getApplicationContext(), StartExerciseActivity.class);
+                    intent_startexercise.putExtra("selectedRoutine", mySelectedRoutine);
+                    startActivity(intent_startexercise);
+                }
 
 
             }
@@ -367,14 +367,14 @@ public class MainActivity extends AppCompatActivity
                 MyHereAgent tmpMyHereAgent2 = new MyHereAgent();
                 tmpMyHereAgent2.setMyeqMacId("22:33:44:55:66:77");
                 tmpMyHereAgent2.setMyeqName("푸쉬업바");
-                tmpMyHereAgent2.setMyeqType(2);
+                tmpMyHereAgent2.setMyeqType(1);
                 tmpMyHereAgent2.setMyeqBeaconMajorId("Major2");
                 tmpMyHereAgent2.setMyeqBeaconMinorId("Minor2");
 
                 MyHereAgent tmpMyHereAgent3 = new MyHereAgent();
                 tmpMyHereAgent3.setMyeqMacId("33:44:55:66:77:88");
                 tmpMyHereAgent3.setMyeqName("훌라후프");
-                tmpMyHereAgent3.setMyeqType(4);
+                tmpMyHereAgent3.setMyeqType(2);
                 tmpMyHereAgent3.setMyeqBeaconMajorId("Major3");
                 tmpMyHereAgent3.setMyeqBeaconMinorId("Minor3");
 

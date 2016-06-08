@@ -1,11 +1,16 @@
 package com.example.user.wase.model;
 
+import android.util.Log;
+
 import com.example.user.wase.view.activity.MainActivity;
+
+import java.io.Serializable;
+import java.util.StringTokenizer;
 
 /**
  * Created by user on 2016-06-08.
  */
-public class AgentRecord {
+public class AgentRecord implements Serializable{
     String agentName;
     String agentMacId;
     int agentType;
@@ -113,5 +118,78 @@ public class AgentRecord {
         this.goalSet = goalSet;
         this.goalCount = goalCount;
         this.goalTime = goalTime;
+    }
+
+    /**
+     * @return              Parsed/Refined String
+     */
+    public String makeGoalString() {
+
+        String rawGoal = "";
+        rawGoal += String.format("%d", goalSet) + "|";
+        rawGoal += String.format("%d", goalCount) + "|";
+        rawGoal += String.format("%d", goalTime);
+
+        String goalSentence = "";
+
+        int goalType = 0;   //1: count times, 2: count secs, 3: count times & secs
+
+        String set = "";    //sets
+        String count = "";  //times
+        String time = "";   //secs
+
+        StringTokenizer tokens = new StringTokenizer(rawGoal, "|");
+        set = tokens.nextToken();
+        count = tokens.nextToken();
+        time = tokens.nextToken();
+
+        Log.d("TokenizerExercise", "set[" + set + "], count[" + count + "], time[" + "]");
+
+        //Single or multiple
+        int intSet = Integer.parseInt(set);
+        int intCount = Integer.parseInt(count);
+        int intTime = Integer.parseInt(time);
+
+        set += " SET";
+        count += " TIME";
+        time += " SEC";
+
+        //Check goal type
+        if (intCount == -1) {
+            goalType = 2;
+        }
+        if (intTime == -1) {
+            goalType = 1;
+        }
+        if (intTime != -1 && intCount != -1) {
+            goalType = 3;
+        }
+
+        if (intSet > 1) {
+            set += "S";
+        }
+        if (intCount > 1) {
+            count += "S";
+        }
+        if (intTime > 1) {
+            time += "S";
+        }
+
+        switch (goalType) {
+            //Count times (회수)
+            case 1:
+                goalSentence = count + " X " + set;
+                break;
+            //Count secs (시간)
+            case 2:
+                goalSentence = time + " X " + set;
+                break;
+            // Count both times & secs
+            case 3:
+                goalSentence = count + " X " + set + " (" + time + ")";
+                break;
+        }
+
+        return goalSentence;
     }
 }

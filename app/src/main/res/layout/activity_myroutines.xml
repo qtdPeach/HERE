@@ -11,16 +11,47 @@
         android:layout_height="56dp"
         android:background="@color/colorSkyBlue"/>
 
-    <TextView
+
+    <LinearLayout
+        android:orientation="horizontal"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:paddingLeft="15dp"
+        android:paddingRight="15dp"
         android:paddingTop="5dp"
         android:paddingBottom="5dp"
         android:background="@color/colorPrimaryDark"
-        android:textColor="#ffffff"
-        android:textStyle="bold"
-        android:text="My Custom Exercise Routines"/>
+        >
+
+        <TextView
+            android:layout_width="0px"
+            android:layout_height="wrap_content"
+            android:layout_weight="3"
+            android:layout_gravity="left|center_vertical"
+            android:textColor="#ffffff"
+            android:textStyle="bold"
+            android:text="My Custom Exercise Routines"/>
+
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="0px"
+            android:layout_height="wrap_content"
+            android:layout_weight="1">
+
+            <ImageView
+                android:id="@+id/setting_myroutine_iv_deleteroutine"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:padding="3dp"
+                android:layout_gravity="right|center_vertical"
+                android:src="@drawable/icon_delete"
+                android:onClick="mOnClick"/>
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+
 
     <LinearLayout
         android:orientation="vertical"
@@ -28,71 +59,98 @@
         android:layout_height="wrap_content"
         android:padding="5dp">
 
-        <LinearLayout
-            android:orientation="horizontal"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:padding="5dp"
-            >
-
-            <Button
-                android:id="@+id/setting_myroutine_btn_newroutine"
-                android:layout_width="0px"
-                android:layout_height="60dp"
-                android:layout_weight="1"
-                android:text="NEW\nROUTINE"
-                android:textColor="@color/colorPrimaryDark"
-                android:textSize="16dp"
-                android:textStyle="bold"
-                android:gravity="center"
-                android:onClick="mOnClick"/>
-
-            <Button
-                android:id="@+id/setting_myroutine_btn_modifyroutine"
-                android:layout_width="0px"
-                android:layout_height="60dp"
-                android:layout_weight="1"
-                android:text="MODIFY\nROUTINE"
-                android:gravity="center"
-                android:onClick="mOnClick"/>
-
-            <Button
-                android:id="@+id/setting_myroutine_btn_deleteroutine"
-                android:layout_width="0px"
-                android:layout_height="60dp"
-                android:layout_weight="1"
-                android:text="DELETE\nROUTINE"
-                android:gravity="center"
-                android:onClick="mOnClick"/>
-
-        </LinearLayout>
-
         <TextView
             android:id="@+id/setting_myroutine_tv_myroutines"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:padding="30dp"
+            android:padding="20dp"
             android:gravity="center"
             android:textColor="#999999"
             android:text="No exercise routine"/>
 
     </LinearLayout>
 
-    <TextView
+
+    <LinearLayout
+        android:orientation="horizontal"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:paddingLeft="15dp"
+        android:paddingRight="15dp"
         android:paddingTop="5dp"
         android:paddingBottom="5dp"
-        android:layout_marginTop="10dp"
         android:background="@color/colorPrimaryDark"
-        android:textColor="#ffffff"
+        >
+
+        <TextView
+            android:layout_width="0px"
+            android:layout_height="wrap_content"
+            android:layout_weight="3"
+            android:layout_gravity="left|center_vertical"
+            android:textColor="#ffffff"
+            android:textStyle="bold"
+            android:text="Make A New Routine"/>
+
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="0px"
+            android:layout_height="wrap_content"
+            android:layout_weight="1">
+
+            <ImageView
+                android:id="@+id/setting_myroutine_iv_addroutine"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_gravity="right|center_vertical"
+                android:src="@drawable/icon_add"
+                android:onClick="mOnClick"/>
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textColor="#555555"
+        android:background="#cdcdcd"
+        android:paddingLeft="25dp"
+        android:paddingTop="3dp"
+        android:paddingBottom="3dp"
         android:textStyle="bold"
-        android:text="My HERE Agents"/>
+        android:text="> New Routine"/>
+
+
+
+    <TextView
+        android:id="@+id/setting_myroutine_tv_nonewroutine"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="20dp"
+        android:gravity="center"
+        android:textColor="#999999"
+        android:text="Make a new routine\nusing your agents below."
+        />
+
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingLeft="25dp"
+        android:paddingTop="3dp"
+        android:paddingBottom="3dp"
+        android:background="#cdcdcd"
+        android:textColor="#555555"
+        android:textStyle="bold"
+        android:text="> My HERE Agents"/>
 
     <ListView
         android:id="@+id/setting_myroutine_list_myroutines"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"></ListView>
+        android:layout_height="match_parent"></ListView>
+
+
 
 </LinearLayout>

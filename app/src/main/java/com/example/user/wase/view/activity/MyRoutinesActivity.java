@@ -12,9 +12,11 @@ import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.NumberPicker;
 import android.widget.TextView;
 
 import com.example.user.wase.R;
@@ -31,6 +33,10 @@ public class MyRoutinesActivity extends AppCompatActivity {
     public static final String TAG = "MyRoutinesActivity";
 
     private Toolbar toolbar;
+
+    NumberPicker np_set;
+    NumberPicker np_count;
+    NumberPicker np_time;
 
     //public static List<MyHereAgent> currentAgents = MainActivity.hereDB.getAllMyHereAgents();
 
@@ -56,6 +62,50 @@ public class MyRoutinesActivity extends AppCompatActivity {
         ListViewAdapter adapter = new ListViewAdapter();
         listView.setAdapter(adapter);
         adapter.notifyDataSetChanged();
+
+        //TODO: 임시 구현 리스너
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                LayoutInflater inflater = getLayoutInflater();
+
+                final View dialogView = inflater.inflate(R.layout.dialog_agentgoal, null);
+
+                AlertDialog.Builder builder = new AlertDialog.Builder(MyRoutinesActivity.this);
+                builder.setTitle("Set Exercise Goals");
+                builder.setView(dialogView);
+                builder.setPositiveButton("Add to routine", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        //TODO: Routine을 DB에 추가
+                        dialog.dismiss();
+                    }
+                });
+                builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                });
+
+                np_set = (NumberPicker) dialogView.findViewById(R.id.dialog_agentgoal_picker_set);
+                np_set.setMaxValue(20);
+                np_set.setMinValue(1);
+                np_set.setValue(1);
+                np_count = (NumberPicker) dialogView.findViewById(R.id.dialog_agentgoal_picker_count);
+                np_count.setMaxValue(100);
+                np_count.setMinValue(0);
+                np_count.setValue(0);
+                np_time = (NumberPicker) dialogView.findViewById(R.id.dialog_agentgoal_picker_time);
+                np_time.setMaxValue(600);
+                np_time.setMinValue(0);
+                np_time.setValue(0);
+
+                AlertDialog dialog = builder.create();
+                dialog.setCanceledOnTouchOutside(false);
+                dialog.show();
+            }
+        });
     }
 
 
@@ -84,38 +134,65 @@ public class MyRoutinesActivity extends AppCompatActivity {
 
     public void mOnClick(View v) {
         switch (v.getId()) {
-            case R.id.setting_myroutine_btn_newroutine:
+//            case R.id.setting_myroutine_btn_newroutine:
+//                LayoutInflater inflater = getLayoutInflater();
+//
+//                final View dialogView = inflater.inflate(R.layout.dialog_routine, null);
+//
+//                AlertDialog.Builder builder = new AlertDialog.Builder(this);
+//                builder.setTitle("New Routine");
+//                builder.setIcon(R.drawable.nav_icon_myroutines);
+//                builder.setView(dialogView);
+//                builder.setPositiveButton("Save", new DialogInterface.OnClickListener() {
+//                    @Override
+//                    public void onClick(DialogInterface dialog, int which) {
+//
+//                    }
+//                });
+//                builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+//                    @Override
+//                    public void onClick(DialogInterface dialog, int which) {
+//
+//                    }
+//                });
+//
+//                AlertDialog dialog = builder.create();
+//                dialog.setCanceledOnTouchOutside(false);
+//                dialog.show();
+//
+//                break;
+//            case R.id.setting_myroutine_btn_modifyroutine:
+//                break;
+            case R.id.setting_myroutine_iv_deleteroutine:
+                AlertDialog deleteAlert = askDeletion();
+                deleteAlert.setCanceledOnTouchOutside(false);
+                deleteAlert.show();
+                break;
+            case R.id.setting_myroutine_iv_addroutine:
                 LayoutInflater inflater = getLayoutInflater();
 
                 final View dialogView = inflater.inflate(R.layout.dialog_routine, null);
 
                 AlertDialog.Builder builder = new AlertDialog.Builder(this);
-                builder.setTitle("New Routine");
-                builder.setIcon(R.drawable.nav_icon_myroutines);
+                builder.setTitle("Add your new routine");
                 builder.setView(dialogView);
-                builder.setPositiveButton("Save", new DialogInterface.OnClickListener() {
+                builder.setPositiveButton("Add", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-
+                        //TODO: Routine을 DB에 추가
+                        dialog.dismiss();
                     }
                 });
                 builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-
+                        dialog.dismiss();
                     }
                 });
 
                 AlertDialog dialog = builder.create();
                 dialog.setCanceledOnTouchOutside(false);
                 dialog.show();
-
-                break;
-            case R.id.setting_myroutine_btn_modifyroutine:
-                break;
-            case R.id.setting_myroutine_btn_deleteroutine:
-                AlertDialog deleteAlert = askDeletion();
-                deleteAlert.show();
                 break;
         }
     }
