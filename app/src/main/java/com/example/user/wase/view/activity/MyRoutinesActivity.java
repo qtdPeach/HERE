@@ -53,6 +53,9 @@ public class MyRoutinesActivity extends AppCompatActivity {
     ListView routineListView;
     TextView routineTextView;
 
+    ImageView iv_add_routine;
+    ImageView iv_delete_routine;
+
     RoutineListViewAdapter routineListViewAdapter;
 
     int routinePosition = -1;
@@ -100,6 +103,12 @@ public class MyRoutinesActivity extends AppCompatActivity {
         final ListViewAdapter adapter = new ListViewAdapter();
         listView.setAdapter(adapter);
         adapter.notifyDataSetChanged();
+
+        iv_add_routine = (ImageView) findViewById(R.id.setting_myroutine_iv_addroutine);
+        iv_delete_routine = (ImageView) findViewById(R.id.setting_myroutine_iv_deleteroutine);
+
+        iv_add_routine.setBackgroundResource(R.drawable.effect_add_press);
+        iv_delete_routine.setBackgroundResource(R.drawable.effect_delete_press);
 
         final TextView routineGoal = (TextView) findViewById(R.id.add_selected_routine_goal1);
         final TextView routineEquip = (TextView) findViewById(R.id.add_selected_routine_equip1);
@@ -282,13 +291,16 @@ public class MyRoutinesActivity extends AppCompatActivity {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         //TODO: Delete selected routines
-                        System.out.println("routinePosition: " + routinePosition);
-                        String deletedRoutineName = routineListViewAdapter.getRoutine().get(routinePosition).getRoutineId();
-                        MainActivity.hereDB.deleteMyRoutine(deletedRoutineName);
-                        routineListViewAdapter.setRoutine(MainActivity.hereDB.getAllMyRoutines());
-                        routineListViewAdapter.notifyDataSetChanged();
-                        Toast.makeText(getApplicationContext(),deletedRoutineName+ "is deleted",Toast.LENGTH_SHORT).show();
-                        routinePosition = -1;
+                        if (routinePosition != -1) {
+                            String deletedRoutineName = routineListViewAdapter.getRoutine().get(routinePosition).getRoutineId();
+                            MainActivity.hereDB.deleteMyRoutine(deletedRoutineName);
+                            routineListViewAdapter.setRoutine(MainActivity.hereDB.getAllMyRoutines());
+                            routineListViewAdapter.notifyDataSetChanged();
+                            Toast.makeText(getApplicationContext(), deletedRoutineName + "is deleted", Toast.LENGTH_SHORT).show();
+                            routinePosition = -1;
+                        } else {
+                            Toast.makeText(getApplicationContext(),"Click a routine to delete first!",Toast.LENGTH_SHORT).show();
+                        }
                         dialog.dismiss();
                     }
                 })
@@ -349,24 +361,26 @@ public class MyRoutinesActivity extends AppCompatActivity {
 
                 int newRoutineId =1;
 
-                while(true) {
-                    boolean isSame = false;
+                if(MainActivity.hereDB.getAllMyRoutines()!=null) {
+                    while (true) {
+                        boolean isSame = false;
 
-                    for (MyRoutine myRoutine : MainActivity.hereDB.getAllMyRoutines()) {
-                        String num = myRoutine.getRoutineId().replaceAll("[^0-9]","");
-                        if(num.equals(""))
-                            num = "0";
-                        int routineId = Integer.parseInt(num);
+                        for (MyRoutine myRoutine : MainActivity.hereDB.getAllMyRoutines()) {
+                            String num = myRoutine.getRoutineId().replaceAll("[^0-9]", "");
+                            if (num.equals(""))
+                                num = "0";
+                            int routineId = Integer.parseInt(num);
 
-                        if (routineId == newRoutineId) {
-                            isSame = true;
-                            break;
+                            if (routineId == newRoutineId) {
+                                isSame = true;
+                                break;
+                            }
                         }
+                        if (isSame)
+                            newRoutineId++;
+                        else
+                            break;
                     }
-                    if (isSame)
-                        newRoutineId++;
-                    else
-                        break;
                 }
 
                 editTextId.setText("ROUTINE"+newRoutineId);
@@ -495,7 +509,7 @@ public class MyRoutinesActivity extends AppCompatActivity {
 
             if (convertView == null){
                 LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-                convertView = inflater.inflate(R.layout.listitem_equipment,parent,false);
+                convertView = inflater.inflate(R.layout.listitem_equipment_simple,parent,false);
             }
             ImageView eqTypeImage = (ImageView) convertView.findViewById(R.id.equiplist_img);
             TextView eqName = (TextView) convertView.findViewById(R.id.equiplist_name);
@@ -561,7 +575,7 @@ public class MyRoutinesActivity extends AppCompatActivity {
             // General ListView optimization code.
             if (view == null) {
                 LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-                view = inflater.inflate(R.layout.listitem_equipment, viewGroup, false);
+                view = inflater.inflate(R.layout.listitem_routine, viewGroup, false);
             }
 
             ImageView routineImage = (ImageView) view.findViewById(R.id.equiplist_img);

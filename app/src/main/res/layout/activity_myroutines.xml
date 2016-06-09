@@ -70,7 +70,7 @@
         <ListView
             android:id="@+id/setting_myroutine_lv_myroutines"
             android:layout_width="match_parent"
-            android:layout_height="200sp"></ListView>
+            android:layout_height="180sp"></ListView>
 
     </LinearLayout>
 
@@ -137,6 +137,7 @@
         android:textColor="#999999"
         android:text="Make a new routine\nusing your agents below."
         />
+
     <HorizontalScrollView
         android:id="@+id/add_routine_hscrollview"
         android:background="#eeeeee"
@@ -144,8 +145,8 @@
         android:layout_height="wrap_content"
         android:paddingTop="10dp"
         android:paddingBottom="10dp"
-        android:paddingLeft="20dp"
-        android:paddingRight="20dp">
+        android:paddingLeft="12dp"
+        android:paddingRight="12dp">
 
         <LinearLayout
             android:orientation="horizontal"
@@ -163,8 +164,9 @@
 
                 <ImageView
                     android:id="@+id/add_routine_equipment1_image"
-                    android:layout_width="80dp"
-                    android:layout_height="80dp"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:layout_gravity="center_horizontal"
                     android:src="@drawable/here_logo_character"/>
 
                 <TextView
@@ -173,7 +175,7 @@
                     android:layout_height="wrap_content"
                     android:text="Equip1"
                     android:layout_gravity="center"
-                    android:textSize="15dp"
+                    android:textSize="14dp"
                     android:textStyle="bold"
                     android:textColor="@color/colorPrimaryDark"/>
 
@@ -183,7 +185,7 @@
                     android:layout_height="wrap_content"
                     android:text="30 X 2 SETS"
                     android:layout_gravity="center"
-                    android:textSize="13dp"
+                    android:textSize="12dp"
                     android:textColor="#555555"/>
             </LinearLayout>
 
@@ -207,8 +209,9 @@
 
                 <ImageView
                     android:id="@+id/add_routine_equipment2_image"
-                    android:layout_width="80dp"
-                    android:layout_height="80dp"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:layout_gravity="center_horizontal"
                     android:src="@drawable/here_logo_character"/>
 
                 <TextView
@@ -217,7 +220,7 @@
                     android:layout_height="wrap_content"
                     android:text="Equip2"
                     android:layout_gravity="center"
-                    android:textSize="15dp"
+                    android:textSize="14dp"
                     android:textStyle="bold"
                     android:textColor="@color/colorPrimaryDark"/>
 
@@ -227,7 +230,7 @@
                     android:layout_height="wrap_content"
                     android:text="60s X 10 SETS"
                     android:layout_gravity="center"
-                    android:textSize="13dp"
+                    android:textSize="12dp"
                     android:textColor="#555555"/>
             </LinearLayout>
 
@@ -251,8 +254,9 @@
 
                 <ImageView
                     android:id="@+id/add_routine_equipment3_image"
-                    android:layout_width="80dp"
-                    android:layout_height="80dp"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:layout_gravity="center_horizontal"
                     android:src="@drawable/here_logo_character"/>
 
                 <TextView
@@ -261,7 +265,7 @@
                     android:layout_height="wrap_content"
                     android:text="Equip3"
                     android:layout_gravity="center"
-                    android:textSize="15dp"
+                    android:textSize="14dp"
                     android:textStyle="bold"
                     android:textColor="@color/colorPrimaryDark"/>
 
@@ -271,7 +275,7 @@
                     android:layout_height="wrap_content"
                     android:text="50 X 1 SETS"
                     android:layout_gravity="center"
-                    android:textSize="13dp"
+                    android:textSize="12dp"
                     android:textColor="#555555"/>
             </LinearLayout>
 
@@ -295,8 +299,9 @@
 
                 <ImageView
                     android:id="@+id/add_routine_equipment4_image"
-                    android:layout_width="80dp"
-                    android:layout_height="80dp"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:layout_gravity="center_horizontal"
                     android:src="@drawable/here_logo_character"/>
 
                 <TextView
@@ -305,7 +310,7 @@
                     android:layout_height="wrap_content"
                     android:text="Equip4"
                     android:layout_gravity="center"
-                    android:textSize="15dp"
+                    android:textSize="14dp"
                     android:textStyle="bold"
                     android:textColor="@color/colorPrimaryDark"/>
 
@@ -315,7 +320,7 @@
                     android:layout_height="wrap_content"
                     android:text="30 X 2 SETS"
                     android:layout_gravity="center"
-                    android:textSize="13dp"
+                    android:textSize="12dp"
                     android:textColor="#555555"/>
             </LinearLayout>
 
@@ -339,8 +344,9 @@
 
                 <ImageView
                     android:id="@+id/add_routine_equipment5_image"
-                    android:layout_width="80dp"
-                    android:layout_height="80dp"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:layout_gravity="center_horizontal"
                     android:src="@drawable/here_logo_character"/>
 
                 <TextView
@@ -349,7 +355,7 @@
                     android:layout_height="wrap_content"
                     android:text="Equip5"
                     android:layout_gravity="center"
-                    android:textSize="15dp"
+                    android:textSize="14dp"
                     android:textStyle="bold"
                     android:textColor="@color/colorPrimaryDark"/>
 
@@ -359,7 +365,7 @@
                     android:layout_height="wrap_content"
                     android:text="30 X 2 SETS"
                     android:layout_gravity="center"
-                    android:textSize="13dp"
+                    android:textSize="12dp"
                     android:textColor="#555555"/>
             </LinearLayout>
 
