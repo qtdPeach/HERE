@@ -70,7 +70,7 @@
         <ListView
             android:id="@+id/setting_myroutine_lv_myroutines"
             android:layout_width="match_parent"
-            android:layout_height="150sp"></ListView>
+            android:layout_height="180sp"></ListView>
 
     </LinearLayout>
 

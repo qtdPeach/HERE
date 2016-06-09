@@ -51,7 +51,7 @@
             android:id="@+id/equiplist_sensorid"
             android:textColor="#555555"
             android:textSize="14sp"
-            android:text="Sensor ID"
+            android:text="Routine Summary (e.g., 아령 - 푸쉬업바 - 아령)"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
 
