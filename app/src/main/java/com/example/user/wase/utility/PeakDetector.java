@@ -17,7 +17,8 @@ public class PeakDetector extends Thread{
     private double prevMax, prevMin;
     private double maxPosition, minPosition;
     private double delta; // minimum difference for the peaks
-    private double minDelta = 20;
+    private double minDelta = 30;
+    private double deltaDivider = 2;
 
     private boolean isEnable;
 
@@ -38,11 +39,14 @@ public class PeakDetector extends Thread{
         isDetectingMax = true;
         isDetectingMin = true;
 
-        delta = 100;
+        delta = minDelta;
     }
 
     public void setDelta(double d){
         minDelta = d;
+    }
+    public void setDeltaDivider(double d){
+        deltaDivider = d;
     }
     public void reset(){
         data = new ArrayList<DataPoint>();
@@ -67,12 +71,13 @@ public class PeakDetector extends Thread{
             if(maxValue < added) {
                 maxValue = added;
                 maxPosition = point.getX();
-                double temp = Math.abs(maxValue /2);
+                double temp = Math.abs(maxValue /deltaDivider);
                 if(temp > minDelta) delta = temp;
             }
             else if( added < maxValue - delta){
                 isDetectingMax = false;
                 prevMax = maxValue;
+                delta = minDelta;
                 maxValue = Double.MIN_VALUE;
                 return 1;
             }
@@ -83,12 +88,13 @@ public class PeakDetector extends Thread{
             if(minValue > added){
                 minValue = added;
                 minPosition = point.getX();
-                double temp = Math.abs(minValue /2);
+                double temp = Math.abs(minValue /deltaDivider);
                 if(temp > minDelta) delta = temp;
             }
             else if(added > minValue + delta){
                 isDetectingMin = false;
                 prevMin = minValue;
+                delta = minDelta;
                 minValue = Double.MAX_VALUE;
                 return -1;
             }
@@ -121,7 +127,16 @@ public class PeakDetector extends Thread{
                 break;
         }
     }
-
+    public double getDetectingMode(){
+        if(isDetectingMax){
+            if(!isDetectingMin){
+                return 1;
+            }else return 2;
+        }else{
+            if(isDetectingMin) return -1;
+            else return 0;
+        }
+    }
     public double getMaxValue(){
         return prevMax;
     }

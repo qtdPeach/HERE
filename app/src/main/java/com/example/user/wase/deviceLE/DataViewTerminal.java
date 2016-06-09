@@ -113,7 +113,7 @@ public class DataViewTerminal extends Activity {
     private float[][] longtermAverageBuffer;
     private float[] longtermAverage;
     private int[] longTermIndex;
-    private final int longterm = 5*100; //approx. 5s
+    private final int longterm = 3*100; //approx. 5s
 
     private int dumbelCount = 0;
     private boolean isRisingPeak, isFallingPeak;
@@ -170,7 +170,7 @@ public class DataViewTerminal extends Activity {
         linkComponents();
 
         dumbel = new PeakDetector(0);
-        hoop = new SinusoidalDetector(27*25.4, 386*8 );
+        hoop = new SinusoidalDetector(39*25.4, 386*8 );
         vib = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
 
         final Intent intent = getIntent();
@@ -273,19 +273,22 @@ public class DataViewTerminal extends Activity {
             gv[i].getViewport().setMinX(0);
             gv[i].getViewport().setMaxX(5); //second
 
-            gv[i].getViewport().setYAxisBoundsManual(true);
-            gv[i].getViewport().setMinY(-150);
-            gv[i].getViewport().setMaxY(150);
 
             if(i < 3){
                 gv[i].getViewport().setBackgroundColor(Color.WHITE);
                 gv[i].getGridLabelRenderer().setGridColor(Color.GRAY);
                 gv[i].getGridLabelRenderer().reloadStyles();
+                gv[i].getViewport().setYAxisBoundsManual(true);
+                gv[i].getViewport().setMinY(-150);
+                gv[i].getViewport().setMaxY(150);
             }
             else if(i < 6){
                 gv[i].getViewport().setBackgroundColor(Color.GRAY);
                 gv[i].getGridLabelRenderer().setGridColor(Color.BLACK);
                 gv[i].getGridLabelRenderer().reloadStyles();
+                gv[i].getViewport().setYAxisBoundsManual(true);
+                gv[i].getViewport().setMinY(-150);
+                gv[i].getViewport().setMaxY(150);
             }
             else{
                 gv[i].getViewport().setBackgroundColor(Color.BLACK);
@@ -293,8 +296,6 @@ public class DataViewTerminal extends Activity {
                 gv[i].getGridLabelRenderer().reloadStyles();
             }
         }
-        gv[6].getViewport().setMinY(-20);
-        gv[6].getViewport().setMaxY(400);
         gv[7].getViewport().setMinY(-90);
         gv[7].getViewport().setMaxY(90);
         gv[8].getViewport().setMinY(-180);
@@ -433,6 +434,7 @@ public class DataViewTerminal extends Activity {
     protected void onPause() {
         super.onPause();
         unregisterReceiver(mGattUpdateReceiver);
+        mBluetoothLeService = null;
         mHandler.removeCallbacks(invalidator);
     }
 
@@ -479,22 +481,22 @@ public class DataViewTerminal extends Activity {
                         values[4] =  LPF(ay, 4) - longTermAvg(ay, 4);
                         az = (float)Integer.parseInt(data[++i])- offsets[5];
                         values[5] =  LPF(az, 5) - longTermAvg(az, 5);
-                        if(values[5] > 20 ){
-                            exercisePhase.setText(dumbelCount/2 + ":  Rising");
-                            dumbel.setDetectingMode(1);
-                        }
-                        else if(values[5] < -20){
-                            exercisePhase.setText(dumbelCount/2 + ":  Falling");
-                            dumbel.setDetectingMode(-1);
-                        }
-                        else {
-                            exercisePhase.setText(dumbelCount/2 + ":  Static");
-                            dumbel.setDetectingMode(0);
-                        }
 
                         switch (vf.getDisplayedChild()) {
                             case 2:
                             case 5:
+                                if(values[vf.getDisplayedChild()] > 20 ){
+                                    exercisePhase.setText(dumbelCount/2 + ":  Rising");
+                                    dumbel.setDetectingMode(1);
+                                }
+                                else if(values[vf.getDisplayedChild()] < -20){
+                                    exercisePhase.setText(dumbelCount/2 + ":  Falling");
+                                    dumbel.setDetectingMode(-1);
+                                }
+                                else {
+                                    exercisePhase.setText(dumbelCount/2 + ":  Static");
+                                    dumbel.setDetectingMode(0);
+                                }
                                 switch (dumbel.peakDetection(new DataPoint(0, values[vf.getDisplayedChild()]))) {
                                     case 1:
                                         isRisingPeak = true;
@@ -530,7 +532,7 @@ public class DataViewTerminal extends Activity {
                     }
                 }
             }catch(NumberFormatException e){};
-            values[6] = (float)Math.sqrt(values[0] * values[0] + values[1] * values[1] + values[2] * values[2] );
+            values[6] = values[0] + values[1]  + values[2]  ;
             invalidator.run();
 
             if(rawData.getLineCount() > rawData.getMaxLines()){

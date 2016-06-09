@@ -21,10 +21,10 @@ public class SinusoidalDetector {
     private boolean isPrevCheckMax, isPrevCheckMin;
     //is most currently check max peak?
 
-    private final int periodCheckThreshold = 50 * 4; // 7/5s
-    private final double phaseThreshold = 10;
-    private final double amplitudeThreshold = 30; //1s
-    private final double periodThresholdMin = 1000; //1s
+    private final int periodCheckThreshold = 10; // 1s
+    private final double phaseThreshold = 20;
+    private final double amplitudeThreshold = 20; //1s
+    private final double periodThresholdMin = 500; //1s
     private final double periodThresholdMax = 6000; //6s
     private final double periodThresholdMinHalf = periodThresholdMin/2; //1s
     private final double periodThresholdMaxHalf = periodThresholdMax/2; //6s
@@ -35,6 +35,8 @@ public class SinusoidalDetector {
     private CountDownTimer periodTimer;
     private int periodChecker;
 
+    private double prevValue;
+
     public SinusoidalDetector(double waistMeasurement, double hoopLength){
         period = 0;
         isPeriodic = false;
@@ -43,7 +45,8 @@ public class SinusoidalDetector {
 
         count = 0;
         peak = new PeakDetector(2);
-        peak.setDelta(30);
+        peak.setDelta(15);
+        peak.setDeltaDivider(5);
         maxPosition = 0;
         minPosition = 0;
         previousCountPosition = 0;
@@ -51,6 +54,7 @@ public class SinusoidalDetector {
         unitLength = Double.MAX_VALUE;
         modeChangeable = false;
         periodChecker = 0;
+        prevValue = 0;
 
     }
 
@@ -67,6 +71,7 @@ public class SinusoidalDetector {
         isPrevCheckMin = false;
         unitLength = Double.MAX_VALUE;
         modeChangeable = false;
+        prevValue = 0;
     }
     public void reset(double waistMeasurement, double hoopLength){
         period = 0;
@@ -83,20 +88,24 @@ public class SinusoidalDetector {
         isPrevCheckMin = false;
         unitLength = Double.MAX_VALUE;
         modeChangeable = false;
+        prevValue = 0;
 
     }
 
     public boolean periodMonitor(DataPoint point){
 
-        if(modeChangeable && point.getY() > phaseThreshold ){
+
+
+
+        if(point.getY() > phaseThreshold ){
             peak.setDetectingMode(1);
-            modeChangeable = false;
-        }else if(modeChangeable && point.getY() < -phaseThreshold){
+        }else if(point.getY() < -phaseThreshold){
             peak.setDetectingMode(-1);
-            modeChangeable = false;
+        }else{
+            peak.setDetectingMode(0);
         }
 
-        if(point.getY() < amplitudeThreshold && point.getY() > -amplitudeThreshold){
+        if(Math.abs(point.getY() - prevValue) < 3 && peak.getDetectingMode() == 0){
             periodChecker++;
             if(periodChecker > periodCheckThreshold){
                 periodChecker = 0;
@@ -105,19 +114,30 @@ public class SinusoidalDetector {
         }else{
             periodChecker = 0;
         }
+        prevValue = point.getY();
+
+        if(isPeriodic){
+            double temp = point.getX() - previousCountPosition;
+            if(previousCountPosition == 0){
+                count = count + unit;
+                previousCountPosition = point.getX();
+            }
+            else{
+                count += (temp) / unitLength;
+                previousCountPosition = point.getX();
+            }
+        }else{
+            count = 0;
+        }
 
         switch (peak.peakDetection(point)) {
-            case 0:
-                modeChangeable = true;
-                break;
             case 1:
                 if (peak.getMaxValue() > amplitudeThreshold) {
                     maxPosition = peak.getMaxPosition();
                     if (isPrevCheckMin) {
-                        if (halfPeriodUpdate(maxPosition - minPosition)) {
-                        } else {
-                        }
+                        halfPeriodUpdate(maxPosition - minPosition);
                     }
+                    previousCountPosition = point.getX();
                     isPrevCheckMax = true;
                     isPrevCheckMin = false;
                 }
@@ -125,59 +145,35 @@ public class SinusoidalDetector {
             case -1:
                 if (peak.getMinValue() < -amplitudeThreshold) {
                     minPosition = peak.getMinPosition();
-                    } else if (isPrevCheckMax) {
-                        if (halfPeriodUpdate(minPosition - maxPosition)) {
-                        } else {
-                        }
+                    if (isPrevCheckMax) {
+                        halfPeriodUpdate(minPosition - maxPosition);
+                    }
+                    previousCountPosition = point.getX();
                     isPrevCheckMin = true;
                     isPrevCheckMax = false;
                 }
                 break;
         }
 
-        if(isPeriodic){
-            double temp = point.getX() - previousCountPosition;
-            if(previousCountPosition == 0){
-                count = count + unit;
-                previousCountPosition = point.getX();
-            }else if(temp > periodThresholdMax){
-                halfPeriodUpdate(0);
-                return false;
-            }
-            else{
-                count += (temp) / unitLength;
-                previousCountPosition = point.getX();
-            }
-            return true;
-        }
-        return false;
+        return isPeriodic;
     }
 
 
     public boolean halfPeriodUpdate(double peri){
         if(peri > periodThresholdMinHalf && peri < periodThresholdMaxHalf) {
             if (period == 0) {
-                period = peri*2;
-                unitLength = period / unit;
-                isPeriodic = true;
                 previousCountPosition = 0;
-                return true;
             }
-            else if (peri < period / 8) {
-                return false;
-            }else{
-                period = peri*2;
-                unitLength = period / unit;
-                isPeriodic = true;
-                previousCountPosition = 0;
-                return true;
-            }
+            period = peri*2;
+            unitLength = period / unit;
+            isPeriodic = true;
+            return true;
         }else{
             isPeriodic = false;
             period = 0;
             unitLength = Double.MAX_VALUE;
-            previousCountPosition = 0;
-            count = 0;
+            //previousCountPosition = 0;
+            //count = 0;
             return false;
         }
     }

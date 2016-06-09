@@ -127,7 +127,7 @@ public class BluetoothLeService extends Service {
 
             // For all other profiles, writes the data formatted in HEX.
             final byte[] data = characteristic.getValue();
-    		Log.i(TAG, "data"+characteristic.getValue());
+    		//Log.i(TAG, "data"+characteristic.getValue());
 
             if (data != null && data.length > 0) {
                 final StringBuilder stringBuilder = new StringBuilder(data.length);
@@ -140,7 +140,7 @@ public class BluetoothLeService extends Service {
                 String packet = null;
                 char temp;
                 int idx = 0;
-                Log.d(TAG, buffer.substring(0));
+                //Log.d(TAG, buffer.substring(0));
                 idx = buffer.indexOf("\r\n");
 
                 if(idx >= 0){
