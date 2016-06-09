@@ -21,9 +21,9 @@ public class SinusoidalDetector {
     private boolean isPrevCheckMax, isPrevCheckMin;
     //is most currently check max peak?
 
-    private final int periodCheckThreshold = 50 * 2; // 7/5s
+    private final int periodCheckThreshold = 50 * 4; // 7/5s
     private final double phaseThreshold = 10;
-    private final double amplitudeThreshold = 40; //1s
+    private final double amplitudeThreshold = 30; //1s
     private final double periodThresholdMin = 1000; //1s
     private final double periodThresholdMax = 6000; //6s
     private final double periodThresholdMinHalf = periodThresholdMin/2; //1s
