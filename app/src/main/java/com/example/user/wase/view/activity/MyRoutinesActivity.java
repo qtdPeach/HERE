@@ -4,6 +4,7 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.graphics.Color;
+import android.graphics.drawable.PaintDrawable;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
@@ -14,16 +15,23 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.BaseAdapter;
+import android.widget.EditText;
+import android.widget.HorizontalScrollView;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.NumberPicker;
+import android.widget.ScrollView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.user.wase.R;
 import com.example.user.wase.model.MyHereAgent;
+import com.example.user.wase.model.MyRoutine;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.StringTokenizer;
 
 /**
  * Created by ymbaek on 2016-04-18.
@@ -38,13 +46,25 @@ public class MyRoutinesActivity extends AppCompatActivity {
     NumberPicker np_count;
     NumberPicker np_time;
 
+    int routineLength = 0;
+    List<String> addRoutine;
+    HorizontalScrollView scrollView;
+    TextView textView;
+    ListView routineListView;
+    TextView routineTextView;
+
+    RoutineListViewAdapter routineListViewAdapter;
+
+    int routinePosition = -1;
+
     //public static List<MyHereAgent> currentAgents = MainActivity.hereDB.getAllMyHereAgents();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_myroutines);
-
+        scrollView = (HorizontalScrollView) findViewById(R.id.add_routine_hscrollview);
+        textView = (TextView) findViewById(R.id.setting_myroutine_tv_nonewroutine);
         toolbar = (Toolbar) findViewById(R.id.toolbar);
 
         toolbar.setTitle("My Exercise Routines");
@@ -58,15 +78,62 @@ public class MyRoutinesActivity extends AppCompatActivity {
         actionBar.setTitle("My Exercise Routines");
         actionBar.setDefaultDisplayHomeAsUpEnabled(true);
 
+
+        scrollView.setVisibility(View.GONE);
+
+        addRoutine = new ArrayList<String>();
+
+        routineListView = (ListView) findViewById(R.id.setting_myroutine_lv_myroutines);
+        routineTextView = (TextView) findViewById(R.id.setting_myroutine_tv_myroutines);
+        routineListViewAdapter = new RoutineListViewAdapter();
+        routineListView.setAdapter(routineListViewAdapter);
+        routineListViewAdapter.notifyDataSetChanged();
+        routineListView.setSelector(new PaintDrawable(Color.rgb(135,206,235)));
+        routineListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                routinePosition = position;
+            }
+        });
+
         ListView listView = (ListView) findViewById(R.id.setting_myroutine_list_myroutines);
-        ListViewAdapter adapter = new ListViewAdapter();
+        final ListViewAdapter adapter = new ListViewAdapter();
         listView.setAdapter(adapter);
         adapter.notifyDataSetChanged();
+
+        final TextView routineGoal = (TextView) findViewById(R.id.add_selected_routine_goal1);
+        final TextView routineEquip = (TextView) findViewById(R.id.add_selected_routine_equip1);
+        final ImageView equipImage = (ImageView) findViewById(R.id.add_routine_equipment1_image);
+        final LinearLayout equipment1inList = (LinearLayout) findViewById(R.id.add_routine_equipment1);
+        final TextView arrowOfEquipment1 = (TextView) findViewById(R.id.add_routine_equipment1_arrow);
+
+        final TextView routineGoal2 = (TextView) findViewById(R.id.add_selected_routine_goal2);
+        final TextView routineEquip2 = (TextView) findViewById(R.id.add_selected_routine_equip2);
+        final ImageView equipImage2 = (ImageView) findViewById(R.id.add_routine_equipment2_image);
+        final LinearLayout equipment2inList = (LinearLayout) findViewById(R.id.add_routine_equipment2);
+        final TextView arrowOfEquipment2 = (TextView) findViewById(R.id.add_routine_equipment2_arrow);
+
+        final TextView routineGoal3 = (TextView) findViewById(R.id.add_selected_routine_goal3);
+        final TextView routineEquip3 = (TextView) findViewById(R.id.add_selected_routine_equip3);
+        final ImageView equipImage3 = (ImageView) findViewById(R.id.add_routine_equipment3_image);
+        final LinearLayout equipment3inList = (LinearLayout) findViewById(R.id.add_routine_equipment3);
+        final TextView arrowOfEquipment3 = (TextView) findViewById(R.id.add_routine_equipment3_arrow);
+
+        final TextView routineGoal4 = (TextView) findViewById(R.id.add_selected_routine_goal4);
+        final TextView routineEquip4 = (TextView) findViewById(R.id.add_selected_routine_equip4);
+        final ImageView equipImage4 = (ImageView) findViewById(R.id.add_routine_equipment4_image);
+        final LinearLayout equipment4inList = (LinearLayout) findViewById(R.id.add_routine_equipment4);
+        final TextView arrowOfEquipment4 = (TextView) findViewById(R.id.add_routine_equipment4_arrow);
+
+        final TextView routineGoal5 = (TextView) findViewById(R.id.add_selected_routine_goal5);
+        final TextView routineEquip5 = (TextView) findViewById(R.id.add_selected_routine_equip5);
+        final ImageView equipImage5 = (ImageView) findViewById(R.id.add_routine_equipment5_image);
+        final LinearLayout equipment5inList = (LinearLayout) findViewById(R.id.add_routine_equipment5);
 
         //TODO: 임시 구현 리스너
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+            public void onItemClick(AdapterView<?> parent, View view, final int position, long id) {
                 LayoutInflater inflater = getLayoutInflater();
 
                 final View dialogView = inflater.inflate(R.layout.dialog_agentgoal, null);
@@ -78,6 +145,90 @@ public class MyRoutinesActivity extends AppCompatActivity {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         //TODO: Routine을 DB에 추가
+                        if (routineLength > 4) {
+                            Toast.makeText(getApplicationContext(), "The maximum size of routine is 5", Toast.LENGTH_SHORT).show();
+                        } else {
+                            int count = np_count.getValue();
+                            int time = np_time.getValue();
+                            if (count == 0){
+                                count = -1;
+                            }
+                            if (time == 0){
+                                time = -1;
+                            }
+                            if (time == -1 && count == -1){
+                                Toast.makeText(getApplicationContext(), "Count and Time are both 0. Select again!", Toast.LENGTH_SHORT).show();
+                            }
+                            else if (time >0 && count >0){
+                                Toast.makeText(getApplicationContext(), "Count and Time are both bigger than 0. Select again!", Toast.LENGTH_SHORT).show();
+                            } else {
+
+                                addRoutine.add(adapter.getMyHereAgents().get(position).getMyeqMacId());
+                                addRoutine.add(np_set.getValue() + "|" + count + "|" + time);
+
+                                textView.setVisibility(View.GONE);
+
+                                String text="";
+                                if(count!=-1)
+                                    text = text + count + " X ";
+                                if(time != -1)
+                                    text = text + time + "s X ";
+                                text = text + np_set.getValue() + " SETS";
+                                switch(routineLength){
+                                    case 0:
+                                        routineGoal.setText(text);
+                                        routineEquip.setText(adapter.getMyHereAgents().get(position).getMyeqName());
+                                        equipImage.setImageResource(findImage(adapter.getMyHereAgents().get(position).getMyeqType()));
+
+                                        equipment1inList.setVisibility(View.VISIBLE);
+                                        equipment2inList.setVisibility(View.GONE);
+                                        equipment3inList.setVisibility(View.GONE);
+                                        equipment4inList.setVisibility(View.GONE);
+                                        equipment5inList.setVisibility(View.GONE);
+
+                                        arrowOfEquipment1.setVisibility(View.GONE);
+                                        arrowOfEquipment2.setVisibility(View.GONE);
+                                        arrowOfEquipment3.setVisibility(View.GONE);
+                                        arrowOfEquipment4.setVisibility(View.GONE);
+                                        break;
+
+                                    case 1:
+                                        routineGoal2.setText(text);
+                                        routineEquip2.setText(adapter.getMyHereAgents().get(position).getMyeqName());
+                                        equipImage2.setImageResource(findImage(adapter.getMyHereAgents().get(position).getMyeqType()));
+                                        equipment2inList.setVisibility(View.VISIBLE);
+                                        arrowOfEquipment1.setVisibility(View.VISIBLE);
+                                        break;
+
+                                    case 2:
+                                        routineGoal3.setText(text);
+                                        routineEquip3.setText(adapter.getMyHereAgents().get(position).getMyeqName());
+                                        equipImage3.setImageResource(findImage(adapter.getMyHereAgents().get(position).getMyeqType()));
+                                        equipment3inList.setVisibility(View.VISIBLE);
+                                        arrowOfEquipment2.setVisibility(View.VISIBLE);
+                                        break;
+
+                                    case 3:
+                                        routineGoal4.setText(text);
+                                        routineEquip4.setText(adapter.getMyHereAgents().get(position).getMyeqName());
+                                        equipImage4.setImageResource(findImage(adapter.getMyHereAgents().get(position).getMyeqType()));
+                                        equipment4inList.setVisibility(View.VISIBLE);
+                                        arrowOfEquipment3.setVisibility(View.VISIBLE);
+                                        break;
+
+                                    case 4:
+                                        routineGoal5.setText(text);
+                                        routineEquip5.setText(adapter.getMyHereAgents().get(position).getMyeqName());
+                                        equipImage5.setImageResource(findImage(adapter.getMyHereAgents().get(position).getMyeqType()));
+                                        equipment5inList.setVisibility(View.VISIBLE);
+                                        arrowOfEquipment4.setVisibility(View.VISIBLE);
+                                        break;
+                                }
+
+                                scrollView.setVisibility(View.VISIBLE);
+                                routineLength++;
+                            }
+                        }
                         dialog.dismiss();
                     }
                 });
@@ -108,7 +259,21 @@ public class MyRoutinesActivity extends AppCompatActivity {
         });
     }
 
-
+    public int findImage (int type){
+        switch (type) {
+            case 1:
+                return R.mipmap.ic_setting_update_alarm;
+            case 2:
+                return R.mipmap.ic_setting_best_interest;
+            case 3:
+                return R.mipmap.ic_setting_user_information;
+            case 4:
+                return R.mipmap.ic_setting_user_information;
+            case 5:
+                return R.mipmap.ic_setting_user_information;
+        }
+        return 0;
+    }
     private AlertDialog askDeletion() {
         AlertDialog myDeleteDialogBox = new AlertDialog.Builder(this)
                 .setTitle("Delete a routine")
@@ -117,6 +282,13 @@ public class MyRoutinesActivity extends AppCompatActivity {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         //TODO: Delete selected routines
+                        System.out.println("routinePosition: " + routinePosition);
+                        String deletedRoutineName = routineListViewAdapter.getRoutine().get(routinePosition).getRoutineId();
+                        MainActivity.hereDB.deleteMyRoutine(deletedRoutineName);
+                        routineListViewAdapter.setRoutine(MainActivity.hereDB.getAllMyRoutines());
+                        routineListViewAdapter.notifyDataSetChanged();
+                        Toast.makeText(getApplicationContext(),deletedRoutineName+ "is deleted",Toast.LENGTH_SHORT).show();
+                        routinePosition = -1;
                         dialog.dismiss();
                     }
                 })
@@ -172,6 +344,34 @@ public class MyRoutinesActivity extends AppCompatActivity {
                 LayoutInflater inflater = getLayoutInflater();
 
                 final View dialogView = inflater.inflate(R.layout.dialog_routine, null);
+                final EditText editTextId = (EditText) dialogView.findViewById(R.id.dialog_routine_et_id);
+                final EditText editTextName = (EditText) dialogView.findViewById(R.id.dialog_routine_et_name);
+
+                int newRoutineId =1;
+
+                while(true) {
+                    boolean isSame = false;
+
+                    for (MyRoutine myRoutine : MainActivity.hereDB.getAllMyRoutines()) {
+                        String num = myRoutine.getRoutineId().replaceAll("[^0-9]","");
+                        if(num.equals(""))
+                            num = "0";
+                        int routineId = Integer.parseInt(num);
+
+                        if (routineId == newRoutineId) {
+                            isSame = true;
+                            break;
+                        }
+                    }
+                    if (isSame)
+                        newRoutineId++;
+                    else
+                        break;
+                }
+
+                editTextId.setText("ROUTINE"+newRoutineId);
+
+                final int newRoutineID = newRoutineId;
 
                 AlertDialog.Builder builder = new AlertDialog.Builder(this);
                 builder.setTitle("Add your new routine");
@@ -180,6 +380,51 @@ public class MyRoutinesActivity extends AppCompatActivity {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         //TODO: Routine을 DB에 추가
+                        if(routineLength !=0) {
+                            routineLength = 0;
+                            scrollView.setVisibility(View.GONE);
+                            textView.setVisibility(View.VISIBLE);
+
+                            if (editTextName != null)
+                                addRoutine.add(0, editTextName.getText().toString());
+                            else
+                                addRoutine.add(0, "RoutineName");
+
+                            if (editTextId != null)
+                                addRoutine.add(0, "ROUTINE"+newRoutineID);
+
+                            MyRoutine addedRoutine = new MyRoutine();
+                            addedRoutine.setRoutineId(addRoutine.get(0));
+                            addedRoutine.setRoutineName(addRoutine.get(1));
+                            if(addRoutine.size()>2) {
+                                addedRoutine.setRoutineEq1Id(addRoutine.get(2));
+                                addedRoutine.setRoutineEq1Goal(addRoutine.get(3));
+                            }
+                            if(addRoutine.size()>4) {
+                                addedRoutine.setRoutineEq1Id(addRoutine.get(4));
+                                addedRoutine.setRoutineEq1Goal(addRoutine.get(5));
+                            }
+                            if(addRoutine.size()>6) {
+                                addedRoutine.setRoutineEq1Id(addRoutine.get(6));
+                                addedRoutine.setRoutineEq1Goal(addRoutine.get(7));
+                            }
+                            if(addRoutine.size()>8) {
+                                addedRoutine.setRoutineEq1Id(addRoutine.get(8));
+                                addedRoutine.setRoutineEq1Goal(addRoutine.get(9));
+                            }
+                            if(addRoutine.size()>10) {
+                                addedRoutine.setRoutineEq1Id(addRoutine.get(10));
+                                addedRoutine.setRoutineEq1Goal(addRoutine.get(11));
+                            }
+
+                            MainActivity.hereDB.insertRoutine(addedRoutine);
+                            routineListViewAdapter.setRoutine(MainActivity.hereDB.getAllMyRoutines());
+                            routineListViewAdapter.notifyDataSetChanged();
+                            addRoutine.clear();
+
+                        } else {
+                            Toast.makeText(getApplicationContext(), "There is no routine. Add exercises!", Toast.LENGTH_SHORT).show();
+                        }
                         dialog.dismiss();
                     }
                 });
@@ -196,7 +441,6 @@ public class MyRoutinesActivity extends AppCompatActivity {
                 break;
         }
     }
-
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -218,6 +462,10 @@ public class MyRoutinesActivity extends AppCompatActivity {
     public class ListViewAdapter extends BaseAdapter {
 
         public List<MyHereAgent> myHereAgents = new ArrayList<MyHereAgent>();
+
+        public List<MyHereAgent> getMyHereAgents(){
+            return myHereAgents;
+        }
 
         public ListViewAdapter () {
             super();
@@ -254,27 +502,80 @@ public class MyRoutinesActivity extends AppCompatActivity {
             TextView eqId = (TextView) convertView.findViewById(R.id.equiplist_id);
             TextView eqSensorType = (TextView) convertView.findViewById(R.id.equiplist_sensorid);
 
-            switch (myHereAgents.get(pos).getMyeqType()) {
-                case 0:
-                    eqTypeImage.setImageResource(R.mipmap.ic_setting_update_alarm);
-                    break;
-                case 1:
-                    eqTypeImage.setImageResource(R.mipmap.ic_setting_best_interest);
-                    break;
-                case 2:
-                    eqTypeImage.setImageResource(R.mipmap.ic_setting_user_information);
-                    break;
-                case 3:
-                    break;
-                default:
-                    break;
-            }
+            eqTypeImage.setImageResource(findImage(myHereAgents.get(pos).getMyeqType()));
 
             eqName.setText(myHereAgents.get(pos).getMyeqName());
             eqId.setText(myHereAgents.get(pos).getMyeqMacId());
             //eqSensorType.setText(registeredAgents.get(pos).getMyeqType());
 
             return convertView;
+        }
+    }
+
+    private class RoutineListViewAdapter extends BaseAdapter {
+        private List<MyRoutine> myRoutines = new ArrayList<MyRoutine>();
+
+        public List<MyRoutine> getRoutine(){
+            return myRoutines;
+        }
+
+        public void setRoutine(List<MyRoutine> routines){
+            myRoutines.clear();
+            this.myRoutines = routines;
+        }
+
+        public RoutineListViewAdapter() {
+            super();
+            if(MainActivity.hereDB.getAllMyRoutines() !=null) {
+                myRoutines = MainActivity.hereDB.getAllMyRoutines();
+                routineTextView.setVisibility(View.GONE);
+                routineListView.setVisibility(View.VISIBLE);
+            } else {
+                myRoutines.clear();
+                routineTextView.setVisibility(View.VISIBLE);
+                routineListView.setVisibility(View.GONE);
+            }
+        }
+
+        @Override
+        public int getCount() {
+            if (myRoutines != null)
+                return myRoutines.size();
+            else
+                return 0;
+        }
+
+        @Override
+        public Object getItem(int i) {
+            return myRoutines.get(i);
+        }
+
+        @Override
+        public long getItemId(int i) {
+            return i;
+        }
+
+        @Override
+        public View getView(int i, View view, ViewGroup viewGroup) {
+            final Context context = viewGroup.getContext();
+            // General ListView optimization code.
+            if (view == null) {
+                LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+                view = inflater.inflate(R.layout.listitem_equipment, viewGroup, false);
+            }
+
+            ImageView routineImage = (ImageView) view.findViewById(R.id.equiplist_img);
+            TextView routineName = (TextView) view.findViewById(R.id.equiplist_name);
+            TextView routineId = (TextView) view.findViewById(R.id.equiplist_id);
+            //TextView eqSensorId = (TextView) view.findViewById(R.id.equiplist_sensorid);
+
+            routineImage.setImageResource(R.mipmap.ic_setting_update_alarm);
+
+            routineName.setText(myRoutines.get(i).getRoutineId());
+            routineId.setText(myRoutines.get(i).getRoutineName());
+            //eqSensorId.setText(pairedEquipList.get(i).getEquipmentSensorID());
+
+            return view;
         }
     }
 }

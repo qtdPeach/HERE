@@ -27,8 +27,7 @@
             android:gravity="left|center_vertical"
             android:editable="false"
             android:textSize="16dp"
-            android:textColor="@color/colorAccent"
-            android:text="ROUTINE99"/>
+            android:textColor="@color/colorAccent" />
 
     </LinearLayout>
 
