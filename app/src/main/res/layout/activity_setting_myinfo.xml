@@ -213,7 +213,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="20dp"
-                android:layout_marginRight="20dp">
+                android:layout_marginRight="20dp"
+                android:layout_marginTop="3dp">
 
                 <TextView
                     android:layout_width="0px"
@@ -224,14 +225,23 @@
                     android:textColor="@color/colorPrimaryDark"
                     android:text="GENDER: "/>
 
-                <EditText
-                    android:id="@+id/setting_myinfo_et_sex"
+                <!--<EditText-->
+                    <!--android:id="@+id/setting_myinfo_et_sex"-->
+                    <!--android:layout_width="0px"-->
+                    <!--android:layout_height="wrap_content"-->
+                    <!--android:layout_weight="3"-->
+                    <!--android:hint="Your gender (1:male, 2:female)"-->
+                    <!--android:textSize="15dp"-->
+                    <!--android:textColorHint="#999999"/>-->
+
+                <Spinner
+                    android:id="@+id/setting_myinfo_spinner_sex"
                     android:layout_width="0px"
                     android:layout_height="wrap_content"
                     android:layout_weight="3"
-                    android:hint="Your gender (1:male, 2:female)"
-                    android:textSize="15dp"
-                    android:textColorHint="#999999"/>
+                    android:layout_marginTop="3dp"
+                    android:layout_marginBottom="3dp"
+                    />
 
             </LinearLayout>
 

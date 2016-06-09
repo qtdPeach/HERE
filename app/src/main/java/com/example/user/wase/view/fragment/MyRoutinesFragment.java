@@ -323,7 +323,7 @@ public class MyRoutinesFragment extends Fragment{
             // General ListView optimization code.
             if (view == null) {
                 int res = 0;
-                res = R.layout.listitem_equipment;
+                res = R.layout.listitem_routine;
                 view = mInflator.inflate(res, viewGroup, false);
 
             }

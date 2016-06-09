@@ -363,14 +363,14 @@ public class MainActivity extends AppCompatActivity
                 MyHereAgent tmpMyHereAgent2 = new MyHereAgent();
                 tmpMyHereAgent2.setMyeqMacId("22:33:44:55:66:77");
                 tmpMyHereAgent2.setMyeqName("푸쉬업바");
-                tmpMyHereAgent2.setMyeqType(1);
+                tmpMyHereAgent2.setMyeqType(2);
                 tmpMyHereAgent2.setMyeqBeaconMajorId("Major2");
                 tmpMyHereAgent2.setMyeqBeaconMinorId("Minor2");
 
                 MyHereAgent tmpMyHereAgent3 = new MyHereAgent();
                 tmpMyHereAgent3.setMyeqMacId("33:44:55:66:77:88");
                 tmpMyHereAgent3.setMyeqName("훌라후프");
-                tmpMyHereAgent3.setMyeqType(2);
+                tmpMyHereAgent3.setMyeqType(4);
                 tmpMyHereAgent3.setMyeqBeaconMajorId("Major3");
                 tmpMyHereAgent3.setMyeqBeaconMinorId("Minor3");
 
@@ -405,6 +405,82 @@ public class MainActivity extends AppCompatActivity
 
                 break;
             case R.id.nav_db_add_myrecords:
+                //3 Days, 6 Records,
+                MyRecord tmpMyRecord1 = new MyRecord();
+                tmpMyRecord1.setRecordId("RECORD01");   // 3 steps
+                tmpMyRecord1.setRecordName("This is a record01");
+                tmpMyRecord1.setRecordDateTime("2016-06-06 20:20:20");
+                tmpMyRecord1.setRecordEq1Id("11:22:33:44:55:66");
+                tmpMyRecord1.setRecordEq1Done(350);
+                tmpMyRecord1.setRecordEq2Id("22:33:44:55:66:77");
+                tmpMyRecord1.setRecordEq2Done(120);
+                tmpMyRecord1.setRecordEq3Id("33:44:55:66:77:88");
+                tmpMyRecord1.setRecordEq3Done(50);
+
+                MyRecord tmpMyRecord2 = new MyRecord();
+                tmpMyRecord2.setRecordId("RECORD02");   // 2 steps (5)
+                tmpMyRecord2.setRecordName("This is a record02");
+                tmpMyRecord2.setRecordDateTime("2016-06-06 23:20:20");
+                tmpMyRecord2.setRecordEq1Id("22:33:44:55:66:77");
+                tmpMyRecord2.setRecordEq1Done(120);
+                tmpMyRecord2.setRecordEq2Id("33:44:55:66:77:88");
+                tmpMyRecord2.setRecordEq2Done(50);
+
+                MyRecord tmpMyRecord3 = new MyRecord();
+                tmpMyRecord3.setRecordId("RECORD03");   // 4 steps (9)
+                tmpMyRecord3.setRecordName("This is a record03");
+                tmpMyRecord3.setRecordDateTime("2016-06-07 20:20:20");
+                tmpMyRecord3.setRecordEq1Id("11:22:33:44:55:66");
+                tmpMyRecord3.setRecordEq1Done(350);
+                tmpMyRecord3.setRecordEq2Id("22:33:44:55:66:77");
+                tmpMyRecord3.setRecordEq2Done(120);
+                tmpMyRecord3.setRecordEq3Id("33:44:55:66:77:88");
+                tmpMyRecord3.setRecordEq3Done(50);
+                tmpMyRecord3.setRecordEq4Id("22:33:44:55:66:77");
+                tmpMyRecord3.setRecordEq4Done(120);
+
+                MyRecord tmpMyRecord4 = new MyRecord();
+                tmpMyRecord4.setRecordId("RECORD04");   // 5 steps (14)
+                tmpMyRecord4.setRecordName("This is a record04");
+                tmpMyRecord4.setRecordDateTime("2016-06-08 20:20:20");
+                tmpMyRecord4.setRecordEq1Id("11:22:33:44:55:66");
+                tmpMyRecord4.setRecordEq1Done(350);
+                tmpMyRecord4.setRecordEq2Id("22:33:44:55:66:77");
+                tmpMyRecord4.setRecordEq2Done(120);
+                tmpMyRecord4.setRecordEq3Id("33:44:55:66:77:88");
+                tmpMyRecord4.setRecordEq3Done(50);
+                tmpMyRecord4.setRecordEq4Id("33:44:55:66:77:88");
+                tmpMyRecord4.setRecordEq4Done(50);
+                tmpMyRecord4.setRecordEq5Id("33:44:55:66:77:88");
+                tmpMyRecord4.setRecordEq5Done(50);
+
+                MyRecord tmpMyRecord5 = new MyRecord();
+                tmpMyRecord5.setRecordId("RECORD05");   // 1 step (15)
+                tmpMyRecord5.setRecordName("This is a record05");
+                tmpMyRecord5.setRecordDateTime("2016-06-08 20:20:20");
+                tmpMyRecord5.setRecordEq1Id("22:33:44:55:66:77");
+                tmpMyRecord5.setRecordEq1Done(350);
+
+                MyRecord tmpMyRecord6 = new MyRecord();
+                tmpMyRecord6.setRecordId("RECORD06");   // 3 steps (18)
+                tmpMyRecord6.setRecordName("This is a record06");
+                tmpMyRecord6.setRecordDateTime("2016-06-09 23:20:20");
+                tmpMyRecord6.setRecordEq1Id("11:22:33:44:55:66");
+                tmpMyRecord6.setRecordEq1Done(350);
+                tmpMyRecord6.setRecordEq2Id("22:33:44:55:66:77");
+                tmpMyRecord6.setRecordEq2Done(120);
+                tmpMyRecord6.setRecordEq3Id("33:44:55:66:77:88");
+                tmpMyRecord6.setRecordEq3Done(50);
+
+                hereDB.insertRecord(tmpMyRecord1);
+                hereDB.insertRecord(tmpMyRecord2);
+                hereDB.insertRecord(tmpMyRecord3);
+                hereDB.insertRecord(tmpMyRecord4);
+                hereDB.insertRecord(tmpMyRecord5);
+                hereDB.insertRecord(tmpMyRecord6);
+
+                Toast.makeText(getApplicationContext(), "Six records are added into DB.", Toast.LENGTH_SHORT).show();
+
                 break;
         }
 

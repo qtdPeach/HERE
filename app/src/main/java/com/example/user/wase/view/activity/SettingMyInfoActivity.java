@@ -9,9 +9,11 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -38,9 +40,11 @@ public class SettingMyInfoActivity extends AppCompatActivity {
     EditText settingMyInfo_et_nick;
     EditText settingMyInfo_et_name;
     EditText settingMyInfo_et_age;
-    EditText settingMyInfo_et_sex;
+//    EditText settingMyInfo_et_sex;
     EditText settingMyInfo_et_height;
     EditText settingMyInfo_et_weight;
+
+    Spinner settingMyInfo_spinner_sex;
 
     TextView settingMyInfo_tv_deviceid;
 
@@ -48,6 +52,8 @@ public class SettingMyInfoActivity extends AppCompatActivity {
 
     MyInformation myInformation;
     String android_id;
+
+    private ArrayAdapter<String> mSpinnerAdapter = null;
 
 
     @Override
@@ -85,7 +91,8 @@ public class SettingMyInfoActivity extends AppCompatActivity {
         settingMyInfo_et_nick = (EditText) findViewById(R.id.setting_myinfo_et_nick);
         settingMyInfo_et_name = (EditText) findViewById(R.id.setting_myinfo_et_name);
         settingMyInfo_et_age = (EditText) findViewById(R.id.setting_myinfo_et_age);
-        settingMyInfo_et_sex = (EditText) findViewById(R.id.setting_myinfo_et_sex);
+//        settingMyInfo_et_sex = (EditText) findViewById(R.id.setting_myinfo_et_sex);
+        settingMyInfo_spinner_sex = (Spinner) findViewById(R.id.setting_myinfo_spinner_sex);
         settingMyInfo_et_height = (EditText) findViewById(R.id.setting_myinfo_et_height);
         settingMyInfo_et_weight = (EditText) findViewById(R.id.setting_myinfo_et_weight);
 
@@ -128,7 +135,20 @@ public class SettingMyInfoActivity extends AppCompatActivity {
             settingMyInfo_et_nick.setText(myInformation.getUserNick());
             settingMyInfo_et_name.setText(myInformation.getUserName());
             settingMyInfo_et_age.setText(String.valueOf(myInformation.getUserAge()));
-            settingMyInfo_et_sex.setText(String.valueOf(myInformation.getUserSex()));
+//            settingMyInfo_et_sex.setText(String.valueOf(myInformation.getUserSex()));
+
+            mSpinnerAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item,
+                    (String[])getResources().getStringArray(R.array.spinner_list));
+            mSpinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+            settingMyInfo_spinner_sex.setAdapter(mSpinnerAdapter);
+
+            if (myInformation.getUserSex() == 1) {
+                settingMyInfo_spinner_sex.setSelection(0);
+            } else {
+                settingMyInfo_spinner_sex.setSelection(1);
+            }
+
+
             settingMyInfo_et_height.setText(String.valueOf(myInformation.getUserHeight()));
             settingMyInfo_et_weight.setText(String.valueOf(myInformation.getUserWeight()));
 
@@ -152,7 +172,7 @@ public class SettingMyInfoActivity extends AppCompatActivity {
         settingMyInfo_et_nick.setText("");
         settingMyInfo_et_name.setText("");
         settingMyInfo_et_age.setText("");
-        settingMyInfo_et_sex.setText("");
+//        settingMyInfo_et_sex.setText("");
         settingMyInfo_et_height.setText("");
         settingMyInfo_et_weight.setText("");
     }
@@ -179,11 +199,18 @@ public class SettingMyInfoActivity extends AppCompatActivity {
                     userAge = 20;
                 }
 
-                if (!settingMyInfo_et_sex.getText().toString().equals("")) {
-                    userSex = Integer.parseInt(settingMyInfo_et_sex.getText().toString());
-                } else {
+                //settingMyInfo_spinner_sex.isSelected()
+                if (settingMyInfo_spinner_sex.getSelectedItemPosition() == 0) {
                     userSex = 1;
+                } else {
+                    userSex = 2;
                 }
+
+//                if (!settingMyInfo_et_sex.getText().toString().equals("")) {
+//                    userSex = Integer.parseInt(settingMyInfo_et_sex.getText().toString());
+//                } else {
+//                    userSex = 1;
+//                }
 
                 if (!settingMyInfo_et_height.getText().toString().equals("")) {
                     userHeight = Integer.parseInt(settingMyInfo_et_height.getText().toString());

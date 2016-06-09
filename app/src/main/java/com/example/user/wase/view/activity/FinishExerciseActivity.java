@@ -1,7 +1,5 @@
 package com.example.user.wase.view.activity;
 
-import android.app.AlertDialog;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
@@ -10,16 +8,13 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.user.wase.R;
-import com.example.user.wase.model.AgentRecord;
+import com.example.user.wase.model.RecordAgent;
 import com.example.user.wase.model.MyRecord;
-import com.example.user.wase.model.MyRoutine;
-import com.example.user.wase.utility.TaskScheduler;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -34,7 +29,7 @@ public class FinishExerciseActivity extends AppCompatActivity {
     private static final int VIEW_INVISIBLE = 72;
     private static final int VIEW_GONE = 73;
 
-    ArrayList<AgentRecord> agentRecords;
+    ArrayList<RecordAgent> agentRecords;
     String routineName;
 
     TextView tv_myroutine;
@@ -81,7 +76,7 @@ public class FinishExerciseActivity extends AppCompatActivity {
 
         //Receive the result arraylist
         Intent intent = getIntent();
-        agentRecords = (ArrayList<AgentRecord>) intent.getSerializableExtra("agentRecords");
+        agentRecords = (ArrayList<RecordAgent>) intent.getSerializableExtra("agentRecords");
         routineName = (String) intent.getStringExtra("routineName");
 
         Log.d("agentRecords", "[FinishExerciseActivity] Intent extra is received (size: " + agentRecords.size() + ")");
@@ -234,11 +229,11 @@ public class FinishExerciseActivity extends AppCompatActivity {
                     if (agentRecords.size() >= 1) {
                         myRecordTuple.setRecordEq1Id(agentRecords.get(0).getAgentMacId());
                         //Count numbers
-                        if (agentRecords.get(0).getAgentType() == 1) {
+                        if (getRecordType(agentRecords.get(0).getAgentType()) == 1) {
                             myRecordTuple.setRecordEq1Done(agentRecords.get(0).getRecordCount());
                         }
                         //Count time
-                        else if (agentRecords.get(0).getAgentType() == 2) {
+                        else if (getRecordType(agentRecords.get(0).getAgentType()) == 2) {
                             myRecordTuple.setRecordEq1Done(agentRecords.get(0).getRecordTime());
                         }
                     }
@@ -246,11 +241,11 @@ public class FinishExerciseActivity extends AppCompatActivity {
                     if (agentRecords.size() >= 2) {
                         myRecordTuple.setRecordEq2Id(agentRecords.get(1).getAgentMacId());
                         //Count numbers
-                        if (agentRecords.get(1).getAgentType() == 1) {
+                        if (getRecordType(agentRecords.get(1).getAgentType()) == 1) {
                             myRecordTuple.setRecordEq2Done(agentRecords.get(1).getRecordCount());
                         }
                         //Count time
-                        else if (agentRecords.get(1).getAgentType() == 2) {
+                        else if (getRecordType(agentRecords.get(1).getAgentType()) == 2) {
                             myRecordTuple.setRecordEq2Done(agentRecords.get(1).getRecordTime());
                         }
                     }
@@ -258,11 +253,11 @@ public class FinishExerciseActivity extends AppCompatActivity {
                     if (agentRecords.size() >= 3) {
                         myRecordTuple.setRecordEq3Id(agentRecords.get(2).getAgentMacId());
                         //Count numbers
-                        if (agentRecords.get(2).getAgentType() == 1) {
+                        if (getRecordType(agentRecords.get(2).getAgentType()) == 1) {
                             myRecordTuple.setRecordEq3Done(agentRecords.get(2).getRecordCount());
                         }
                         //Count time
-                        else if (agentRecords.get(2).getAgentType() == 2) {
+                        else if (getRecordType(agentRecords.get(2).getAgentType()) == 2) {
                             myRecordTuple.setRecordEq3Done(agentRecords.get(2).getRecordTime());
                         }
                     }
@@ -270,11 +265,11 @@ public class FinishExerciseActivity extends AppCompatActivity {
                     if (agentRecords.size() >= 4) {
                         myRecordTuple.setRecordEq4Id(agentRecords.get(3).getAgentMacId());
                         //Count numbers
-                        if (agentRecords.get(3).getAgentType() == 1) {
+                        if (getRecordType(agentRecords.get(3).getAgentType()) == 1) {
                             myRecordTuple.setRecordEq4Done(agentRecords.get(3).getRecordCount());
                         }
                         //Count time
-                        else if (agentRecords.get(3).getAgentType() == 2) {
+                        else if (getRecordType(agentRecords.get(3).getAgentType()) == 2) {
                             myRecordTuple.setRecordEq4Done(agentRecords.get(3).getRecordTime());
                         }
                     }
@@ -282,11 +277,11 @@ public class FinishExerciseActivity extends AppCompatActivity {
                     if (agentRecords.size() >= 5) {
                         myRecordTuple.setRecordEq5Id(agentRecords.get(4).getAgentMacId());
                         //Count numbers
-                        if (agentRecords.get(4).getAgentType() == 1) {
+                        if (getRecordType(agentRecords.get(4).getAgentType()) == 1) {
                             myRecordTuple.setRecordEq5Done(agentRecords.get(4).getRecordCount());
                         }
                         //Count time
-                        else if (agentRecords.get(4).getAgentType() == 2) {
+                        else if (getRecordType(agentRecords.get(4).getAgentType()) == 2) {
                             myRecordTuple.setRecordEq5Done(agentRecords.get(4).getRecordTime());
                         }
                     }
@@ -301,6 +296,19 @@ public class FinishExerciseActivity extends AppCompatActivity {
         }
     }
 
+
+    /**
+     * Get record type (Measure countNum or time?)
+     * @param agentType
+     * @return
+     */
+    private int getRecordType(int agentType) {
+        if (agentType == 1 || agentType == 2) {
+            return 1;
+        } else {
+            return 2;
+        }
+    }
 
 
     @Override

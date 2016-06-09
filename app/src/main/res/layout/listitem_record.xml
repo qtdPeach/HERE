@@ -1,0 +1,193 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="horizontal"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:gravity="center_horizontal|top"
+        android:orientation="vertical"
+        android:paddingLeft="15sp"
+        android:paddingTop="8dp"
+        android:layout_width="0px"
+        android:layout_height="wrap_content"
+        android:layout_weight="1">
+
+        <ImageView
+            android:id="@+id/recordlist_img"
+            android:src="@drawable/start_exercise_girl"
+            android:layout_gravity="center"
+            android:layout_width="50sp"
+            android:layout_height="50sp"
+            />
+
+        <TextView
+            android:id="@+id/recordlist_datetime"
+            android:textColor="#555555"
+            android:textSize = "16sp"
+            android:textStyle="bold"
+            android:text="2016-06-10"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:gravity="center_vertical"
+        android:orientation="vertical"
+        android:paddingLeft="15sp"
+        android:paddingTop="8dp"
+        android:paddingBottom="5dp"
+        android:layout_width="0px"
+        android:layout_height="wrap_content"
+        android:layout_weight="5">
+
+        <TextView
+            android:id="@+id/recordlist_name"
+            android:textColor="@color/colorPrimaryDark"
+            android:textSize = "20sp"
+            android:textStyle="bold"
+            android:layout_marginBottom="5dp"
+            android:text="RecordName"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:id="@+id/recordlist_eq1_name"
+                android:layout_width="0px"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:textColor="@color/colorSkyBlue"
+                android:textSize="15sp"
+                android:text="Equip1"
+                />
+
+            <TextView
+                android:id="@+id/recordlist_eq1_done"
+                android:layout_width="0px"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:textColor="@color/colorSkyBlue"
+                android:textSize="15sp"
+                android:text="Equip1_Done"
+                />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:id="@+id/recordlist_eq2_name"
+                android:layout_width="0px"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:textColor="@color/colorSkyBlue"
+                android:textSize="15sp"
+                android:text="Equip2"
+                />
+
+            <TextView
+                android:id="@+id/recordlist_eq2_done"
+                android:layout_width="0px"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:textColor="@color/colorSkyBlue"
+                android:textSize="15sp"
+                android:text="Equip2_Done"
+                />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:id="@+id/recordlist_eq3_name"
+                android:layout_width="0px"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:textColor="@color/colorSkyBlue"
+                android:textSize="15sp"
+                android:text="Equip3"
+                />
+
+            <TextView
+                android:id="@+id/recordlist_eq3_done"
+                android:layout_width="0px"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:textColor="@color/colorSkyBlue"
+                android:textSize="15sp"
+                android:text="Equip3_Done"
+                />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:id="@+id/recordlist_eq4_name"
+                android:layout_width="0px"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:textColor="@color/colorSkyBlue"
+                android:textSize="15sp"
+                android:text="Equip4"
+                />
+
+            <TextView
+                android:id="@+id/recordlist_eq4_done"
+                android:layout_width="0px"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:textColor="@color/colorSkyBlue"
+                android:textSize="15sp"
+                android:text="Equip4_Done"
+                />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:id="@+id/recordlist_eq5_name"
+                android:layout_width="0px"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:textColor="@color/colorSkyBlue"
+                android:textSize="15sp"
+                android:text="Equip5"
+                />
+
+            <TextView
+                android:id="@+id/recordlist_eq5_done"
+                android:layout_width="0px"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:textColor="@color/colorSkyBlue"
+                android:textSize="15sp"
+                android:text="Equip5_Done"
+                />
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+</LinearLayout>

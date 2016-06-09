@@ -10,7 +10,7 @@ import java.util.StringTokenizer;
 /**
  * Created by user on 2016-06-08.
  */
-public class AgentRecord implements Serializable{
+public class RecordAgent implements Serializable{
     String agentName;
     String agentMacId;
     int agentType;
@@ -22,7 +22,7 @@ public class AgentRecord implements Serializable{
     int recordCount;
     int recordTime;
 
-    public AgentRecord() {
+    public RecordAgent() {
         agentName = "-1";
         agentMacId = "-1";
 
@@ -35,7 +35,7 @@ public class AgentRecord implements Serializable{
         recordTime = 0;
     }
 
-    public AgentRecord(String agentMacId) {
+    public RecordAgent(String agentMacId) {
         this.agentMacId = agentMacId;
 
         MyHereAgent tmpAgent = MainActivity.hereDB.getMyHereAgent(agentMacId);

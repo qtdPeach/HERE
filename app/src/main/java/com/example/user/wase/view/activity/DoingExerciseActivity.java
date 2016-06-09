@@ -14,7 +14,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.user.wase.R;
-import com.example.user.wase.model.AgentRecord;
+import com.example.user.wase.model.RecordAgent;
 import com.example.user.wase.model.MyRoutine;
 import com.example.user.wase.utility.TaskScheduler;
 
@@ -48,8 +48,8 @@ public class DoingExerciseActivity extends AppCompatActivity {
     TextView tv_eq_goal;
     TextView tv_eq_count;
 
-    ArrayList<AgentRecord> agentRecords;
-    AgentRecord currentAgent;
+    ArrayList<RecordAgent> agentRecords;
+    RecordAgent currentAgent;
     int numAgents;
     int currentOrder;
 
@@ -152,7 +152,7 @@ public class DoingExerciseActivity extends AppCompatActivity {
             return;
         } else {
             numAgents ++;
-            AgentRecord tmpAgentRecord1 = new AgentRecord();
+            RecordAgent tmpAgentRecord1 = new RecordAgent();
             String agent1MacId = myRoutine.getRoutineEq1Id();
             tmpAgentRecord1.setAgentMacId(agent1MacId);
             tmpAgentRecord1.setAgentName(MainActivity.hereDB.getMyHereAgent(agent1MacId).getMyeqName());
@@ -185,7 +185,7 @@ public class DoingExerciseActivity extends AppCompatActivity {
             return;
         } else {
             numAgents ++;
-            AgentRecord tmpAgentRecord2 = new AgentRecord();
+            RecordAgent tmpAgentRecord2 = new RecordAgent();
             String agent2MacId = myRoutine.getRoutineEq2Id();
             tmpAgentRecord2.setAgentMacId(agent2MacId);
             tmpAgentRecord2.setAgentName(MainActivity.hereDB.getMyHereAgent(agent2MacId).getMyeqName());
@@ -218,7 +218,7 @@ public class DoingExerciseActivity extends AppCompatActivity {
             return;
         } else {
             numAgents ++;
-            AgentRecord tmpAgentRecord3 = new AgentRecord();
+            RecordAgent tmpAgentRecord3 = new RecordAgent();
             String agent3MacId = myRoutine.getRoutineEq3Id();
             tmpAgentRecord3.setAgentMacId(agent3MacId);
             tmpAgentRecord3.setAgentName(MainActivity.hereDB.getMyHereAgent(agent3MacId).getMyeqName());
@@ -251,7 +251,7 @@ public class DoingExerciseActivity extends AppCompatActivity {
             return;
         } else {
             numAgents ++;
-            AgentRecord tmpAgentRecord4 = new AgentRecord();
+            RecordAgent tmpAgentRecord4 = new RecordAgent();
             String agent4MacId = myRoutine.getRoutineEq4Id();
             tmpAgentRecord4.setAgentMacId(agent4MacId);
             tmpAgentRecord4.setAgentName(MainActivity.hereDB.getMyHereAgent(agent4MacId).getMyeqName());
@@ -284,7 +284,7 @@ public class DoingExerciseActivity extends AppCompatActivity {
             return;
         } else {
             numAgents ++;
-            AgentRecord tmpAgentRecord5 = new AgentRecord();
+            RecordAgent tmpAgentRecord5 = new RecordAgent();
             String agent5MacId = myRoutine.getRoutineEq5Id();
             tmpAgentRecord5.setAgentMacId(agent5MacId);
             tmpAgentRecord5.setAgentName(MainActivity.hereDB.getMyHereAgent(agent5MacId).getMyeqName());
@@ -361,7 +361,7 @@ public class DoingExerciseActivity extends AppCompatActivity {
         @Override
         public void run() {
 
-            //Obtain a current AgentRecord for recording
+            //Obtain a current RecordAgent for recording
             if (numAgents > 0) {
                 currentAgent = agentRecords.get(currentOrder);
             }
@@ -457,7 +457,7 @@ public class DoingExerciseActivity extends AppCompatActivity {
                 .setPositiveButton("Go next!", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        Toast.makeText(getApplicationContext(), "Exercising is stopped.", Toast.LENGTH_SHORT).show();
+//                        Toast.makeText(getApplicationContext(), "Exercising is stopped.", Toast.LENGTH_SHORT).show();
 
                         //TODO: Store previous exercise record to agentRecords
                         agentRecords.get(currentOrder).setRecordCount(currentRecordCount);

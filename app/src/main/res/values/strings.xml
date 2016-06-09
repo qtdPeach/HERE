@@ -20,4 +20,7 @@
     <string name="title_connected_to">connected: </string>
     <string name="title_not_connected">not connected</string>
 
+    <string name="spinner_item_01">Male</string>
+    <string name="spinner_item_02">Female</string>
+
 </resources>
