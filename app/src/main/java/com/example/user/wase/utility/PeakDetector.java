@@ -7,27 +7,30 @@ import java.util.ArrayList;
 /**
  * Created by PCPC on 2016-05-24.
  */
-public class DataAnalyzer extends Thread{
+public class PeakDetector extends Thread{
     private int equipmentType;
     private ArrayList<DataPoint> data;
 
     private boolean isDetectingMax, isDetectingMin;
 
     private double maxValue, minValue;
-    private int maxPosition, minPosition;
+    private double prevMax, prevMin;
+    private double maxPosition, minPosition;
     private double delta; // minimum difference for the peaks
-    private final double minDelta = 20;
+    private double minDelta = 20;
 
     private boolean isEnable;
 
     private final int listCapacity = 1000;
 
 
-    public DataAnalyzer(int type){
+    public PeakDetector(int type){
         equipmentType = type;
         data = new ArrayList<DataPoint>();
         minValue = Double.MAX_VALUE;
         maxValue = Double.MIN_VALUE;
+        prevMin = Double.MAX_VALUE;
+        prevMax = Double.MIN_VALUE;
 
         maxPosition = -1;
         minPosition = -1;
@@ -38,10 +41,15 @@ public class DataAnalyzer extends Thread{
         delta = 100;
     }
 
+    public void setDelta(double d){
+        minDelta = d;
+    }
     public void reset(){
         data = new ArrayList<DataPoint>();
         minValue = Double.MAX_VALUE;
         maxValue = Double.MIN_VALUE;
+        prevMin = Double.MAX_VALUE;
+        prevMax = Double.MIN_VALUE;
         maxPosition = -1;
         minPosition = -1;
         isDetectingMax = true;
@@ -58,12 +66,14 @@ public class DataAnalyzer extends Thread{
         if(isDetectingMax){
             if(maxValue < added) {
                 maxValue = added;
-                maxPosition = data.size();
+                maxPosition = point.getX();
                 double temp = Math.abs(maxValue /2);
                 if(temp > minDelta) delta = temp;
             }
             else if( added < maxValue - delta){
                 isDetectingMax = false;
+                prevMax = maxValue;
+                maxValue = Double.MIN_VALUE;
                 return 1;
             }
 
@@ -72,12 +82,14 @@ public class DataAnalyzer extends Thread{
         if(isDetectingMin){
             if(minValue > added){
                 minValue = added;
-                minPosition = data.size();
+                minPosition = point.getX();
                 double temp = Math.abs(minValue /2);
                 if(temp > minDelta) delta = temp;
             }
             else if(added > minValue + delta){
                 isDetectingMin = false;
+                prevMin = minValue;
+                minValue = Double.MAX_VALUE;
                 return -1;
             }
         }
@@ -103,11 +115,29 @@ public class DataAnalyzer extends Thread{
                 isDetectingMin = false;
                 isDetectingMax = false;
                 break;
+            case 2:
+                isDetectingMin = true;
+                isDetectingMax = true;
+                break;
         }
     }
 
+    public double getMaxValue(){
+        return prevMax;
+    }
+
+    public double getMinValue(){
+        return prevMin;
+    }
+
+    public double getMaxPosition(){
+        return maxPosition;
+    }
+    public double getMinPosition(){
+        return minPosition;
+    }
     public void cutFromTo(int from, int to){
         data = (ArrayList<DataPoint>)data.subList(from, to);
-
     }
+
 }
