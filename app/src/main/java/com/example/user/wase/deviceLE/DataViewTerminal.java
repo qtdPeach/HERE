@@ -27,7 +27,8 @@ import android.widget.TextView;
 import android.widget.ViewFlipper;
 
 import com.example.user.wase.R;
-import com.example.user.wase.utility.DataAnalyzer;
+import com.example.user.wase.utility.PeakDetector;
+import com.example.user.wase.utility.SinusoidalDetector;
 import com.jjoe64.graphview.GraphView;
 import com.jjoe64.graphview.series.DataPoint;
 import com.jjoe64.graphview.series.LineGraphSeries;
@@ -46,7 +47,8 @@ public class DataViewTerminal extends Activity {
     public static final String EXTRAS_DEVICE_NAME = "DEVICE_NAME";
     public static final String EXTRAS_DEVICE_ADDRESS = "DEVICE_ADDRESS";
 
-    public DataAnalyzer dumbel;
+    public PeakDetector dumbel;
+    public SinusoidalDetector hoop;
 
     private Vibrator vib;
 
@@ -167,7 +169,8 @@ public class DataViewTerminal extends Activity {
         setContentView(R.layout.activity_data_view_terminal);
         linkComponents();
 
-        dumbel = new DataAnalyzer(0);
+        dumbel = new PeakDetector(0);
+        hoop = new SinusoidalDetector(27*25.4, 386*8 );
         vib = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
 
         final Intent intent = getIntent();
@@ -488,23 +491,39 @@ public class DataViewTerminal extends Activity {
                             exercisePhase.setText(dumbelCount/2 + ":  Static");
                             dumbel.setDetectingMode(0);
                         }
-                        switch ( dumbel.peakDetection(new DataPoint(0, values[5]))){
-                            case 1:
-                                isRisingPeak = true;
-                                if(isFallingPeak){
-                                    dumbelCount++;
-                                    vib.vibrate(100);
+
+                        switch (vf.getDisplayedChild()) {
+                            case 2:
+                            case 5:
+                                switch (dumbel.peakDetection(new DataPoint(0, values[vf.getDisplayedChild()]))) {
+                                    case 1:
+                                        isRisingPeak = true;
+                                        if (isFallingPeak) {
+                                            dumbelCount++;
+                                            vib.vibrate(100);
+                                        }
+                                        isFallingPeak = false;
+                                        break;
+                                    case -1:
+                                        isFallingPeak = true;
+                                        if (isRisingPeak) {
+                                            dumbelCount++;
+                                            vib.vibrate(100);
+                                        }
+                                        isRisingPeak = false;
+                                        break;
                                 }
-                                isFallingPeak = false;
                                 break;
-                            case -1:
-                                isFallingPeak = true;
-                                if(isRisingPeak){
-                                    dumbelCount++;
-                                    vib.vibrate(100);
+                            default:
+
+                                if(hoop.periodMonitor(new DataPoint((double)(System.currentTimeMillis() - startTime), values[vf.getDisplayedChild()]))) {
+                                    exercisePhase.setText("Count: "+hoop.getCount() + " - is Periodic");
+
+                                }else {
+                                    exercisePhase.setText("is not Periodic");
                                 }
-                                isRisingPeak = false;
                                 break;
+
                         }
                         samplingCount++;
 
