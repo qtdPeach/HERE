@@ -291,13 +291,16 @@ public class MyRoutinesActivity extends AppCompatActivity {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         //TODO: Delete selected routines
-                        System.out.println("routinePosition: " + routinePosition);
-                        String deletedRoutineName = routineListViewAdapter.getRoutine().get(routinePosition).getRoutineId();
-                        MainActivity.hereDB.deleteMyRoutine(deletedRoutineName);
-                        routineListViewAdapter.setRoutine(MainActivity.hereDB.getAllMyRoutines());
-                        routineListViewAdapter.notifyDataSetChanged();
-                        Toast.makeText(getApplicationContext(),deletedRoutineName+ "is deleted",Toast.LENGTH_SHORT).show();
-                        routinePosition = -1;
+                        if (routinePosition != -1) {
+                            String deletedRoutineName = routineListViewAdapter.getRoutine().get(routinePosition).getRoutineId();
+                            MainActivity.hereDB.deleteMyRoutine(deletedRoutineName);
+                            routineListViewAdapter.setRoutine(MainActivity.hereDB.getAllMyRoutines());
+                            routineListViewAdapter.notifyDataSetChanged();
+                            Toast.makeText(getApplicationContext(), deletedRoutineName + "is deleted", Toast.LENGTH_SHORT).show();
+                            routinePosition = -1;
+                        } else {
+                            Toast.makeText(getApplicationContext(),"Click a routine to delete first!",Toast.LENGTH_SHORT).show();
+                        }
                         dialog.dismiss();
                     }
                 })
@@ -358,24 +361,26 @@ public class MyRoutinesActivity extends AppCompatActivity {
 
                 int newRoutineId =1;
 
-                while(true) {
-                    boolean isSame = false;
+                if(MainActivity.hereDB.getAllMyRoutines()!=null) {
+                    while (true) {
+                        boolean isSame = false;
 
-                    for (MyRoutine myRoutine : MainActivity.hereDB.getAllMyRoutines()) {
-                        String num = myRoutine.getRoutineId().replaceAll("[^0-9]","");
-                        if(num.equals(""))
-                            num = "0";
-                        int routineId = Integer.parseInt(num);
+                        for (MyRoutine myRoutine : MainActivity.hereDB.getAllMyRoutines()) {
+                            String num = myRoutine.getRoutineId().replaceAll("[^0-9]", "");
+                            if (num.equals(""))
+                                num = "0";
+                            int routineId = Integer.parseInt(num);
 
-                        if (routineId == newRoutineId) {
-                            isSame = true;
-                            break;
+                            if (routineId == newRoutineId) {
+                                isSame = true;
+                                break;
+                            }
                         }
+                        if (isSame)
+                            newRoutineId++;
+                        else
+                            break;
                     }
-                    if (isSame)
-                        newRoutineId++;
-                    else
-                        break;
                 }
 
                 editTextId.setText("ROUTINE"+newRoutineId);
