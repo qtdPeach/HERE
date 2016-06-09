@@ -53,6 +53,9 @@ public class MyRoutinesActivity extends AppCompatActivity {
     ListView routineListView;
     TextView routineTextView;
 
+    ImageView iv_add_routine;
+    ImageView iv_delete_routine;
+
     RoutineListViewAdapter routineListViewAdapter;
 
     int routinePosition = -1;
@@ -100,6 +103,12 @@ public class MyRoutinesActivity extends AppCompatActivity {
         final ListViewAdapter adapter = new ListViewAdapter();
         listView.setAdapter(adapter);
         adapter.notifyDataSetChanged();
+
+        iv_add_routine = (ImageView) findViewById(R.id.setting_myroutine_iv_addroutine);
+        iv_delete_routine = (ImageView) findViewById(R.id.setting_myroutine_iv_deleteroutine);
+
+        iv_add_routine.setBackgroundResource(R.drawable.effect_add_press);
+        iv_delete_routine.setBackgroundResource(R.drawable.effect_delete_press);
 
         final TextView routineGoal = (TextView) findViewById(R.id.add_selected_routine_goal1);
         final TextView routineEquip = (TextView) findViewById(R.id.add_selected_routine_equip1);
@@ -495,7 +504,7 @@ public class MyRoutinesActivity extends AppCompatActivity {
 
             if (convertView == null){
                 LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-                convertView = inflater.inflate(R.layout.listitem_equipment,parent,false);
+                convertView = inflater.inflate(R.layout.listitem_equipment_simple,parent,false);
             }
             ImageView eqTypeImage = (ImageView) convertView.findViewById(R.id.equiplist_img);
             TextView eqName = (TextView) convertView.findViewById(R.id.equiplist_name);
@@ -561,7 +570,7 @@ public class MyRoutinesActivity extends AppCompatActivity {
             // General ListView optimization code.
             if (view == null) {
                 LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-                view = inflater.inflate(R.layout.listitem_equipment, viewGroup, false);
+                view = inflater.inflate(R.layout.listitem_routine, viewGroup, false);
             }
 
             ImageView routineImage = (ImageView) view.findViewById(R.id.equiplist_img);

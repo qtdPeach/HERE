@@ -5,7 +5,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 
 import com.example.user.wase.view.fragment.EquipmentScanner;
-import com.example.user.wase.view.fragment.RoutineFragment;
+import com.example.user.wase.view.fragment.MyRoutinesFragment;
 import com.example.user.wase.view.fragment.MyRecordsFragment;
 
 /**
@@ -22,7 +22,7 @@ public class PagerAdapter extends FragmentStatePagerAdapter {
         super(fm);
         this.mNumOfTabs = NumOfTabs;
         deviceList = new EquipmentScanner();
-        myRoutine = new RoutineFragment();
+        myRoutine = new MyRoutinesFragment();
         myRecord = new MyRecordsFragment();
     }
 

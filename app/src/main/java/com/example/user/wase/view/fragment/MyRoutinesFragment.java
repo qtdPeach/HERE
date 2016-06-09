@@ -34,7 +34,7 @@ import java.util.StringTokenizer;
 /**
  * Created by ymbae on 2016-04-18.
  */
-public class RoutineFragment extends Fragment{
+public class MyRoutinesFragment extends Fragment{
 
     public List<Goal> goals;
     ListViewAdapter listViewAdapter;

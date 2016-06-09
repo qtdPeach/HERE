@@ -1,7 +1,6 @@
 package com.example.user.wase.view.activity;
 
 import android.content.Intent;
-import android.media.Image;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.support.design.widget.FloatingActionButton;
@@ -25,15 +24,12 @@ import android.widget.Toast;
 
 import com.example.user.wase.R;
 import com.example.user.wase.controller.PagerAdapter;
-import com.example.user.wase.device.BluetoothComm;
-import com.example.user.wase.device.WorkoutRecord;
 import com.example.user.wase.device.WorkoutRecords;
 import com.example.user.wase.model.MyHereAgent;
 import com.example.user.wase.model.MyInformation;
 import com.example.user.wase.model.MyRecord;
 import com.example.user.wase.model.MyRoutine;
 import com.example.user.wase.utility.DatabaseHelper;
-import com.example.user.wase.view.fragment.RoutineFragment;
 import com.example.user.wase.view.fragment.SupportHelpFragment;
 
 import java.util.ArrayList;
