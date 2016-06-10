@@ -796,16 +796,20 @@ public class MyRecordsFragment extends Fragment{
 //            gvLinear.addSeries(series);
 
             switch (equipmentList.get(i).getMyeqType()) {
-                case 0:
-                    eqTypeImage.setImageResource(R.mipmap.ic_setting_update_alarm);
-                    break;
                 case 1:
-                    eqTypeImage.setImageResource(R.mipmap.ic_setting_best_interest);
+                    eqTypeImage.setImageResource(R.drawable.eq_01_dumbbell);
                     break;
                 case 2:
-                    eqTypeImage.setImageResource(R.mipmap.ic_setting_user_information);
+                    eqTypeImage.setImageResource(R.drawable.eq_02_pushupbar);
                     break;
                 case 3:
+                    eqTypeImage.setImageResource(R.drawable.eq_03_jumprope);
+                    break;
+                case 4:
+                    eqTypeImage.setImageResource(R.drawable.eq_04_hoolahoop);
+                    break;
+                case 5:
+                    eqTypeImage.setImageResource(R.drawable.eq_03_jumprope);
                     break;
                 default:
                     break;

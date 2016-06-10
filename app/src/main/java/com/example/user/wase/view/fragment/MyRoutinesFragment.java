@@ -225,13 +225,13 @@ public class MyRoutinesFragment extends Fragment{
     public int findImage (int type){
         switch (type) {
             case 1:
-                return R.mipmap.ic_setting_update_alarm;
+                return R.drawable.eq_01_dumbbell;
             case 2:
-                return R.mipmap.ic_setting_best_interest;
+                return R.drawable.eq_02_pushupbar;
             case 3:
-                return R.mipmap.ic_setting_user_information;
+                return R.drawable.eq_03_jumprope;
             case 4:
-                return R.mipmap.ic_setting_user_information;
+                return R.drawable.eq_04_hoolahoop;
             case 5:
                 return R.mipmap.ic_setting_user_information;
         }
