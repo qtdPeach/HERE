@@ -103,7 +103,7 @@ public class MyRecordsFragment extends Fragment{
         /**
          * Jiyoung
          */
-
+        arrDateCalorie = new ArrayList<RecordDateCalorie>();
         //Draw calorie graph using dailyCalorie arraylist
         drawDailyCalorieGraph(currentView);
 
@@ -113,7 +113,9 @@ public class MyRecordsFragment extends Fragment{
         lvEquipList.setAdapter(equipListAdapter);
         //equipment added
 
-        ArrayList<MyHereAgent> myAllAgents = (ArrayList<MyHereAgent>) MainActivity.hereDB.getAllMyHereAgents();
+        ArrayList<MyHereAgent> myAllAgents = new ArrayList<MyHereAgent>();
+        if(MainActivity.hereDB.getAllMyHereAgents() != null)
+            myAllAgents = (ArrayList<MyHereAgent>) MainActivity.hereDB.getAllMyHereAgents();
 
         for (int i = 0; i < myAllAgents.size(); i++) {
             equipListAdapter.addDevice(myAllAgents.get(i));
@@ -163,10 +165,11 @@ public class MyRecordsFragment extends Fragment{
 
         //Calendar for date
         Calendar calendar = Calendar.getInstance();
-
-        Log.d("arrDateCalorie", "arrDateCalorie-gap(0): " + arrDateCalorie.get(0).getDaysGap());
-        Log.d("arrDateCalorie", "arrDateCalorie-gap(1): " + arrDateCalorie.get(1).getDaysGap());
-        Log.d("arrDateCalorie", "arrDateCalorie-gap(2): " + arrDateCalorie.get(2).getDaysGap());
+        if(arrDateCalorie.size() >0 ) {
+            Log.d("arrDateCalorie", "arrDateCalorie-gap(0): " + arrDateCalorie.get(0).getDaysGap());
+            Log.d("arrDateCalorie", "arrDateCalorie-gap(1): " + arrDateCalorie.get(1).getDaysGap());
+            Log.d("arrDateCalorie", "arrDateCalorie-gap(2): " + arrDateCalorie.get(2).getDaysGap());
+        }
 
         //If we redraw, we first remove all series
         gv.removeAllSeries();
@@ -318,12 +321,15 @@ public class MyRecordsFragment extends Fragment{
         Log.d("HashMapEq", "mapGroupByEq.values().size(): " +  mapGroupByEq.values().size());
         Log.d("HashMapEq", "mapGroupByEq.size(): " + mapGroupByEq.size());
         Log.d("HashMapEq", "mapGroupByEq.keySet().size(): " + mapGroupByEq.keySet().size());
-        Log.d("HashMapEq", "mapGroupByEq.keySet().toArray()[0]: " + mapGroupByEq.keySet().toArray()[0]);
-        Log.d("HashMapEq", "mapGroupByEq.keySet().toArray()[1]: " + mapGroupByEq.keySet().toArray()[1]);
-        Log.d("HashMapEq", "mapGroupByEq.keySet().toArray()[2]: " + mapGroupByEq.keySet().toArray()[2]);
+        if(mapGroupByEq.keySet().size()>0) {
+            Log.d("HashMapEq", "mapGroupByEq.keySet().toArray()[0]: " + mapGroupByEq.keySet().toArray()[0]);
+            Log.d("HashMapEq", "mapGroupByEq.keySet().toArray()[1]: " + mapGroupByEq.keySet().toArray()[1]);
+            Log.d("HashMapEq", "mapGroupByEq.keySet().toArray()[2]: " + mapGroupByEq.keySet().toArray()[2]);
+        }
 
-
-        ArrayList<MyHereAgent> myAllAgents = (ArrayList<MyHereAgent>) MainActivity.hereDB.getAllMyHereAgents();
+        ArrayList<MyHereAgent> myAllAgents = new ArrayList<MyHereAgent>();
+        if(MainActivity.hereDB.getAllMyHereAgents() != null)
+            myAllAgents = (ArrayList<MyHereAgent>) MainActivity.hereDB.getAllMyHereAgents();
 //        Log.d("HashMapEq", "myAllAgent.size(): " + myAllAgents.size());
 //        Log.d("HashMapEq", "myAllAgent.get(0).getMyeqMacId: " + myAllAgents.get(0).getMyeqMacId());
         agentIDs = new ArrayList<>();
@@ -347,7 +353,9 @@ public class MyRecordsFragment extends Fragment{
     private void initArrayListFromDB() {
         //Initialize my records
         arrMyRecords = new ArrayList<>();
-        arrMyRecords.addAll(MainActivity.hereDB.getAllMyRecords());
+
+        if(MainActivity.hereDB.getAllMyRecords() != null)
+            arrMyRecords.addAll(MainActivity.hereDB.getAllMyRecords());
         Log.d(TAG_RECORD_DATA, "arrMyRecords.size(): " + arrMyRecords.size());
 
         //Initialize arrGraphElements using arrMyRecords; Group records by each equipment

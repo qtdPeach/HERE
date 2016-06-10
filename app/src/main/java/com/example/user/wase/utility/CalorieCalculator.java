@@ -27,7 +27,11 @@ public class CalorieCalculator {
                 break;
             case MyHereAgent.TYPE_PUSH_UP:
                 //http://blog.naver.com/iunkim/220556783031
-                int weight = info.getUserWeight();
+
+                int weight =70;
+                if(info != null)
+                    weight = info.getUserWeight();
+
                 if(weight<50){
                     calorie = 0.1 * time;
                 } else if(weight>=50&&weight<70){
