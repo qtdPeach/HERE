@@ -111,25 +111,17 @@
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="RESET"
+        android:text="SEND COMMAND"
         android:id="@+id/button"
         android:layout_alignParentBottom="true"
         android:layout_alignParentStart="true" />
-
-    <Button
+    <EditText
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="LOAD"
-        android:id="@+id/button2"
+        android:id="@+id/command"
+        android:editable="true"
+        android:text ="0x67"
         android:layout_alignParentBottom="true"
-        android:layout_alignParentEnd="true" />
-
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="SAVE"
-        android:id="@+id/button3"
-        android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true" />
+        android:layout_toEndOf="@+id/button" />
 
 </RelativeLayout>

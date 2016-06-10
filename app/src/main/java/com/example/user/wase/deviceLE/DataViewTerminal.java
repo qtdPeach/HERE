@@ -2,6 +2,7 @@ package com.example.user.wase.deviceLE;
 
 import android.app.Activity;
 import android.bluetooth.BluetoothGattCharacteristic;
+import android.bluetooth.BluetoothGattDescriptor;
 import android.bluetooth.BluetoothGattService;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
@@ -21,6 +22,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -60,6 +62,8 @@ public class DataViewTerminal extends Activity {
     private TextView exercisePhase;
     private GraphView[] gv;
     private EditText rawData;
+    private EditText command;
+    private Button sendBtn;
 
     LineGraphSeries<DataPoint>[] series;
     private Runnable invalidator;
@@ -220,7 +224,7 @@ public class DataViewTerminal extends Activity {
             characteristicRX = gattService.getCharacteristic(BluetoothLeService.UUID_HM_RX_TX);
 
             if(characteristicTX != null && mBluetoothLeService != null) {
-                characteristicTX.setValue(new String("0,0,0").getBytes());
+                characteristicRX.setValue(BluetoothGattDescriptor.ENABLE_NOTIFICATION_VALUE);
                 mBluetoothLeService.writeCharacteristic(characteristicTX);
                 mBluetoothLeService.setCharacteristicNotification(characteristicRX,true);
             }
@@ -239,6 +243,21 @@ public class DataViewTerminal extends Activity {
             @Override
             public void onNothingSelected(AdapterView<?> parent) {
 
+            }
+        });
+
+        command = (EditText)findViewById(R.id.command);
+
+        sendBtn = (Button)findViewById(R.id.button);
+        sendBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                byte bbb = (byte)255;
+                try {
+                    bbb = (byte) Integer.parseInt(command.getText().toString().replaceFirst("^0x", ""), 16);
+                    setCommandToHERE_agent(bbb);
+                }catch (Exception e){}
+                Log.d("command", command.getText().toString() + " -> " + bbb);
             }
         });
 
@@ -375,11 +394,10 @@ public class DataViewTerminal extends Activity {
             @Override
             public void run() {
 
+                int i = vf.getDisplayedChild();
                 double x = (double) (System.currentTimeMillis() - startTime)/1000;
                 //series[vf.getDisplayedChild()].appendData(new DataPoint((double) (System.currentTimeMillis() - startTime) / 1000, (double) values[vf.getDisplayedChild()]), true, 1000);
-                for(int i = 0 ; i < 7; i++){
                     series[i].appendData(new DataPoint(x, (double) values[i]), true, 300);
-                }
 
             }
         };
@@ -483,8 +501,8 @@ public class DataViewTerminal extends Activity {
                         values[5] =  LPF(az, 5) - longTermAvg(az, 5);
 
                         switch (vf.getDisplayedChild()) {
-                            case 2:
-                            case 5:
+                            case 1:
+                            case 4:
                                 if(values[vf.getDisplayedChild()] > 20 ){
                                     exercisePhase.setText(dumbelCount/2 + ":  Rising");
                                     dumbel.setDetectingMode(1);
@@ -502,6 +520,10 @@ public class DataViewTerminal extends Activity {
                                         isRisingPeak = true;
                                         if (isFallingPeak) {
                                             dumbelCount++;
+                                            if(dumbelCount % 2 == 0){
+
+                                                setCommandToHERE_agent((byte)'a');
+                                            }
                                             vib.vibrate(100);
                                         }
                                         isFallingPeak = false;
@@ -510,6 +532,10 @@ public class DataViewTerminal extends Activity {
                                         isFallingPeak = true;
                                         if (isRisingPeak) {
                                             dumbelCount++;
+                                            if(dumbelCount % 2 == 0){
+
+                                                setCommandToHERE_agent((byte)'a');
+                                            }
                                             vib.vibrate(100);
                                         }
                                         isRisingPeak = false;
@@ -553,6 +579,13 @@ public class DataViewTerminal extends Activity {
         return intentFilter;
     }
 
+    public boolean setCommandToHERE_agent(byte command){
+        byte[] val = new byte[1];
+        val[0] = command;
+        characteristicTX.setValue(val);
+        boolean status =  mBluetoothLeService.writeCharacteristic(characteristicTX);
+        return status;
+    }
 
     private class RawDataBinder extends AsyncTask<String, Character, String> {
 
