@@ -155,6 +155,7 @@ public class MyRecordsFragment extends Fragment{
         initArrayListFromDB();
         initDailyRecord();
         drawDailyCalorieGraph(getView());
+        initEquipRecord();
         equipListAdapter.notifyDataSetChanged();
         super.onResume();
     }
@@ -339,10 +340,12 @@ public class MyRecordsFragment extends Fragment{
         }
 
         for (int i = 0; i < agentIDs.size(); i++) {
-            Log.d("HashMapEq", "Agent[" + agentIDs.get(i) + "] size: " + mapGroupByEq.get(agentIDs.get(i)).size());
+            if(mapGroupByEq.get(agentIDs.get(i)) != null) {
+                Log.d("HashMapEq", "Agent[" + agentIDs.get(i) + "] size: " + mapGroupByEq.get(agentIDs.get(i)).size());
 
-            for (int j = 0; j < mapGroupByEq.get(agentIDs.get(i)).size(); j++) {
-                Log.d("HashMapEq", "  - Date: " + mapGroupByEq.get(agentIDs.get(i)).get(j).getRecordEqDate());
+                for (int j = 0; j < mapGroupByEq.get(agentIDs.get(i)).size(); j++) {
+                    Log.d("HashMapEq", "  - Date: " + mapGroupByEq.get(agentIDs.get(i)).get(j).getRecordEqDate());
+                }
             }
 
         }
@@ -728,21 +731,23 @@ public class MyRecordsFragment extends Fragment{
             DataPoint[] dataPoints = new DataPoint[7];
 
             for (int data_pt = 0; data_pt < 7; data_pt++) {
-                int ptRecord = -1;
+                //int ptRecord = -1;
 
                 String eqId = equipmentList.get(i).getMyeqMacId();
 
                 Log.d("EquipRecord", "eqId: " + eqId);
 
                 if (mapGroupByEq.get(eqId) != null) {
+                    int accumulatedValue = 0;
                     for (int j = 0; j < mapGroupByEq.get(eqId).size(); j++) {
                         if (mapGroupByEq.get(eqId).get(j).getDaysGap() == (6 - data_pt)) {
-                            ptRecord = j;
+                            //ptRecord = j;
+                            accumulatedValue += mapGroupByEq.get(eqId).get(j).getRecordEqDone();
                         }
                     }
 
-                    if (ptRecord != -1) {
-                        DataPoint tmpDataPoint = new DataPoint(data_pt + 1, mapGroupByEq.get(eqId).get(ptRecord).getRecordEqDone());
+                    if (accumulatedValue > 0) {
+                        DataPoint tmpDataPoint = new DataPoint(data_pt + 1, accumulatedValue);
                         dataPoints[data_pt] = tmpDataPoint;
                     } else {
                         DataPoint tmpDataPoint = new DataPoint(data_pt + 1, 0.0);

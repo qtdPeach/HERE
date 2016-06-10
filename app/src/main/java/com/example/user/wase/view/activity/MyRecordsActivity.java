@@ -93,11 +93,12 @@ public class MyRecordsActivity extends AppCompatActivity {
 
         public ListViewAdapter () {
             super();
-            if(MainActivity.hereDB.getAllMyHereAgents() !=null)
+            if(MainActivity.hereDB.getAllMyRecords() !=null) {
                 myRecords = MainActivity.hereDB.getAllMyRecords();
-
-            if(MainActivity.hereDB.getAllMyHereAgents() != null)
-                myHereAgents  = MainActivity.hereDB.getAllMyHereAgents();
+            }
+            if(MainActivity.hereDB.getAllMyHereAgents() != null) {
+                myHereAgents = MainActivity.hereDB.getAllMyHereAgents();
+            }
         }
 
         @Override
