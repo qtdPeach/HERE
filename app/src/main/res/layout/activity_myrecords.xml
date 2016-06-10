@@ -141,6 +141,10 @@
         android:gravity="center"
         android:textColor="#999999"
         android:text="No exercise record"/>
+    <ListView
+        android:id="@+id/daily_record_list"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"></ListView>
 
 
 </LinearLayout>

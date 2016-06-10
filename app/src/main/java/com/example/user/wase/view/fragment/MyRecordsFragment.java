@@ -155,7 +155,7 @@ public class MyRecordsFragment extends Fragment{
         initArrayListFromDB();
         initDailyRecord();
         drawDailyCalorieGraph(getView());
-
+        equipListAdapter.notifyDataSetChanged();
         super.onResume();
     }
 
