@@ -4,6 +4,7 @@ import android.bluetooth.BluetoothDevice;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.text.format.Time;
@@ -28,6 +29,7 @@ import com.example.user.wase.model.MyInformation;
 import com.example.user.wase.model.MyRecord;
 import com.example.user.wase.model.MyRoutine;
 import com.example.user.wase.model.RecordDateCalorie;
+import com.example.user.wase.model.RecordEqDateDone;
 import com.example.user.wase.model.RecordForGraph;
 import com.example.user.wase.utility.CalorieCalculator;
 import com.example.user.wase.view.activity.MainActivity;
@@ -42,8 +44,12 @@ import com.jjoe64.graphview.series.LineGraphSeries;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collection;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * Created by ymbae on 2016-04-18.
@@ -57,7 +63,7 @@ public class MyRecordsFragment extends Fragment{
 
     private HERE_DeviceListAdapter equipListAdapter;
     private ListView lvEquipList;
-    private ArrayList<Equipment> equipmentList;
+    private ArrayList<MyHereAgent> equipmentList;
 
     private ImageView iv_character_img;
     private TextView tv_nick_name;
@@ -68,12 +74,14 @@ public class MyRecordsFragment extends Fragment{
     //private ArrayList<Double> dailyCalories;
     private ArrayList<RecordDateCalorie> arrDateCalorie;
 
+    HashMap<String, List<RecordEqDateDone>> mapGroupByEq;
+    ArrayList<String> agentIDs;
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
         View currentView = inflater.inflate(R.layout.fragment_myrecords, container, false);
-
 
         /**
          * Youngmin
@@ -89,6 +97,9 @@ public class MyRecordsFragment extends Fragment{
         initDailyRecord();
 
 
+        initEquipRecord();
+
+
         /**
          * Jiyoung
          */
@@ -101,10 +112,18 @@ public class MyRecordsFragment extends Fragment{
         lvEquipList = (ListView) currentView.findViewById(R.id.equipment_record_list);
         lvEquipList.setAdapter(equipListAdapter);
         //equipment added
-        equipListAdapter.addDevice(new Equipment("EQ01", "DUMBBELL", "Sensor-Q03-87A", "2016-04-18", 2));
-        equipListAdapter.addDevice(new Equipment("EQ02", "HOOLA-HOOP", "Accelerometer-X-3", "2016-04-18", 1));
-        equipListAdapter.addDevice(new Equipment("EQ03", "PLANK", "FORCE-ss-2033", "2016-04-15", 1));
-        equipListAdapter.addDevice(new Equipment("EQ04", "JUMP-ROPE", "ZEROZERO", "2016-04-16", 0));
+
+        ArrayList<MyHereAgent> myAllAgents = (ArrayList<MyHereAgent>) MainActivity.hereDB.getAllMyHereAgents();
+
+        for (int i = 0; i < myAllAgents.size(); i++) {
+            equipListAdapter.addDevice(myAllAgents.get(i));
+        }
+
+//        equipListAdapter.addDevice(new MyHereAgent("11:22:33:44:55:66", "DUMBBELL", 1, "MAJORID", "MINORID"));
+//        equipListAdapter.addDevice(new Equipment("EQ01", "DUMBBELL", "Sensor-Q03-87A", "2016-04-18", 2));
+//        equipListAdapter.addDevice(new Equipment("EQ02", "HOOLA-HOOP", "Accelerometer-X-3", "2016-04-18", 1));
+//        equipListAdapter.addDevice(new Equipment("EQ03", "PLANK", "FORCE-ss-2033", "2016-04-15", 1));
+//        equipListAdapter.addDevice(new Equipment("EQ04", "JUMP-ROPE", "ZEROZERO", "2016-04-16", 0));
 
         equipListAdapter.notifyDataSetChanged();
 
@@ -124,10 +143,6 @@ public class MyRecordsFragment extends Fragment{
             }
         });
 
-
-
-
-
         return currentView;
         //return super.onCreateView(inflater, container, savedInstanceState);
     }
@@ -142,23 +157,7 @@ public class MyRecordsFragment extends Fragment{
         super.onResume();
     }
 
-    private int getMonth(String currentDate) {
-        String monthString = currentDate.substring(0,2);
-        //Log.d("currentDateTime", "monthString: " + monthString);
 
-        return Integer.parseInt(monthString);
-    }
-
-    private int getDay(String currentDate) {
-        String dayString = currentDate.substring(3,5);
-        //Log.d("currentDateTime", "dayString: " + dayString);
-
-        return Integer.parseInt(dayString);
-    }
-
-    private void initDataPointsZero() {
-
-    }
 
     private void drawDailyCalorieGraph(View fragmentView) {
 
@@ -181,28 +180,64 @@ public class MyRecordsFragment extends Fragment{
             dataPoints[i] = tmpDataPoint;
         }
 
-        //There is a record more than one week ago
-        if (arrDateCalorie.get(0).getDaysGap() > 6) {
 
-            for (int i = 0; i < arrDateCalorie.size(); i++) {
-                //Only for recent 1 week
-                if (arrDateCalorie.get(i).getDaysGap() < 7) {
-                    DataPoint tmpDataPoint = new DataPoint(i + 1, arrDateCalorie.get(i).getRecordCalorie());
-                    dataPoints[6-arrDateCalorie.get(i).getDaysGap()] = tmpDataPoint;
+        for (int i = 0; i < 7; i++) {
+            int ptRecord = -1;
+
+            for (int j = 0; j < arrDateCalorie.size(); j++) {
+                if (arrDateCalorie.get(j).getDaysGap() == (6 - i)) {
+                    ptRecord = j;
                 }
             }
 
-        }
-        //There are only records in this recent week
-        else {
-            for (int i = 0; i < arrDateCalorie.size(); i++) {
-                //Only for recent 1 week
-                if (arrDateCalorie.get(i).getDaysGap() < 7) {
-                    DataPoint tmpDataPoint = new DataPoint(i + 1, arrDateCalorie.get(i).getRecordCalorie());
-                    dataPoints[6-arrDateCalorie.get(i).getDaysGap()] = tmpDataPoint;
-                }
+            if (ptRecord != -1) {
+                DataPoint tmpDataPoint = new DataPoint(i + 1, arrDateCalorie.get(ptRecord).getRecordCalorie());
+                dataPoints[i] = tmpDataPoint;
+            } else {
+                DataPoint tmpDataPoint = new DataPoint(i + 1, 0.0);
+                dataPoints[i] = tmpDataPoint;
             }
         }
+//
+//        //There is a record more than one week ago
+//        if (arrDateCalorie.get(0).getDaysGap() > 6) {
+//
+//            for (int i = 0; i < arrDateCalorie.size(); i++) {
+//
+//                //boolean isHere = false;
+//                int theDay = -1;
+//
+//                for (int j = 0; j < 7; j++) {
+//                    if (arrDateCalorie.get(i).getDaysGap() == j) {
+//                        theDay = j;
+//                    }
+//                }
+//
+//                //If there is the date
+//                if (theDay == -1) {
+//                    DataPoint tmpDataPoint = new DataPoint(i + 1, arrDateCalorie.get(i).getRecordCalorie());
+//                } else {
+//
+//                }
+//
+//                //Only for recent 1 week
+//                if (arrDateCalorie.get(i).getDaysGap() < 7) {
+//                    DataPoint tmpDataPoint = new DataPoint(i + 1, arrDateCalorie.get(i).getRecordCalorie());
+//                    dataPoints[6 - arrDateCalorie.get(i).getDaysGap()] = tmpDataPoint;
+//                }
+//            }
+//
+//        }
+//        //There are only records in this recent week
+//        else {
+//            for (int i = 0; i < arrDateCalorie.size(); i++) {
+//                //Only for recent 1 week
+//                if (arrDateCalorie.get(i).getDaysGap() < 7) {
+//                    DataPoint tmpDataPoint = new DataPoint(i + 1, arrDateCalorie.get(i).getRecordCalorie());
+//                    dataPoints[6-arrDateCalorie.get(i).getDaysGap()] = tmpDataPoint;
+//                }
+//            }
+//        }
 
         for (int i = 0; i < 7; i++) {
             Log.d("DataPoints", "[" + i + "] " + dataPoints[i].getX() + "/" + dataPoints[i].getY());
@@ -243,11 +278,11 @@ public class MyRecordsFragment extends Fragment{
             public int get(DataPoint data) {
                 if (data.getY() < 50.0) {
                     return Color.rgb(227, 21, 0);
-                }else if (data.getY() >= 50.0 && data.getY() < 100.0) {
+                } else if (data.getY() >= 50.0 && data.getY() < 100.0) {
                     return Color.rgb(239, 107, 0);
-                }else if (data.getY() >= 100.0 && data.getY() < 150.0) {
+                } else if (data.getY() >= 100.0 && data.getY() < 150.0) {
                     return Color.rgb(239, 197, 0);
-                }else if (data.getY() >= 150.0 && data.getY() < 200.0) {
+                } else if (data.getY() >= 150.0 && data.getY() < 200.0) {
                     return Color.rgb(159, 199, 0);
                 } else {
                     return Color.rgb(28, 199, 0);
@@ -257,6 +292,54 @@ public class MyRecordsFragment extends Fragment{
         });
         gv.addSeries(calorieSeries);
 
+    }
+
+
+    private void initEquipRecord() {
+        mapGroupByEq = new HashMap<String, List<RecordEqDateDone>>();
+
+        for (int i = 0; i < arrGraphElements.size(); i++) {
+            String equipName = arrGraphElements.get(i).getRecordEqId();
+
+            RecordEqDateDone tmpEqDateDone = new RecordEqDateDone();
+            tmpEqDateDone.setRecordEqDate(arrGraphElements.get(i).getRecordDateTime());
+            tmpEqDateDone.setRecordEqDone(arrGraphElements.get(i).getRecordEqDone());
+
+            if (!mapGroupByEq.containsKey(equipName)) {
+                List<RecordEqDateDone> listEqDateDone = new ArrayList<>();
+                listEqDateDone.add(tmpEqDateDone);
+                mapGroupByEq.put(equipName, listEqDateDone);
+            } else {
+                mapGroupByEq.get(equipName).add(tmpEqDateDone);
+            }
+        }
+
+//        mapGroupByEq.values().size();
+        Log.d("HashMapEq", "mapGroupByEq.values().size(): " +  mapGroupByEq.values().size());
+        Log.d("HashMapEq", "mapGroupByEq.size(): " + mapGroupByEq.size());
+        Log.d("HashMapEq", "mapGroupByEq.keySet().size(): " + mapGroupByEq.keySet().size());
+        Log.d("HashMapEq", "mapGroupByEq.keySet().toArray()[0]: " + mapGroupByEq.keySet().toArray()[0]);
+        Log.d("HashMapEq", "mapGroupByEq.keySet().toArray()[1]: " + mapGroupByEq.keySet().toArray()[1]);
+        Log.d("HashMapEq", "mapGroupByEq.keySet().toArray()[2]: " + mapGroupByEq.keySet().toArray()[2]);
+
+
+        ArrayList<MyHereAgent> myAllAgents = (ArrayList<MyHereAgent>) MainActivity.hereDB.getAllMyHereAgents();
+//        Log.d("HashMapEq", "myAllAgent.size(): " + myAllAgents.size());
+//        Log.d("HashMapEq", "myAllAgent.get(0).getMyeqMacId: " + myAllAgents.get(0).getMyeqMacId());
+        agentIDs = new ArrayList<>();
+
+        for (int i = 0; i < myAllAgents.size(); i++) {
+            agentIDs.add(myAllAgents.get(i).getMyeqMacId());
+        }
+
+        for (int i = 0; i < agentIDs.size(); i++) {
+            Log.d("HashMapEq", "Agent[" + agentIDs.get(i) + "] size: " + mapGroupByEq.get(agentIDs.get(i)).size());
+
+            for (int j = 0; j < mapGroupByEq.get(agentIDs.get(i)).size(); j++) {
+                Log.d("HashMapEq", "  - Date: " + mapGroupByEq.get(agentIDs.get(i)).get(j).getRecordEqDate());
+            }
+
+        }
 
     }
 
@@ -589,11 +672,11 @@ public class MyRecordsFragment extends Fragment{
 
         public HERE_DeviceListAdapter() {
             super();
-            equipmentList = new ArrayList<Equipment>();
+            equipmentList = new ArrayList<MyHereAgent>();
             mInflator = getActivity().getLayoutInflater();
         }
 
-        public void addDevice(Equipment device) {
+        public void addDevice(MyHereAgent device) {
             equipmentList.add(device);
         }
 
@@ -631,28 +714,80 @@ public class MyRecordsFragment extends Fragment{
 
             //TODO: ArrayList(가변길이): Equipment 개수, Array(고정길이): 7개의 DataPoint
 
-            //here to input data from DB
-            workoutData.add(300.0);workoutData.add(500.0);workoutData.add(100.0);workoutData.add(300.0);workoutData.add(800.0);workoutData.add(400.0);workoutData.add(700.0);
+            gvLinear.removeAllSeries();
 
-            LineGraphSeries<DataPoint> series = new LineGraphSeries<DataPoint>(new DataPoint[] {new DataPoint(1,workoutData.get(0)),
-                    new DataPoint(2,workoutData.get(1)),
-                    new DataPoint(3,workoutData.get(2)),
-                    new DataPoint(4,workoutData.get(3)),
-                    new DataPoint(5,workoutData.get(4)),
-                    new DataPoint(6,workoutData.get(5)),
-                    new DataPoint(7,workoutData.get(6))});
+            //Make data points for a recent 1 week
+            DataPoint[] dataPoints = new DataPoint[7];
 
+            for (int data_pt = 0; data_pt < 7; data_pt++) {
+                int ptRecord = -1;
+
+                String eqId = equipmentList.get(i).getMyeqMacId();
+
+                Log.d("EquipRecord", "eqId: " + eqId);
+
+                if (mapGroupByEq.get(eqId) != null) {
+                    for (int j = 0; j < mapGroupByEq.get(eqId).size(); j++) {
+                        if (mapGroupByEq.get(eqId).get(j).getDaysGap() == (6 - data_pt)) {
+                            ptRecord = j;
+                        }
+                    }
+
+                    if (ptRecord != -1) {
+                        DataPoint tmpDataPoint = new DataPoint(data_pt + 1, mapGroupByEq.get(eqId).get(ptRecord).getRecordEqDone());
+                        dataPoints[data_pt] = tmpDataPoint;
+                    } else {
+                        DataPoint tmpDataPoint = new DataPoint(data_pt + 1, 0.0);
+                        dataPoints[data_pt] = tmpDataPoint;
+                    }
+                } else {
+                    DataPoint tmpDataPoint = new DataPoint(data_pt + 1, 0.0);
+                    dataPoints[data_pt] = tmpDataPoint;
+                }
+            }
+
+            LineGraphSeries<DataPoint> series = new LineGraphSeries<DataPoint>(dataPoints);
+
+            //Initialize StaticLabelsFormatter
             StaticLabelsFormatter staticLabelsFormatter = new StaticLabelsFormatter(gvLinear);
-            staticLabelsFormatter.setHorizontalLabels(new String[] {getDay(calendar.get(Calendar.DAY_OF_WEEK)-6), getDay(calendar.get(Calendar.DAY_OF_WEEK)-5), getDay(calendar.get(Calendar.DAY_OF_WEEK)-4), getDay(calendar.get(Calendar.DAY_OF_WEEK)-3), getDay(calendar.get(Calendar.DAY_OF_WEEK)-2), getDay(calendar.get(Calendar.DAY_OF_WEEK)-1), getDay(calendar.get(Calendar.DAY_OF_WEEK))});
+            staticLabelsFormatter.setHorizontalLabels(new String[]{
+                    getDay(calendar.get(Calendar.DAY_OF_WEEK) - 6),
+                    getDay(calendar.get(Calendar.DAY_OF_WEEK) - 5),
+                    getDay(calendar.get(Calendar.DAY_OF_WEEK) - 4),
+                    getDay(calendar.get(Calendar.DAY_OF_WEEK) - 3),
+                    getDay(calendar.get(Calendar.DAY_OF_WEEK) - 2),
+                    getDay(calendar.get(Calendar.DAY_OF_WEEK) - 1),
+                    getDay(calendar.get(Calendar.DAY_OF_WEEK))});
             gvLinear.getGridLabelRenderer().setLabelFormatter(staticLabelsFormatter);
 
             series.setDrawDataPoints(true);
-            series.setColor(Color.rgb(135, 206, 235));
+            series.setColor(Color.rgb(0, 162, 232));
             series.setDataPointsRadius(5);
             series.setThickness(4);
             gvLinear.addSeries(series);
 
-            switch (equipmentList.get(i).getEquipmentType()) {
+//            //here to input data from DB
+//            workoutData.add(300.0);workoutData.add(500.0);workoutData.add(100.0);workoutData.add(300.0);workoutData.add(800.0);workoutData.add(400.0);workoutData.add(700.0);
+//
+//            LineGraphSeries<DataPoint> series = new LineGraphSeries<DataPoint>(new DataPoint[] {new DataPoint(1,workoutData.get(0)),
+//                    new DataPoint(2,workoutData.get(1)),
+//                    new DataPoint(3,workoutData.get(2)),
+//                    new DataPoint(4,workoutData.get(3)),
+//                    new DataPoint(5,workoutData.get(4)),
+//                    new DataPoint(6,workoutData.get(5)),
+//                    new DataPoint(7,workoutData.get(6))});
+//
+//            StaticLabelsFormatter staticLabelsFormatter = new StaticLabelsFormatter(gvLinear);
+//            staticLabelsFormatter.setHorizontalLabels(new String[] {getDay(calendar.get(Calendar.DAY_OF_WEEK)-6), getDay(calendar.get(Calendar.DAY_OF_WEEK)-5), getDay(calendar.get(Calendar.DAY_OF_WEEK)-4), getDay(calendar.get(Calendar.DAY_OF_WEEK)-3), getDay(calendar.get(Calendar.DAY_OF_WEEK)-2), getDay(calendar.get(Calendar.DAY_OF_WEEK)-1), getDay(calendar.get(Calendar.DAY_OF_WEEK))});
+//            gvLinear.getGridLabelRenderer().setLabelFormatter(staticLabelsFormatter);
+//
+//            series.setDrawDataPoints(true);
+//            series.setColor(Color.rgb(135, 206, 235));
+//            series.setDataPointsRadius(5);
+//            series.setThickness(4);
+//            gvLinear.addSeries(series);
+
+            switch (equipmentList.get(i).getMyeqType()) {
                 case 0:
                     eqTypeImage.setImageResource(R.mipmap.ic_setting_update_alarm);
                     break;
@@ -668,8 +803,22 @@ public class MyRecordsFragment extends Fragment{
                     break;
             }
 
-            eqName.setText(equipmentList.get(i).getEquipmentName());
+            eqName.setText(equipmentList.get(i).getMyeqName());
             return view;
         }
+    }
+
+    private int getMonth(String currentDate) {
+        String monthString = currentDate.substring(0,2);
+        //Log.d("currentDateTime", "monthString: " + monthString);
+
+        return Integer.parseInt(monthString);
+    }
+
+    private int getDay(String currentDate) {
+        String dayString = currentDate.substring(3,5);
+        //Log.d("currentDateTime", "dayString: " + dayString);
+
+        return Integer.parseInt(dayString);
     }
 }

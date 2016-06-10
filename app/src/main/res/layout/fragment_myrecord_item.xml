@@ -1,16 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="horizontal" android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="130dp"
+    android:padding="5dp">
+
     <LinearLayout
-        android:layout_width="wrap_content"
+        android:layout_width="65dp"
         android:layout_height="wrap_content"
         android:orientation="vertical">
+
         <ImageView
             android:paddingTop="10sp"
             android:id="@+id/equipment_img"
             android:src="@mipmap/ic_setting_best_interest"
-            android:layout_gravity="center_vertical"
+            android:layout_gravity="center_horizontal"
             android:layout_width="50dp"
             android:layout_height="50dp"
             android:layout_weight="1"/>
@@ -18,15 +21,18 @@
             android:paddingBottom="10sp"
             android:id="@+id/equipment_name"
             android:textColor="@color/colorPrimaryDark"
-            android:textSize = "20sp"
+            android:textSize = "13sp"
             android:textStyle="bold"
             android:text="DUMBBELLS"
+            android:gravity="center_horizontal"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
     </LinearLayout>
     <com.jjoe64.graphview.GraphView
         android:paddingTop="10sp"
         android:paddingBottom="10sp"
+        android:layout_marginTop="5dp"
+        android:layout_marginBottom="5dp"
         android:id="@+id/weekly_linear_graph"
         android:layout_width="match_parent"
         android:layout_height="match_parent"/>
