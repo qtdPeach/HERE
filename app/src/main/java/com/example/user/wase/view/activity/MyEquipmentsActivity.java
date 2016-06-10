@@ -49,7 +49,7 @@ public class MyEquipmentsActivity extends AppCompatActivity {
 
     private ListView lvEquipList;
 
-    private ArrayList<Equipment> pairedEquipList;
+    private ArrayList<MyHereAgent> pairedEquipList;
 
     private static final int REQUEST_ENABLE_BT = 1;
     // Stops scanning after 10 seconds.
@@ -271,7 +271,7 @@ public class MyEquipmentsActivity extends AppCompatActivity {
 
         public HERE_DeviceListAdapter() {
             super();
-            pairedEquipList = new ArrayList<Equipment>();
+            pairedEquipList = new ArrayList<MyHereAgent>();
             mLEdeviceList = new ArrayList<BluetoothDevice>();
 
         }
@@ -280,7 +280,7 @@ public class MyEquipmentsActivity extends AppCompatActivity {
             if(!mLEdeviceList.contains(device)) {
                 mLEdeviceList.add(device);
                 if(!pairedEquipList.contains(device.getAddress())){
-                    pairedEquipList.add(new Equipment(device.getAddress(), device.getName(), "Sensor-Q03-87A", "2016-04-18", 2));
+                    pairedEquipList.add(new MyHereAgent(device.getAddress(), device.getName(), MyHereAgent.TYPE_DUMBEL, "2016-04-18", "2"));
                 }
             }
         }
@@ -323,25 +323,27 @@ public class MyEquipmentsActivity extends AppCompatActivity {
             TextView eqId = (TextView)view.findViewById(R.id.equiplist_id);
             TextView eqSensorId = (TextView)view.findViewById(R.id.equiplist_sensorid);
 
-            switch (pairedEquipList.get(i).getEquipmentType()) {
-                case 0:
-                    eqTypeImage.setImageResource(R.mipmap.ic_setting_update_alarm);
+            switch (pairedEquipList.get(i).getMyeqType()) {
+                case MyHereAgent.TYPE_DUMBEL:
+                    eqTypeImage.setImageResource(R.drawable.eq_01_dumbbell);
                     break;
-                case 1:
-                    eqTypeImage.setImageResource(R.mipmap.ic_setting_best_interest);
+                case MyHereAgent.TYPE_PUSH_UP:
+                    eqTypeImage.setImageResource(R.drawable.eq_02_pushupbar);
                     break;
-                case 2:
-                    eqTypeImage.setImageResource(R.mipmap.ic_setting_user_information);
+                case MyHereAgent.TYPE_JUMP_ROPE:
+                    eqTypeImage.setImageResource(R.drawable.eq_03_jumprope);
                     break;
-                case 3:
+                case MyHereAgent.TYPE_HOOLA_HOOP:
+                    eqTypeImage.setImageResource(R.drawable.eq_04_hoolahoop);
                     break;
                 default:
+                    eqTypeImage.setImageResource(R.drawable.eq_04_hoolahoop);
                     break;
             }
 
-            eqName.setText(pairedEquipList.get(i).getEquipmentName());
-            eqId.setText(pairedEquipList.get(i).getEquipmentID());
-            eqSensorId.setText(pairedEquipList.get(i).getEquipmentSensorID());
+            eqName.setText(pairedEquipList.get(i).getMyeqName());
+            eqId.setText(pairedEquipList.get(i).getMyeqMacId());
+            //eqSensorId.setText(pairedEquipList.get(i).getEquipmentSensorID());
 
             return view;
         }
