@@ -1,11 +1,14 @@
 package com.example.user.wase.view.activity;
 
+import android.Manifest;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.design.widget.TabLayout;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.ViewPager;
 import android.util.Log;
@@ -37,6 +40,9 @@ import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
+
+    private static final int REQUEST_CODE_LOCATION = 22;
+
 
     private static final String TAG = "MainActivityTag";
     private static final String TAG_DB = "MainActivityDBTag";
@@ -79,6 +85,19 @@ public class MainActivity extends AppCompatActivity
         if (hereDB != null) {
             Log.d(TAG_DB, "[Database] DatabaseHelper is created.");
         }
+
+        if (ActivityCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            Toast.makeText(getApplicationContext(), "Not Granted", Toast.LENGTH_SHORT).show();
+
+            ActivityCompat.requestPermissions(MainActivity.this,
+                    new String[]{Manifest.permission.ACCESS_FINE_LOCATION,
+                            Manifest.permission.ACCESS_COARSE_LOCATION},
+                    REQUEST_CODE_LOCATION);
+            //return;
+        } else {
+            Toast.makeText(getApplicationContext(), "Granted", Toast.LENGTH_SHORT).show();
+        }
+
 
         tabLayout = (TabLayout) findViewById(R.id.main_tablayout);
 
