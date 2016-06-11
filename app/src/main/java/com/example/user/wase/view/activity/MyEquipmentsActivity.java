@@ -1,9 +1,11 @@
 package com.example.user.wase.view.activity;
 
+import android.app.AlertDialog;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothManager;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
@@ -19,6 +21,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.BaseAdapter;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -47,6 +50,9 @@ public class MyEquipmentsActivity extends AppCompatActivity {
     private boolean mScanning;
     private Handler mHandler;
 
+
+    private MyHereAgent selectedNewAgent;
+
     private ListView lvEquipList;
 
     private ArrayList<MyHereAgent> pairedEquipList;
@@ -72,6 +78,8 @@ public class MyEquipmentsActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
 
         final ActionBar actionBar = getSupportActionBar();
+
+        selectedNewAgent = new MyHereAgent();
 
         actionBar.setTitle("My HERE Agents");
         actionBar.setDefaultDisplayHomeAsUpEnabled(true);
@@ -109,6 +117,14 @@ public class MyEquipmentsActivity extends AppCompatActivity {
         lvEquipList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Toast.makeText(getApplicationContext(), "lvEquipList.setOnItemClickListener", Toast.LENGTH_SHORT).show();
+
+                selectedNewAgent.setMyeqMacId(mLEdeviceList.get(position).getAddress());
+                selectedNewAgent.setMyeqType(1);
+                selectedNewAgent.setMyeqBeaconMajorId("MajorID");
+                selectedNewAgent.setMyeqBeaconMinorId("MinorID");
+
+                showAddAgentDialog();
 
                 scanLeDevice(false);
             }
@@ -119,7 +135,9 @@ public class MyEquipmentsActivity extends AppCompatActivity {
 
     public void mOnClick(View v) {
         switch (v.getId()) {
-
+            case R.id.setting_myeq_btn_dialog:
+                showAddAgentDialog();
+                break;
         }
     }
 
@@ -368,4 +386,41 @@ public class MyEquipmentsActivity extends AppCompatActivity {
                     });
                 }
             };
+
+    private void showAddAgentDialog() {
+        LayoutInflater inflater = getLayoutInflater();
+
+        final View dialogView = inflater.inflate(R.layout.dialog_agent, null);
+
+        EditText et_addagent_macid = (EditText) dialogView.findViewById(R.id.dialog_agent_macid);
+        EditText et_addagent_majorid = (EditText) dialogView.findViewById(R.id.dialog_agent_majorid);
+        EditText et_addagent_minorid = (EditText) dialogView.findViewById(R.id.dialog_agent_minorid);
+
+        et_addagent_macid.setText(selectedNewAgent.getMyeqMacId());
+        et_addagent_majorid.setText(selectedNewAgent.getMyeqBeaconMajorId());
+        et_addagent_minorid.setText(selectedNewAgent.getMyeqBeaconMinorId());
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(MyEquipmentsActivity.this);
+        builder.setTitle("Add a new HERE agent");
+        builder.setView(dialogView);
+        builder.setPositiveButton("Add agent", new DialogInterface.OnClickListener() {
+
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                MainActivity.hereDB.insertHereAgent(selectedNewAgent);
+                Toast.makeText(getApplicationContext(), "An agent is added into DB", Toast.LENGTH_SHORT).show();
+                dialog.dismiss();
+            }
+        });
+        builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+            }
+        });
+
+        AlertDialog dialog = builder.create();
+        dialog.setCanceledOnTouchOutside(false);
+        dialog.show();
+    }
 }

@@ -8,6 +8,122 @@
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="DIALOG AGENT"/>
+        android:paddingLeft="15dp"
+        android:paddingRight="15dp"
+        android:layout_marginTop="20dp"
+        android:layout_marginBottom="20dp"
+        android:textSize="15dp"
+        android:textColor="#111111"
+        android:text="Make a new name for this agent!"/>
+
+    <LinearLayout
+        android:orientation="horizontal"
+
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:layout_width="0px"
+            android:layout_height="wrap_content"
+            android:layout_weight="2"
+            android:gravity="right|center_vertical"
+            android:paddingRight="10dp"
+            android:textSize="14dp"
+            android:text="Agent Mac ID"/>
+
+        <EditText
+            android:id="@+id/dialog_agent_macid"
+            android:layout_width="0px"
+            android:layout_height="wrap_content"
+            android:layout_weight="3"
+            android:gravity="left|center_vertical"
+            android:editable="false"
+            android:textSize="14dp"
+            android:text="MAC_ID"
+            android:focusable="false" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:layout_width="0px"
+            android:layout_height="wrap_content"
+            android:layout_weight="2"
+            android:gravity="right|center_vertical"
+            android:paddingRight="10dp"
+            android:textSize="14dp"
+            android:textColor="@color/colorAccent"
+            android:textStyle="bold"
+            android:text="Agent Name"/>
+
+        <EditText
+            android:id="@+id/dialog_agent_name"
+            android:layout_width="0px"
+            android:layout_height="wrap_content"
+            android:layout_weight="3"
+            android:gravity="left|center_vertical"
+            android:hint="Equipment name"
+            android:textColor="@color/colorAccent"
+            android:textSize="14dp"
+            />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:layout_width="0px"
+            android:layout_height="wrap_content"
+            android:layout_weight="2"
+            android:gravity="right|center_vertical"
+            android:paddingRight="10dp"
+            android:textSize="14dp"
+            android:text="Major ID"/>
+
+        <EditText
+            android:id="@+id/dialog_agent_majorid"
+            android:layout_width="0px"
+            android:layout_height="wrap_content"
+            android:layout_weight="3"
+            android:gravity="left|center_vertical"
+            android:editable="false"
+            android:textSize="14dp"
+            android:text="MAJOR_ID" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:layout_width="0px"
+            android:layout_height="wrap_content"
+            android:layout_weight="2"
+            android:gravity="right|center_vertical"
+            android:paddingRight="10dp"
+            android:textSize="14dp"
+            android:text="Minor ID"/>
+
+        <EditText
+            android:id="@+id/dialog_agent_minorid"
+            android:layout_width="0px"
+            android:layout_height="wrap_content"
+            android:layout_weight="3"
+            android:gravity="left|center_vertical"
+            android:editable="false"
+            android:textSize="14dp"
+            android:text="MINOR_ID" />
+
+    </LinearLayout>
+
 
 </LinearLayout>

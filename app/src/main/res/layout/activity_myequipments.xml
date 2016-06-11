@@ -11,6 +11,14 @@
         android:layout_height="56dp"
         android:background="@color/colorSkyBlue"/>
 
+    <Button
+        android:id="@+id/setting_myeq_btn_dialog"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp"
+        android:text="임시 다이얼로그 버튼 (기기추가)"
+        android:onClick="mOnClick"/>
+
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
