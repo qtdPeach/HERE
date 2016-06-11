@@ -72,7 +72,7 @@ public class DataViewTerminal extends Activity {
 
     //Bluetooth components
     private String mDeviceName;
-    private String mDeviceAddress;
+    public String mDeviceAddress;
 
     private BluetoothLeService mBluetoothLeService;
     private boolean mConnected = false;
@@ -143,6 +143,23 @@ public class DataViewTerminal extends Activity {
             mBluetoothLeService = null;
         }
     };
+
+    public void beep(String macId){
+        byte bbb = (byte)255;
+        try {
+            Intent gattServiceIntent = new Intent(this, BluetoothLeService.class);
+            bindService(gattServiceIntent, mServiceConnection, BIND_AUTO_CREATE);
+
+            if (mBluetoothLeService != null) {
+                final boolean result = mBluetoothLeService.connect(mDeviceAddress);
+                Log.d(TAG, "Connect request result=" + result);
+            }
+            bbb = (byte) Integer.parseInt("67", 16);
+            setCommandToHERE_agent(bbb);
+            mBluetoothLeService.disconnect();
+        }catch (Exception e){}
+        Log.d("command", " -> " + bbb);
+    }
     // Handles various events fired by the Service.
     // ACTION_GATT_CONNECTED: connected to a GATT server.
     // ACTION_GATT_DISCONNECTED: disconnected from a GATT server.

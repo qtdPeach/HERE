@@ -71,9 +71,6 @@ public class EquipmentScanner extends Fragment {
         super.onCreate(savedInstanceState);
         mHandler = new Handler();
 
-
-
-
         // Use this check to determine whether BLE is supported on the device.  Then you can
         // selectively disable BLE-related features.
         if (!getActivity().getPackageManager().hasSystemFeature(PackageManager.FEATURE_BLUETOOTH_LE)) {
@@ -193,7 +190,12 @@ public class EquipmentScanner extends Fragment {
             if(!mLEdeviceList.contains(device)) {
                 mLEdeviceList.add(device);
                 if(!pairedEquipList.contains(device.getAddress())){
-                    pairedEquipList.add(new MyHereAgent(device.getAddress(), device.getName(), MyHereAgent.TYPE_DUMBEL, "2016-04-18", "2"));
+                    if(device.getName().contains("HERE")) {
+                        pairedEquipList.add(new MyHereAgent(device.getAddress(), device.getName(), MyHereAgent.TYPE_DUMBEL, "2016-04-18", "2"));
+                        DataViewTerminal dataViewTerminal = new DataViewTerminal();
+                        dataViewTerminal.mDeviceAddress = device.getAddress();
+                        dataViewTerminal.beep(device.getAddress());
+                    }
                 }
             }
         }
@@ -203,17 +205,17 @@ public class EquipmentScanner extends Fragment {
         }
 
         public void clear() {
-            mLEdeviceList.clear();
+            pairedEquipList.clear();
         }
 
         @Override
         public int getCount() {
-            return mLEdeviceList.size();
+            return pairedEquipList.size();
         }
 
         @Override
         public Object getItem(int i) {
-            return mLEdeviceList.get(i);
+            return pairedEquipList.get(i);
         }
 
         @Override
