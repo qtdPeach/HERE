@@ -77,10 +77,10 @@ public class DoingExerciseActivity extends AppCompatActivity {
     int numAgents;
     int currentOrder;
 
-    int countCurrentEq;
 
     int currentRecordCount;
     int currentRecordTime;
+    private Runnable increaseTimer;
 
     TaskScheduler timer;
     boolean isTimerRunning;
@@ -140,7 +140,7 @@ public class DoingExerciseActivity extends AppCompatActivity {
     private int[] longTermIndex;
     private final int longterm = 3*100; //approx. 3s
 
-    private int exerciseCount = 0;
+    private int countCurrentEq = 0;
     private boolean isRisingPeak, isFallingPeak;
 
     private int prevForce = 0;
@@ -253,32 +253,8 @@ public class DoingExerciseActivity extends AppCompatActivity {
         //Obtain a selected user routine
         myRoutine = MainActivity.mySelectedRoutine;
 
-        //Arraylist to save the user's records
-        agentRecords = new ArrayList<>();
-        numAgents = 0;
-        currentOrder = 0;
-
-        initWidgets();
-        initAgentRecords();
-        initAgentValues();
-        initSamplingRateUnit();
-        initPreprocessingUnits();
-
-        invalidator = new Runnable() {
-            @Override
-            public void run() {
-                double x = (double) (System.currentTimeMillis() - startTime)/1000;
-                //series[vf.getDisplayedChild()].appendData(new DataPoint((double) (System.currentTimeMillis() - startTime) / 1000, (double) values[vf.getDisplayedChild()]), true, 1000);
-                series.appendData(new DataPoint(x, (double) values[connectedAgentType]), true, 300);
-            }
-        };
-        //mHandler.postDelayed(invalidator, 1500);
-        isRisingPeak = false;
-        isFallingPeak = false;
 
 
-        timer = new TaskScheduler();
-        timer.scheduleAtFixedRate(increaseTimer, 1000);
 
         vib = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
 
@@ -327,6 +303,55 @@ public class DoingExerciseActivity extends AppCompatActivity {
             Log.d(TAG, "Connect request result=" + result);
         }
 
+        //Arraylist to save the user's records
+        agentRecords = new ArrayList<>();
+        numAgents = 0;
+        currentOrder = 0;
+
+        initWidgets();
+        initAgentRecords();
+        initAgentValues();
+        initSamplingRateUnit();
+        initPreprocessingUnits();
+
+        increaseTimer = new Runnable() {
+            @Override
+            public void run() {
+
+                //Obtain a current RecordAgent for recording
+                if (numAgents > 0) {
+                    currentAgent = agentRecords.get(currentOrder);
+                }
+
+
+
+                Random rand = new Random();
+                int randNum;
+
+                //TODO: tv_eq_count와 currentRecordCount는 성근이형 코드로 대체
+                if (isTimerRunning) {
+                    currentRecordTime++;
+                    randNum = rand.nextInt((RAND_MAX - RAND_MIN) + 1) + RAND_MIN;
+                    //currentRecordCount += randNum;
+                }
+                tv_timer.setText(secondToTimerString(currentRecordTime));
+                tv_eq_count.setText(String.format("%d", countCurrentEq));
+            }
+        };
+        timer = new TaskScheduler();
+        timer.scheduleAtFixedRate(increaseTimer, 1000);
+
+        invalidator = new Runnable() {
+            @Override
+            public void run() {
+                double x = (double) (System.currentTimeMillis() - startTime)/1000;
+                //series[vf.getDisplayedChild()].appendData(new DataPoint((double) (System.currentTimeMillis() - startTime) / 1000, (double) values[vf.getDisplayedChild()]), true, 1000);
+                series.appendData(new DataPoint(x, (double) values[connectedAgentType]), true, 300);
+            }
+        };
+        //mHandler.postDelayed(invalidator, 1500);
+        isRisingPeak = false;
+        isFallingPeak = false;
         startTime = System.currentTimeMillis();
     }
     public int findImage (int type){
@@ -387,7 +412,7 @@ public class DoingExerciseActivity extends AppCompatActivity {
             @Override
             public void onTick(long millisUntilFinished) {
                 samplingRate = (float)samplingCount;
-                tv_eq_samplingRate.setText(String.format("%d", samplingRate));
+                tv_eq_samplingRate.setText("");
                 samplingCount = 0;
 
             }
@@ -473,10 +498,15 @@ public class DoingExerciseActivity extends AppCompatActivity {
         } else {
             tv_eq_order.setText(String.format("%dth", currentOrder + 1) + " Exercise");
         }
-
-        iv_current_eq.setImageResource(findImage(agentRecords.get(currentOrder).getAgentType()));
-        tv_eq_name.setText(agentRecords.get(currentOrder).getAgentName());
-        tv_eq_goal.setText(agentRecords.get(currentOrder).makeGoalString());
+        try {
+            iv_current_eq.setImageResource(findImage(agentRecords.get(currentOrder).getAgentType()));
+            tv_eq_name.setText(agentRecords.get(currentOrder).getAgentName());
+            tv_eq_goal.setText(agentRecords.get(currentOrder).makeGoalString());
+        }catch (Exception e){
+            currentOrder = connectedAgentType;
+            tv_eq_name.setText(mDeviceName);
+            tv_eq_goal.setText("000");
+        }
 
     }
 
@@ -485,6 +515,7 @@ public class DoingExerciseActivity extends AppCompatActivity {
 
         agentRecords.clear();
         numAgents = 0;
+        currentRecordCount = 0;
 
         boolean isMoreAgent = true;
 
@@ -727,30 +758,6 @@ public class DoingExerciseActivity extends AppCompatActivity {
 
 
 
-    private Runnable increaseTimer = new Runnable() {
-        @Override
-        public void run() {
-
-            //Obtain a current RecordAgent for recording
-            if (numAgents > 0) {
-                currentAgent = agentRecords.get(currentOrder);
-            }
-
-
-
-            Random rand = new Random();
-            int randNum;
-
-            //TODO: tv_eq_count와 currentRecordCount는 성근이형 코드로 대체
-            if (isTimerRunning) {
-                currentRecordTime++;
-                randNum = rand.nextInt((RAND_MAX - RAND_MIN) + 1) + RAND_MIN;
-                currentRecordCount += randNum;
-            }
-            tv_timer.setText(secondToTimerString(currentRecordTime));
-            tv_eq_count.setText(String.format("%d", currentRecordCount));
-        }
-    };
 
 
     private void initializeRecord() {
@@ -922,8 +929,8 @@ public class DoingExerciseActivity extends AppCompatActivity {
             isFallingPeak = true;
             exercisePhase.setText("Rising");
             if (isRisingPeak) {
-                exerciseCount++;
-                tv_eq_count.setText(exerciseCount);
+                countCurrentEq++;
+                tv_eq_count.setText(countCurrentEq);
                 setCommandToHERE_agent((byte) 'a');
                 vib.vibrate(100);
             }
@@ -939,13 +946,13 @@ public class DoingExerciseActivity extends AppCompatActivity {
     public int dumbbellMonitor(float value) {
         values[connectedAgentType] = LPF(value, connectedAgentType) - longTermAvg(value, connectedAgentType);
         if (values[connectedAgentType] > 20) {
-            exercisePhase.setText(exerciseCount / 2 + ":  Rising");
+            exercisePhase.setText(countCurrentEq / 2 + ":  Rising");
             dumbel.setDetectingMode(1);
         } else if (values[connectedAgentType] < -20) {
-            exercisePhase.setText(exerciseCount / 2 + ":  Falling");
+            exercisePhase.setText(countCurrentEq / 2 + ":  Falling");
             dumbel.setDetectingMode(-1);
         } else {
-            exercisePhase.setText(exerciseCount / 2 + ":  Static");
+            exercisePhase.setText(countCurrentEq / 2 + ":  Static");
             dumbel.setDetectingMode(0);
         }
         switch (dumbel.peakDetection(new DataPoint(0, values[connectedAgentType]))) {
@@ -959,8 +966,8 @@ public class DoingExerciseActivity extends AppCompatActivity {
             case -1:
                 isFallingPeak = true;
                 if (isRisingPeak) {
-                    exerciseCount++;
-                    tv_eq_count.setText(exerciseCount);
+                    countCurrentEq++;
+                    tv_eq_count.setText(countCurrentEq);
                     setCommandToHERE_agent((byte) 'a');
                     vib.vibrate(100);
                 }
@@ -975,8 +982,8 @@ public class DoingExerciseActivity extends AppCompatActivity {
         values[connectedAgentType] = LPF(value, connectedAgentType) - longTermAvg(value, connectedAgentType);
         if (hoop.periodMonitor(new DataPoint((double) (System.currentTimeMillis() - startTime), value))) {
             exercisePhase.setText("Hooping");
-            exerciseCount = hoop.getCount();
-            tv_eq_count.setText(exerciseCount);
+            countCurrentEq = hoop.getCount();
+            tv_eq_count.setText(countCurrentEq);
             return  1;
         } else {
             exercisePhase.setText("is not Periodic");
