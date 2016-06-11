@@ -508,19 +508,21 @@ public class MyRecordsFragment extends Fragment{
                 //TODO: Done, Time
                 int recordNum = 0;
                 int recordTime = 0;
-                switch (tmpAgent.getMyeqType()) {
-                    case MyHereAgent.TYPE_DUMBEL:
-                        recordNum = arrGraphElements.get(i).getRecordEqDone();
-                        recordTime = (int)(recordNum * 1.67);
-                        break;
-                    case MyHereAgent.TYPE_PUSH_UP:
-                        recordNum = arrGraphElements.get(i).getRecordEqDone();
-                        recordTime = (int)(recordNum * 3.0);
-                        break;
-                    case MyHereAgent.TYPE_HOOLA_HOOP:
-                        recordTime = arrGraphElements.get(i).getRecordEqDone();
-                        recordNum = (int)(recordTime * 1.35);
-                        break;
+                if(tmpAgent!=null) {
+                    switch (tmpAgent.getMyeqType()) {
+                        case MyHereAgent.TYPE_DUMBEL:
+                            recordNum = arrGraphElements.get(i).getRecordEqDone();
+                            recordTime = (int) (recordNum * 1.67);
+                            break;
+                        case MyHereAgent.TYPE_PUSH_UP:
+                            recordNum = arrGraphElements.get(i).getRecordEqDone();
+                            recordTime = (int) (recordNum * 3.0);
+                            break;
+                        case MyHereAgent.TYPE_HOOLA_HOOP:
+                            recordTime = arrGraphElements.get(i).getRecordEqDone();
+                            recordNum = (int) (recordTime * 1.35);
+                            break;
+                    }
                 }
 
                 double tmpColorie = calorieCalculator.getCalorie(tmpAgent, tmpMyInfo, recordNum, recordTime);

@@ -150,41 +150,57 @@ public class MyRecordsActivity extends AppCompatActivity {
                 recordDate.setText(myRecords.get(pos).getRecordDateTime());
                 recordName.setText(myRecords.get(pos).getRecordName());
 
+                MyHereAgent myHereAgent;
                 if(!myRecords.get(pos).getRecordEq1Id().equals("-1")){
-                    recordEq1Name.setText(MainActivity.hereDB.getMyHereAgent(myRecords.get(pos).getRecordEq1Id()).getMyeqName());
-                    recordEq1Record.setText(myRecords.get(pos).getRecordEq1Done()+"");
+                    myHereAgent = MainActivity.hereDB.getMyHereAgent(myRecords.get(pos).getRecordEq1Id());
+                    if(myHereAgent != null) {
+                        recordEq1Name.setText(myHereAgent.getMyeqName());
+                        recordEq1Record.setText(myRecords.get(pos).getRecordEq1Done() + "");
+                    }
                 } else {
                     recordEq1Name.setVisibility(View.GONE);
                     recordEq1Record.setVisibility(View.GONE);
                 }
 
                 if(!myRecords.get(pos).getRecordEq2Id().equals("-1")){
-                    recordEq2Name.setText(MainActivity.hereDB.getMyHereAgent(myRecords.get(pos).getRecordEq2Id()).getMyeqName());
-                    recordEq2Record.setText(myRecords.get(pos).getRecordEq2Done()+"");
+                    myHereAgent = MainActivity.hereDB.getMyHereAgent(myRecords.get(pos).getRecordEq2Id());
+                    if(myHereAgent != null) {
+                        recordEq2Name.setText(myHereAgent.getMyeqName());
+                        recordEq2Record.setText(myRecords.get(pos).getRecordEq2Done() + "");
+                    }
                 } else {
                     recordEq2Name.setVisibility(View.GONE);
                     recordEq2Record.setVisibility(View.GONE);
                 }
 
                 if(!myRecords.get(pos).getRecordEq3Id().equals("-1")){
-                    recordEq3Name.setText(MainActivity.hereDB.getMyHereAgent(myRecords.get(pos).getRecordEq3Id()).getMyeqName());
-                    recordEq3Record.setText(myRecords.get(pos).getRecordEq3Done()+"");
+                    myHereAgent = MainActivity.hereDB.getMyHereAgent(myRecords.get(pos).getRecordEq3Id());
+                    if (myHereAgent != null) {
+                        recordEq3Name.setText(myHereAgent.getMyeqName());
+                        recordEq3Record.setText(myRecords.get(pos).getRecordEq3Done() + "");
+                    }
                 } else {
                     recordEq3Name.setVisibility(View.GONE);
                     recordEq3Record.setVisibility(View.GONE);
                 }
 
                 if(!myRecords.get(pos).getRecordEq4Id().equals("-1")){
-                    recordEq4Name.setText(MainActivity.hereDB.getMyHereAgent(myRecords.get(pos).getRecordEq4Id()).getMyeqName());
-                    recordEq4Record.setText(myRecords.get(pos).getRecordEq4Done()+"");
+                    myHereAgent =MainActivity.hereDB.getMyHereAgent(myRecords.get(pos).getRecordEq4Id());
+                    if(myHereAgent != null) {
+                        recordEq4Name.setText(myHereAgent.getMyeqName());
+                        recordEq4Record.setText(myRecords.get(pos).getRecordEq4Done() + "");
+                    }
                 } else {
                     recordEq4Name.setVisibility(View.GONE);
                     recordEq4Record.setVisibility(View.GONE);
                 }
 
                 if(!myRecords.get(pos).getRecordEq5Id().equals("-1")){
-                    recordEq5Name.setText(MainActivity.hereDB.getMyHereAgent(myRecords.get(pos).getRecordEq5Id()).getMyeqName());
-                    recordEq5Record.setText(myRecords.get(pos).getRecordEq5Done()+"");
+                    myHereAgent = MainActivity.hereDB.getMyHereAgent(myRecords.get(pos).getRecordEq5Id());
+                    if (myHereAgent != null) {
+                        recordEq5Name.setText(myHereAgent.getMyeqName());
+                        recordEq5Record.setText(myRecords.get(pos).getRecordEq5Done() + "");
+                    }
                 } else {
                     recordEq5Name.setVisibility(View.GONE);
                     recordEq5Record.setVisibility(View.GONE);

@@ -355,17 +355,32 @@ public class MyRoutinesFragment extends Fragment{
             routineName.setText(myRoutines.get(i).getRoutineId());
             routineId.setText(myRoutines.get(i).getRoutineName());
             String summary = "";
-
-            if(!myRoutines.get(i).getRoutineEq1Id().equals("-1"))
-                summary += MainActivity.hereDB.getMyHereAgent(myRoutines.get(i).getRoutineEq1Id()).getMyeqName();
-            if(!myRoutines.get(i).getRoutineEq2Id().equals("-1"))
-                summary += " - "+MainActivity.hereDB.getMyHereAgent(myRoutines.get(i).getRoutineEq2Id()).getMyeqName();
-            if(!myRoutines.get(i).getRoutineEq3Id().equals("-1"))
-                summary += " - "+MainActivity.hereDB.getMyHereAgent(myRoutines.get(i).getRoutineEq3Id()).getMyeqName();
-            if(!myRoutines.get(i).getRoutineEq4Id().equals("-1"))
-                summary += " - "+MainActivity.hereDB.getMyHereAgent(myRoutines.get(i).getRoutineEq4Id()).getMyeqName();
-            if(!myRoutines.get(i).getRoutineEq5Id().equals("-1"))
-                summary += " - "+MainActivity.hereDB.getMyHereAgent(myRoutines.get(i).getRoutineEq5Id());
+            MyHereAgent myHereAgent;
+            if(!myRoutines.get(i).getRoutineEq1Id().equals("-1")) {
+                myHereAgent = MainActivity.hereDB.getMyHereAgent(myRoutines.get(i).getRoutineEq1Id());
+                if(myHereAgent !=null)
+                    summary += myHereAgent.getMyeqName();
+            }
+            if(!myRoutines.get(i).getRoutineEq2Id().equals("-1")) {
+                myHereAgent =  MainActivity.hereDB.getMyHereAgent(myRoutines.get(i).getRoutineEq2Id());
+                if(myHereAgent != null)
+                    summary += " - " + myHereAgent.getMyeqName();
+            }
+            if(!myRoutines.get(i).getRoutineEq3Id().equals("-1")) {
+                myHereAgent = MainActivity.hereDB.getMyHereAgent(myRoutines.get(i).getRoutineEq3Id());
+                if(myHereAgent != null)
+                    summary += " - " + myHereAgent.getMyeqName();
+            }
+            if(!myRoutines.get(i).getRoutineEq4Id().equals("-1")) {
+                myHereAgent = MainActivity.hereDB.getMyHereAgent(myRoutines.get(i).getRoutineEq4Id());
+                if(myHereAgent != null)
+                    summary += " - " + myHereAgent.getMyeqName();
+            }
+            if(!myRoutines.get(i).getRoutineEq5Id().equals("-1")) {
+                myHereAgent =  MainActivity.hereDB.getMyHereAgent(myRoutines.get(i).getRoutineEq5Id());
+                if (myHereAgent != null)
+                    summary += " - " + myHereAgent.getMyeqName();
+            }
 
             routineSummary.setText(summary);
 
