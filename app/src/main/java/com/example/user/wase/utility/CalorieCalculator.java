@@ -10,10 +10,6 @@ import com.example.user.wase.model.MyInformation;
 public class CalorieCalculator {
     private double calorie = 0;
 
-    public CalorieCalculator() {
-        calorie = 0;
-    }
-
     public void setCalorie(double calorie) {
         this.calorie = calorie;
     }
