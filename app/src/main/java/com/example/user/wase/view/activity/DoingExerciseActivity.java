@@ -12,6 +12,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.ServiceConnection;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.os.Handler;
@@ -34,6 +35,7 @@ import com.example.user.wase.model.RecordAgent;
 import com.example.user.wase.utility.PeakDetector;
 import com.example.user.wase.utility.SinusoidalDetector;
 import com.example.user.wase.utility.TaskScheduler;
+import com.jjoe64.graphview.GraphView;
 import com.jjoe64.graphview.series.DataPoint;
 import com.jjoe64.graphview.series.LineGraphSeries;
 
@@ -71,6 +73,7 @@ public class DoingExerciseActivity extends AppCompatActivity {
     TextView tv_eq_goal;
     TextView tv_eq_count;
     TextView tv_eq_samplingRate;
+    private GraphView gv;
 
     ArrayList<RecordAgent> agentRecords;
     RecordAgent currentAgent;
@@ -205,7 +208,7 @@ public class DoingExerciseActivity extends AppCompatActivity {
                 displayGattServices(mBluetoothLeService.getSupportedGattServices());
             } else if (BluetoothLeService.ACTION_DATA_AVAILABLE.equals(action)) {
 
-                //appendData(intent.getStringExtra(mBluetoothLeService.EXTRA_DATA));
+                appendData(intent.getStringExtra(mBluetoothLeService.EXTRA_DATA));
             }
         }
     };
@@ -386,6 +389,37 @@ public class DoingExerciseActivity extends AppCompatActivity {
     }
 
     private void initWidgets() {
+        gv = (GraphView) findViewById(R.id.graphX);
+        series = new LineGraphSeries();
+
+        series= new LineGraphSeries<DataPoint>();
+        series.setColor(Color.RED);
+
+        gv.addSeries(series);
+        gv.getViewport().setScrollable(true);
+
+        gv.getViewport().setXAxisBoundsManual(true);
+        gv.getViewport().setMinX(0);
+        gv.getViewport().setMaxX(5); //second
+        gv.getViewport().setBackgroundColor(Color.WHITE);
+        gv.getGridLabelRenderer().setGridColor(Color.GRAY);
+        gv.getGridLabelRenderer().reloadStyles();
+        gv.getViewport().setYAxisBoundsManual(true);
+        switch (connectedAgentType){
+            case MyHereAgent.TYPE_DUMBEL:
+                gv.getViewport().setMinY(-150);
+                gv.getViewport().setMaxY(150);
+                break;
+            case MyHereAgent.TYPE_PUSH_UP:
+                gv.getViewport().setMinY(-1000);
+                gv.getViewport().setMaxY(5000);
+                break;
+            case MyHereAgent.TYPE_HOOLA_HOOP:
+                gv.getViewport().setMinY(-150);
+                gv.getViewport().setMaxY(150);
+                break;
+        }
+
         isTimerRunning = true;
 
         layout_whole = (LinearLayout) findViewById(R.id.doingexercise_layout_whole);
@@ -916,7 +950,7 @@ public class DoingExerciseActivity extends AppCompatActivity {
     }
 
     public int pushUpMonitor(float value){
-        values[9] =  value ;
+        values[connectedAgentType] =  value ;
         if(value > pushUpThreshold){
             exercisePhase.setText("Falling");
             isRisingPeak = true;
@@ -930,7 +964,6 @@ public class DoingExerciseActivity extends AppCompatActivity {
             exercisePhase.setText("Rising");
             if (isRisingPeak) {
                 countCurrentEq++;
-                tv_eq_count.setText(countCurrentEq);
                 setCommandToHERE_agent((byte) 'a');
                 vib.vibrate(100);
             }
@@ -967,7 +1000,6 @@ public class DoingExerciseActivity extends AppCompatActivity {
                 isFallingPeak = true;
                 if (isRisingPeak) {
                     countCurrentEq++;
-                    tv_eq_count.setText(countCurrentEq);
                     setCommandToHERE_agent((byte) 'a');
                     vib.vibrate(100);
                 }
@@ -983,7 +1015,6 @@ public class DoingExerciseActivity extends AppCompatActivity {
         if (hoop.periodMonitor(new DataPoint((double) (System.currentTimeMillis() - startTime), value))) {
             exercisePhase.setText("Hooping");
             countCurrentEq = hoop.getCount();
-            tv_eq_count.setText(countCurrentEq);
             return  1;
         } else {
             exercisePhase.setText("is not Periodic");
@@ -1000,7 +1031,7 @@ public class DoingExerciseActivity extends AppCompatActivity {
                 for (int i = 0; i < data.length; i++) {
                     switch (connectedAgentType){
                         case MyHereAgent.TYPE_DUMBEL:
-                            if (data[i].equals(startBit)) {
+                            if (data[i].charAt(0) == startBit) {
                                 i++;
                                 value = (float) Integer.parseInt(data[++i]) - offsets[connectedAgentType];
                                 dumbbellMonitor(value);
@@ -1009,14 +1040,14 @@ public class DoingExerciseActivity extends AppCompatActivity {
 
                             break;
                         case MyHereAgent.TYPE_PUSH_UP:
-                            if (data[i].equals(startBit)) {
+                            if (data[i].charAt(0) == startBit) {
                                 value = (float) Integer.parseInt(data[++i]);
                                 pushUpMonitor(value);
                                 samplingCount++;
                             }
                             break;
                         case MyHereAgent.TYPE_HOOLA_HOOP:
-                            if (data[i].equals(startBit)) {
+                            if (data[i].charAt(0) == startBit) {
                                 i++;
                                 value = (float) Integer.parseInt(data[++i]) - offsets[connectedAgentType];
                                 hoopMonitor(value);
