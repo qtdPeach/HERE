@@ -83,7 +83,7 @@ public class DataViewTerminal extends Activity {
     private final String LIST_UUID = "UUID";
 
     public final static UUID HM_RX_TX =
-            UUID.fromString(HERE_GattAttributes.HM_RX_TX);
+    UUID.fromString(HERE_GattAttributes.HM_RX_TX);
 
 
 
@@ -157,7 +157,8 @@ public class DataViewTerminal extends Activity {
             bbb = (byte) Integer.parseInt("67", 16);
             setCommandToHERE_agent(bbb);
             mBluetoothLeService.disconnect();
-        }catch (Exception e){}
+        }catch (Exception e){
+        }
         Log.d("command", " -> " + bbb);
     }
     // Handles various events fired by the Service.

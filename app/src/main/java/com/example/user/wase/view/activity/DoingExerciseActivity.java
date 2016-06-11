@@ -2,9 +2,19 @@ package com.example.user.wase.view.activity;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.bluetooth.BluetoothGattCharacteristic;
+import android.bluetooth.BluetoothGattDescriptor;
+import android.bluetooth.BluetoothGattService;
+import android.content.BroadcastReceiver;
+import android.content.ComponentName;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.ServiceConnection;
 import android.os.Bundle;
+import android.os.CountDownTimer;
+import android.os.IBinder;
+import android.os.Vibrator;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
@@ -14,19 +24,25 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.user.wase.R;
-import com.example.user.wase.model.RecordAgent;
+import com.example.user.wase.deviceLE.BluetoothLeService;
+import com.example.user.wase.deviceLE.HERE_GattAttributes;
+import com.example.user.wase.model.MyHereAgent;
 import com.example.user.wase.model.MyRoutine;
+import com.example.user.wase.model.RecordAgent;
 import com.example.user.wase.utility.TaskScheduler;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Random;
 import java.util.StringTokenizer;
+import java.util.UUID;
 
 /**
  * Created by user on 2016-06-07.
  */
 public class DoingExerciseActivity extends AppCompatActivity {
-
+    public static final String TAG = "DoingExerciseActivity";
     private static final int GOAL_SET = 51;
     private static final int GOAL_COUNT = 52;
     private static final int GOAL_TIME = 53;
@@ -47,6 +63,7 @@ public class DoingExerciseActivity extends AppCompatActivity {
     TextView tv_eq_name;
     TextView tv_eq_goal;
     TextView tv_eq_count;
+    TextView tv_eq_samplingRate;
 
     ArrayList<RecordAgent> agentRecords;
     RecordAgent currentAgent;
@@ -61,12 +78,155 @@ public class DoingExerciseActivity extends AppCompatActivity {
     TaskScheduler timer;
     boolean isTimerRunning;
 
+    Vibrator vib;
+
+    //Bluetooth components
+    public static final String EXTRAS_DEVICE_NAME = "DEVICE_NAME";
+    public static final String EXTRAS_DEVICE_ADDRESS = "DEVICE_ADDRESS";
+    private String mDeviceName;
+    private String mDeviceAddress;
+
+    private BluetoothLeService mBluetoothLeService;
+    private boolean mConnected = false;
+    private BluetoothGattCharacteristic characteristicTX;
+    private BluetoothGattCharacteristic characteristicRX;
+
+    private final String LIST_NAME = "NAME";
+    private final String LIST_UUID = "UUID";
+
+    public final static UUID HM_RX_TX =
+            UUID.fromString(HERE_GattAttributes.HM_RX_TX);
+
+    //device components
+    private int connectedAgentType;
+
+    //data components
+    private char startBit;
+
+    public static final char INDEX_ACC = 'a';
+    public static final char INDEX_GYRO = 'g';
+    public static final char INDEX_MAG = 'm';
+    public static final char INDEX_FORCE = 'f';
+    public static final String END_BIT = "@"; // do not use
+
+    //number of measurements typs
+    /*
+    3 Axis Accelerometer
+    3 Axis Gyroscope
+    3 Axis Magnetometer
+    1 Force Sensor - Load cell
+     */
+    private final int numberOfMeasures = 10;
+    private long startTime;
+    private float[] values;
+
+    float[] offsets;
+
+    boolean isSetOffset;
+    CountDownTimer cdt, srChecker;
+    float[] roughLPF;
+    float[][] LPFbuffer;
+    final int LPFwindow = 20;
+    int[] latestIdx;
+    private final float radToDeg = (float)(180/ Math.PI);
+    private int countGyro = 0;
+    private int countAcc = 0;
+
+    private int samplingCount;
+    private float samplingRate;
+    private float[][] longtermAverageBuffer;
+    private float[] longtermAverage;
+    private int[] longTermIndex;
+    private final int longterm = 3*100; //approx. 5s
+
+    private int dumbelCount = 0;
+    private boolean isRisingPeak, isFallingPeak;
+    // Code to manage Service lifecycle.
+
+    private int prevForce = 0;
+    private final ServiceConnection mServiceConnection = new ServiceConnection() {
+
+        @Override
+        public void onServiceConnected(ComponentName componentName, IBinder service) {
+            mBluetoothLeService = ((BluetoothLeService.LocalBinder) service).getService();
+            if (!mBluetoothLeService.initialize()) {
+                Log.e(TAG, "Unable to initialize Bluetooth");
+                finish();
+            }
+            // Automatically connects to the device upon successful start-up initialization.
+            mBluetoothLeService.connect(mDeviceAddress);
+        }
+
+        @Override
+        public void onServiceDisconnected(ComponentName componentName) {
+            mBluetoothLeService = null;
+        }
+    };
+    // Handles various events fired by the Service.
+    // ACTION_GATT_CONNECTED: connected to a GATT server.
+    // ACTION_GATT_DISCONNECTED: disconnected from a GATT server.
+    // ACTION_GATT_SERVICES_DISCOVERED: discovered GATT services.
+    // ACTION_DATA_AVAILABLE: received data from the device.  This can be a result of read
+    //                        or notification operations.
+    private final BroadcastReceiver mGattUpdateReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            final String action = intent.getAction();
+            if (BluetoothLeService.ACTION_GATT_CONNECTED.equals(action)) {
+                mConnected = true;
+                invalidateOptionsMenu();
+            } else if (BluetoothLeService.ACTION_GATT_DISCONNECTED.equals(action)) {
+                mConnected = false;
+                invalidateOptionsMenu();
+            } else if (BluetoothLeService.ACTION_GATT_SERVICES_DISCOVERED.equals(action)) {
+                // Show all the supported services and characteristics on the user interface.
+                displayGattServices(mBluetoothLeService.getSupportedGattServices());
+            } else if (BluetoothLeService.ACTION_DATA_AVAILABLE.equals(action)) {
+
+                //appendData(intent.getStringExtra(mBluetoothLeService.EXTRA_DATA));
+            }
+        }
+    };
+    // Demonstrates how to iterate through the supported GATT Services/Characteristics.
+    // In this sample, we populate the data structure that is bound to the ExpandableListView
+    // on the UI.
+    private void displayGattServices(List<BluetoothGattService> gattServices) {
+        if (gattServices == null) return;
+        String uuid = null;
+        ArrayList<HashMap<String, String>> gattServiceData = new ArrayList<HashMap<String, String>>();
+
+
+        // Loops through available GATT Services.
+        for (BluetoothGattService gattService : gattServices) {
+            HashMap<String, String> currentServiceData = new HashMap<String, String>();
+            uuid = gattService.getUuid().toString();
+            currentServiceData.put(
+                    LIST_NAME, HERE_GattAttributes.lookup(uuid, "unknown"));
+
+            // If the service exists for HM 10 Serial, say so.
+            if(HERE_GattAttributes.lookup(uuid, "unknown") == "HM 10 Serial") {
+            } else {
+            }
+            currentServiceData.put(LIST_UUID, uuid);
+            gattServiceData.add(currentServiceData);
+
+            // get characteristic when UUID matches RX/TX UUID
+            characteristicTX = gattService.getCharacteristic(BluetoothLeService.UUID_HM_RX_TX);
+            characteristicRX = gattService.getCharacteristic(BluetoothLeService.UUID_HM_RX_TX);
+
+            if(characteristicTX != null && mBluetoothLeService != null) {
+                characteristicRX.setValue(BluetoothGattDescriptor.ENABLE_NOTIFICATION_VALUE);
+                mBluetoothLeService.writeCharacteristic(characteristicTX);
+                mBluetoothLeService.setCharacteristicNotification(characteristicRX,true);
+            }
+        }
+
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_doingexercise);
-
         StartExerciseActivity.thisActivity.finish();
         thisActivity = this;
 
@@ -86,18 +246,77 @@ public class DoingExerciseActivity extends AppCompatActivity {
         timer = new TaskScheduler();
         timer.scheduleAtFixedRate(increaseTimer, 1000);
 
+        vib = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
+
+        final Intent intent = getIntent();
+        mDeviceName = intent.getStringExtra(EXTRAS_DEVICE_NAME);
+        mDeviceAddress = intent.getStringExtra(EXTRAS_DEVICE_ADDRESS);
+        /*
+        ***Device Name List***
+        HERE-Dumbbell
+        HERE-Pushupbar
+        HERE-Hoolahoop
+
+    /*
+    *******Equipment type -> defined at the model.MyHereAgent
+    //0: NO NAME, 1: Dumbbells, 2: Pushup bars, 3: Jumprope, 4: Hoola-hoop, 5: Others
+    public final static int TYPE_DUMBEL = 1;
+    public final static int TYPE_PUSH_UP = 2;
+    public final static int TYPE_JUMP_ROPE = 3;
+    public final static int TYPE_HOOLA_HOOP = 4;
+    public final static int TYPE_OTHERS = 5;
+    */
+        if(mDeviceName.contains("Dumbbell")){
+            connectedAgentType = MyHereAgent.TYPE_DUMBEL;
+        }else if(mDeviceName.contains("Pushupbar")){
+            connectedAgentType = MyHereAgent.TYPE_PUSH_UP;
+        }else if(mDeviceName.contains("Hoolahoop")){
+            connectedAgentType = MyHereAgent.TYPE_HOOLA_HOOP;
+        }else if(mDeviceName.contains("Jumproap")){
+            connectedAgentType = MyHereAgent.TYPE_JUMP_ROPE;
+        }else{
+            connectedAgentType = MyHereAgent.TYPE_OTHERS;
+            Toast.makeText(this, "Uncompatible Equipment", Toast.LENGTH_SHORT).show();
+        }
+
+        //getActionBar().setTitle(mDeviceName);
+        //getActionBar().setDisplayHomeAsUpEnabled(true);
+        Intent gattServiceIntent = new Intent(this, BluetoothLeService.class);
+        bindService(gattServiceIntent, mServiceConnection, BIND_AUTO_CREATE);
+
+
+        if (mBluetoothLeService != null) {
+            final boolean result = mBluetoothLeService.connect(mDeviceAddress);
+            Log.d(TAG, "Connect request result=" + result);
+        }
+
     }
     public int findImage (int type){
         switch (type) {
-            case 1:
+            case MyHereAgent.TYPE_DUMBEL:
                 return R.drawable.eq_01_dumbbell;
-            case 2:
+            case MyHereAgent.TYPE_PUSH_UP:
                 return R.drawable.eq_02_pushupbar;
-            case 3:
+            case MyHereAgent.TYPE_JUMP_ROPE:
                 return R.drawable.eq_03_jumprope;
-            case 4:
+            case MyHereAgent.TYPE_HOOLA_HOOP:
                 return R.drawable.eq_04_hoolahoop;
-            case 5:
+            case MyHereAgent.TYPE_OTHERS:
+                return R.mipmap.ic_setting_user_information;
+        }
+        return 0;
+    }
+    public int findImage (){
+        switch (connectedAgentType) {
+            case MyHereAgent.TYPE_DUMBEL:
+                return R.drawable.eq_01_dumbbell;
+            case MyHereAgent.TYPE_PUSH_UP:
+                return R.drawable.eq_02_pushupbar;
+            case MyHereAgent.TYPE_JUMP_ROPE:
+                return R.drawable.eq_03_jumprope;
+            case MyHereAgent.TYPE_HOOLA_HOOP:
+                return R.drawable.eq_04_hoolahoop;
+            case MyHereAgent.TYPE_OTHERS:
                 return R.mipmap.ic_setting_user_information;
         }
         return 0;
@@ -116,10 +335,81 @@ public class DoingExerciseActivity extends AppCompatActivity {
         tv_eq_name = (TextView) findViewById(R.id.doingexercise_tv_eq_name);
         tv_eq_goal = (TextView) findViewById(R.id.doingexercise_tv_eq_goal);
         tv_eq_count = (TextView) findViewById(R.id.doingexercise_tv_eq_count);
-
+        tv_eq_samplingRate = (TextView) findViewById(R.id.sampling_rate);
         initMeasureValues();
 
     }
+
+    private void initSamplingRateUnit(){
+
+        samplingCount = 0;
+        samplingRate = 0;
+        srChecker = new CountDownTimer(5000, 1000) {
+            @Override
+            public void onTick(long millisUntilFinished) {
+                samplingRate = (float)samplingCount;
+                tv_eq_samplingRate.setText(String.format("%d", samplingRate));
+                samplingCount = 0;
+
+            }
+
+            @Override
+            public void onFinish() {
+                isFallingPeak = false;
+                isRisingPeak = false;
+            }
+        };
+        srChecker.start();
+    }
+
+
+    private void initPreprocessingUnits(){
+
+        longtermAverageBuffer = new float[numberOfMeasures][longterm];
+        longtermAverage = new float[longterm];
+        longTermIndex= new int[numberOfMeasures];
+        for(int i = 0; i < numberOfMeasures; i++){
+            longTermIndex[i] = 0;
+            longtermAverage[i] = 0;
+            for(int k = 0; k <longterm; k++){
+                longtermAverageBuffer[i][k] = 0;
+            }
+        }
+
+
+        roughLPF = new float[numberOfMeasures];
+        LPFbuffer= new float[numberOfMeasures][LPFwindow];
+        latestIdx = new int[numberOfMeasures];
+        for(int i = 0; i < numberOfMeasures; i++){
+            latestIdx[i] = 0;
+            roughLPF[i] = 0;
+            for(int k = 0; k < LPFwindow; k++){
+                LPFbuffer[i][k] = 0;
+            }
+        }
+
+        values = new float[numberOfMeasures];
+        offsets = new float[numberOfMeasures];
+        isSetOffset = false;
+        cdt = new CountDownTimer(1000, 1000) {
+            @Override
+            public void onTick(long millisUntilFinished) {
+
+            }
+
+            @Override
+            public void onFinish() {
+                isSetOffset = false;
+                for(int i = 0; i < 3; i++){
+                    offsets[i] = offsets[i]/countAcc;
+                }
+                for(int i = 3; i < 6; i++){
+                    offsets[i] = offsets[i]/countGyro;
+                }
+            }
+        };
+    }
+
 
     private void initMeasureValues() {
         currentRecordTime = 0;
@@ -129,6 +419,9 @@ public class DoingExerciseActivity extends AppCompatActivity {
 
         tv_timer.setText(secondToTimerString(currentRecordTime));
         tv_eq_count.setText(String.format("%d", currentRecordCount));
+
+        isRisingPeak = false;
+        isFallingPeak = false;
     }
 
     private void initAgentValues() {
@@ -327,7 +620,29 @@ public class DoingExerciseActivity extends AppCompatActivity {
 
     }
 
-
+    private void setOffset(){
+        isSetOffset = true;
+        countAcc = 0;
+        countGyro = 0;
+        for(int i = 0; i < 6; i++){
+            offsets[i] = 0;
+        }
+        cdt.start();
+    }
+    private float LPF(float raw, int what){
+        latestIdx[what] = (latestIdx[what]+1) % LPFwindow;
+        roughLPF[what] -= LPFbuffer[what][latestIdx[what]];
+        LPFbuffer[what][latestIdx[what]] = raw;
+        roughLPF[what] += raw;
+        return roughLPF[what]/LPFwindow;
+    }
+    private float longTermAvg(float raw, int what){
+        longTermIndex[what] = (longTermIndex[what]+1) % longterm;
+        longtermAverage[what] -= longtermAverageBuffer[what][longTermIndex[what]];
+        longtermAverageBuffer[what][longTermIndex[what]] = raw;
+        longtermAverage[what] += raw;
+        return longtermAverage[what]/longterm;
+    }
     private int getIntFromGoal(int target, String rawGoal) {
 
         //Type 1. 3|15|-1
@@ -560,4 +875,6 @@ public class DoingExerciseActivity extends AppCompatActivity {
         quitExercisingAlert.show();
         //super.onBackPressed();
     }
+
+
 }

@@ -40,7 +40,6 @@ import android.widget.Toast;
 
 import com.example.user.wase.R;
 import com.example.user.wase.deviceLE.DataViewTerminal;
-import com.example.user.wase.model.Equipment;
 import com.example.user.wase.model.MyHereAgent;
 
 import java.util.ArrayList;
@@ -192,9 +191,10 @@ public class EquipmentScanner extends Fragment {
                 if(!pairedEquipList.contains(device.getAddress())){
                     if(device.getName().contains("HERE")) {
                         pairedEquipList.add(new MyHereAgent(device.getAddress(), device.getName(), MyHereAgent.TYPE_DUMBEL, "2016-04-18", "2"));
-                        DataViewTerminal dataViewTerminal = new DataViewTerminal();
-                        dataViewTerminal.mDeviceAddress = device.getAddress();
-                        dataViewTerminal.beep(device.getAddress());
+                        Intent intent = new Intent(getActivity(), DataViewTerminal.class);
+                        intent.putExtra(DataViewTerminal.EXTRAS_DEVICE_NAME , device.getName());
+                        intent.putExtra(DataViewTerminal.EXTRAS_DEVICE_ADDRESS, device.getAddress());
+                        startActivity(intent);
                     }
                 }
             }
