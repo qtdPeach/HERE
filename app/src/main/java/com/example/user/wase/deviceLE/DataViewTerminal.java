@@ -50,6 +50,7 @@ public class DataViewTerminal extends Activity {
     public static final String EXTRAS_DEVICE_ADDRESS = "DEVICE_ADDRESS";
 
     public PeakDetector dumbel;
+    public PeakDetector pushup;
     public SinusoidalDetector hoop;
 
     private Vibrator vib;
@@ -122,6 +123,8 @@ public class DataViewTerminal extends Activity {
     private int dumbelCount = 0;
     private boolean isRisingPeak, isFallingPeak;
     // Code to manage Service lifecycle.
+
+    private int prevForce = 0;
     private final ServiceConnection mServiceConnection = new ServiceConnection() {
 
         @Override
@@ -191,7 +194,6 @@ public class DataViewTerminal extends Activity {
         if (mBluetoothLeService != null) {
             final boolean result = mBluetoothLeService.connect(mDeviceAddress);
             Log.d(TAG, "Connect request result=" + result);
-
         }
 
     }
@@ -315,8 +317,8 @@ public class DataViewTerminal extends Activity {
                 gv[i].getGridLabelRenderer().reloadStyles();
             }
         }
-        gv[7].getViewport().setMinY(-90);
-        gv[7].getViewport().setMaxY(90);
+        gv[0].getViewport().setMinY(-1000);
+        gv[0].getViewport().setMaxY(5000);
         gv[8].getViewport().setMinY(-180);
         gv[8].getViewport().setMaxY(180);
         gv[9].getViewport().setMinY(-100);
@@ -484,13 +486,30 @@ public class DataViewTerminal extends Activity {
             String[] data = raw.split(" ");
             try {
                 for (int i = 0; i < data.length; i++) {
-                    if (data[i].equals("a")) {
-                        ax = (float)Integer.parseInt(data[++i])/10  - offsets[0];
-                        values[0] =  LPF(ax,0) - longTermAvg(ax, 0);
-                        ay = (float)Integer.parseInt(data[++i])/10 - offsets[1];
-                        values[1] =  LPF(ay,1) - longTermAvg(ay, 1);
-                        az = (float)Integer.parseInt(data[++i])/10 - offsets[2];
-                        values[2] =  LPF(az,2) - longTermAvg(az, 2);
+                    if (data[i].equals("f")) {
+                        ax = (float)Integer.parseInt(data[++i])  - offsets[0];
+                        values[0] =  ax ;
+                        if(ax > 3000){
+                            exercisePhase.setText(dumbelCount/2 + ":  Falling");
+                            isRisingPeak = true;
+                            if (isFallingPeak) {
+                                dumbelCount++;
+                                vib.vibrate(100);
+                            }
+                            isFallingPeak = false;
+                        }else if(ax < 3000) {
+                            isFallingPeak = true;
+                            exercisePhase.setText(dumbelCount/2 + ":  Rising");
+                            if (isRisingPeak) {
+                                dumbelCount++;
+                                    setCommandToHERE_agent((byte) 'a');
+                                vib.vibrate(100);
+                            }
+                            isRisingPeak = false;
+                        }else{
+
+                            exercisePhase.setText(dumbelCount/2 + ":  Static");
+                        }
                         what = 0;
                     } else if (data[i].equals("g")) {
                         ax = (float)Integer.parseInt(data[++i]) - offsets[3];
