@@ -350,7 +350,7 @@ public class MyRoutinesFragment extends Fragment{
 //                    break;
 //            }
 
-            routineImage.setImageResource(R.mipmap.ic_setting_update_alarm);
+            routineImage.setImageResource(R.drawable.list_routine_icon);
 
             routineName.setText(myRoutines.get(i).getRoutineId());
             routineId.setText(myRoutines.get(i).getRoutineName());

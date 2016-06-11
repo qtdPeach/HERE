@@ -279,7 +279,7 @@ public class MyRoutinesActivity extends AppCompatActivity {
             case 4:
                 return R.drawable.eq_04_hoolahoop;
             case 5:
-                return R.mipmap.ic_setting_user_information;
+                return R.drawable.list_routine_icon;
         }
         return 0;
     }
@@ -583,7 +583,7 @@ public class MyRoutinesActivity extends AppCompatActivity {
             TextView routineId = (TextView) view.findViewById(R.id.equiplist_id);
             TextView routineSummary = (TextView) view.findViewById(R.id.equiplist_sensorid);
 
-            routineImage.setImageResource(R.mipmap.ic_setting_update_alarm);
+            routineImage.setImageResource(R.drawable.list_routine_icon);
 
             routineName.setText(myRoutines.get(i).getRoutineId());
             routineId.setText(myRoutines.get(i).getRoutineName());

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="horizontal" android:layout_width="match_parent"
-    android:layout_height="130dp"
+    android:layout_height="120dp"
     android:padding="5dp">
 
     <LinearLayout
@@ -17,6 +17,7 @@
             android:layout_width="50dp"
             android:layout_height="50dp"
             android:layout_weight="1"/>
+
         <TextView
             android:paddingBottom="10sp"
             android:id="@+id/equipment_name"
@@ -27,13 +28,23 @@
             android:gravity="center_horizontal"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
+
     </LinearLayout>
-    <com.jjoe64.graphview.GraphView
-        android:paddingTop="10sp"
-        android:paddingBottom="10sp"
-        android:layout_marginTop="5dp"
-        android:layout_marginBottom="5dp"
-        android:id="@+id/weekly_linear_graph"
+
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
+        android:layout_height="match_parent"
+        android:paddingLeft="5dp">
+
+        <com.jjoe64.graphview.GraphView
+            android:paddingTop="10sp"
+            android:paddingBottom="10sp"
+            android:layout_marginTop="5dp"
+            android:layout_marginBottom="5dp"
+            android:layout_marginLeft="10dp"
+            android:id="@+id/weekly_linear_graph"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"/>
+
+    </LinearLayout>
 </LinearLayout>

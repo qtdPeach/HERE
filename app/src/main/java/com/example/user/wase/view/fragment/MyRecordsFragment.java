@@ -1,33 +1,23 @@
 package com.example.user.wase.view.fragment;
 
-import android.bluetooth.BluetoothDevice;
-import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.text.format.Time;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
 import com.example.user.wase.R;
-import com.example.user.wase.device.EquipmentRecordTerminal;
-import com.example.user.wase.deviceLE.DataViewTerminal;
-import com.example.user.wase.model.Equipment;
-import com.example.user.wase.model.EquipmentRecord;
 import com.example.user.wase.model.MyHereAgent;
 import com.example.user.wase.model.MyInformation;
 import com.example.user.wase.model.MyRecord;
-import com.example.user.wase.model.MyRoutine;
 import com.example.user.wase.model.RecordDateCalorie;
 import com.example.user.wase.model.RecordEqDateDone;
 import com.example.user.wase.model.RecordForGraph;
@@ -41,15 +31,10 @@ import com.jjoe64.graphview.GraphView;
 import com.jjoe64.graphview.series.BarGraphSeries;
 import com.jjoe64.graphview.series.LineGraphSeries;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Collection;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.Set;
 
 /**
  * Created by ymbae on 2016-04-18.
@@ -713,7 +698,7 @@ public class MyRecordsFragment extends Fragment{
             // General ListView optimization code.
             if (view == null) {
                 int res = 0;
-                res = R.layout.fragment_myrecord_item;
+                res = R.layout.listitem_record_graph;
                 view = mInflator.inflate(res, viewGroup, false);
 
             }

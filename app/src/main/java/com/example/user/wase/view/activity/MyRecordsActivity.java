@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -135,6 +136,7 @@ public class MyRecordsActivity extends AppCompatActivity {
                 listView.setVisibility(View.VISIBLE);
 
                 TextView recordDate = (TextView) convertView.findViewById(R.id.recordlist_datetime);
+                TextView recordTime = (TextView) convertView.findViewById(R.id.recordlist_time);
                 TextView recordName = (TextView) convertView.findViewById(R.id.recordlist_name);
                 TextView recordEq1Name = (TextView) convertView.findViewById(R.id.recordlist_eq1_name);
                 TextView recordEq1Record = (TextView) convertView.findViewById(R.id.recordlist_eq1_done);
@@ -147,15 +149,22 @@ public class MyRecordsActivity extends AppCompatActivity {
                 TextView recordEq5Name = (TextView) convertView.findViewById(R.id.recordlist_eq5_name);
                 TextView recordEq5Record = (TextView) convertView.findViewById(R.id.recordlist_eq5_done);
 
-                recordDate.setText(myRecords.get(pos).getRecordDateTime());
+                String onlyDate = parseOnlyDate(parseDateWithYear(myRecords.get(pos).getRecordDateTime()));
+                String onlyTime = parseOnlyTime(myRecords.get(pos).getRecordDateTime());
+
+                recordDate.setText(onlyDate);
+                recordTime.setText(onlyTime);
                 recordName.setText(myRecords.get(pos).getRecordName());
+
+
+
 
                 MyHereAgent myHereAgent;
                 if(!myRecords.get(pos).getRecordEq1Id().equals("-1")){
                     myHereAgent = MainActivity.hereDB.getMyHereAgent(myRecords.get(pos).getRecordEq1Id());
                     if(myHereAgent != null) {
                         recordEq1Name.setText(myHereAgent.getMyeqName());
-                        recordEq1Record.setText(myRecords.get(pos).getRecordEq1Done() + "");
+                        recordEq1Record.setText(myRecords.get(pos).getRecordEq1Done() + makeUnitString(myHereAgent));
                     }
                 } else {
                     recordEq1Name.setVisibility(View.GONE);
@@ -166,7 +175,7 @@ public class MyRecordsActivity extends AppCompatActivity {
                     myHereAgent = MainActivity.hereDB.getMyHereAgent(myRecords.get(pos).getRecordEq2Id());
                     if(myHereAgent != null) {
                         recordEq2Name.setText(myHereAgent.getMyeqName());
-                        recordEq2Record.setText(myRecords.get(pos).getRecordEq2Done() + "");
+                        recordEq2Record.setText(myRecords.get(pos).getRecordEq2Done() + makeUnitString(myHereAgent));
                     }
                 } else {
                     recordEq2Name.setVisibility(View.GONE);
@@ -177,7 +186,7 @@ public class MyRecordsActivity extends AppCompatActivity {
                     myHereAgent = MainActivity.hereDB.getMyHereAgent(myRecords.get(pos).getRecordEq3Id());
                     if (myHereAgent != null) {
                         recordEq3Name.setText(myHereAgent.getMyeqName());
-                        recordEq3Record.setText(myRecords.get(pos).getRecordEq3Done() + "");
+                        recordEq3Record.setText(myRecords.get(pos).getRecordEq3Done() + makeUnitString(myHereAgent));
                     }
                 } else {
                     recordEq3Name.setVisibility(View.GONE);
@@ -188,7 +197,7 @@ public class MyRecordsActivity extends AppCompatActivity {
                     myHereAgent =MainActivity.hereDB.getMyHereAgent(myRecords.get(pos).getRecordEq4Id());
                     if(myHereAgent != null) {
                         recordEq4Name.setText(myHereAgent.getMyeqName());
-                        recordEq4Record.setText(myRecords.get(pos).getRecordEq4Done() + "");
+                        recordEq4Record.setText(myRecords.get(pos).getRecordEq4Done() + makeUnitString(myHereAgent));
                     }
                 } else {
                     recordEq4Name.setVisibility(View.GONE);
@@ -199,7 +208,7 @@ public class MyRecordsActivity extends AppCompatActivity {
                     myHereAgent = MainActivity.hereDB.getMyHereAgent(myRecords.get(pos).getRecordEq5Id());
                     if (myHereAgent != null) {
                         recordEq5Name.setText(myHereAgent.getMyeqName());
-                        recordEq5Record.setText(myRecords.get(pos).getRecordEq5Done() + "");
+                        recordEq5Record.setText(myRecords.get(pos).getRecordEq5Done() + makeUnitString(myHereAgent));
                     }
                 } else {
                     recordEq5Name.setVisibility(View.GONE);
@@ -227,4 +236,38 @@ public class MyRecordsActivity extends AppCompatActivity {
         }
         return 0;
     }
+
+    private String makeUnitString(MyHereAgent agent) {
+        switch (agent.getMyeqType()) {
+            case MyHereAgent.TYPE_PUSH_UP:
+            case MyHereAgent.TYPE_DUMBEL:
+                return " TIMES";
+            case MyHereAgent.TYPE_HOOLA_HOOP:
+            case MyHereAgent.TYPE_JUMP_ROPE:
+                return " SECONDS";
+            default:
+                return " TIMES";
+        }
+    }
+
+    private String parseDateWithYear(String datetimeData) {
+        //dateTimeData: 2016-06-10 00:21:32
+
+        int spaceLoc = datetimeData.indexOf(" ");
+        return datetimeData.substring(0, spaceLoc);
+    }
+
+    private String parseOnlyTime(String datetimeData) {
+        int spaceLoc = datetimeData.indexOf(" ");
+        return datetimeData.substring(spaceLoc + 1, datetimeData.length());
+    }
+
+    private String parseOnlyDate(String dateWithYear) {
+        //dateWithYear: 2016-06-10
+
+        int hyphenLoc = dateWithYear.indexOf("-");
+        return dateWithYear.substring(hyphenLoc + 1, hyphenLoc + 6);
+    }
+
+
 }

@@ -21,7 +21,9 @@
 
             <LinearLayout
                 android:orientation="horizontal"
-                android:layout_marginTop="10dp"
+                android:paddingTop="10dp"
+                android:paddingBottom="10dp"
+                android:background="@color/colorSkyBlue"
                 android:paddingLeft="20dp"
                 android:paddingRight="20dp"
                 android:layout_width="match_parent"
@@ -36,8 +38,8 @@
                 <LinearLayout
                     android:orientation="vertical"
                     android:gravity="bottom|left"
-                    android:layout_marginBottom="5dp"
                     android:paddingLeft="8dp"
+                    android:paddingBottom="10dp"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent">
 
@@ -46,7 +48,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:textSize="20dp"
-                        android:textColor="@color/colorSkyBlue"
+                        android:textColor="#ffffff"
                         android:textStyle="bold"
                         android:text="NICK NAME"/>
 
@@ -55,7 +57,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:textSize="15dp"
-                        android:textColor="@color/colorPrimaryDark"
+                        android:textColor="#ddffffff"
                         android:text="User ID"/>
 
                     <TextView
@@ -63,7 +65,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:textSize="15dp"
-                        android:textColor="@color/colorPrimaryDark"
+                        android:textColor="#ddffffff"
                         android:text="User name"/>
                 </LinearLayout>
 
@@ -76,7 +78,6 @@
                 android:paddingLeft="15dp"
                 android:paddingTop="5dp"
                 android:paddingBottom="5dp"
-                android:layout_marginTop="10dp"
                 android:background="@color/colorPrimaryDark"
                 android:textColor="#ffffff"
                 android:textStyle="bold"

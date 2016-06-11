@@ -131,8 +131,8 @@
             <ListView
                 android:id="@+id/equipment_record_list"
                 android:layout_width="match_parent"
-                android:paddingLeft="20sp"
-                android:paddingRight="20sp"
+                android:paddingLeft="13sp"
+                android:paddingRight="13sp"
                 android:layout_height="400dp"
                 android:background="#eeeeee"></ListView>
 
