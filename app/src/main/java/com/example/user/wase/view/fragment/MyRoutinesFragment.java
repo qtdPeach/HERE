@@ -296,6 +296,7 @@ public class MyRoutinesFragment extends Fragment{
             } else {
                 myRoutines.clear();
             }
+
             mInflator = getActivity().getLayoutInflater();
         }
 
@@ -331,7 +332,7 @@ public class MyRoutinesFragment extends Fragment{
             ImageView routineImage = (ImageView) view.findViewById(R.id.equiplist_img);
             TextView routineName = (TextView) view.findViewById(R.id.equiplist_name);
             TextView routineId = (TextView) view.findViewById(R.id.equiplist_id);
-            //TextView eqSensorId = (TextView) view.findViewById(R.id.equiplist_sensorid);
+            TextView routineSummary = (TextView) view.findViewById(R.id.equiplist_sensorid);
 
 //            switch (pairedEquipList.get(i).getEquipmentType()) {
 //                case 0:
@@ -353,7 +354,20 @@ public class MyRoutinesFragment extends Fragment{
 
             routineName.setText(myRoutines.get(i).getRoutineId());
             routineId.setText(myRoutines.get(i).getRoutineName());
-            //eqSensorId.setText(pairedEquipList.get(i).getEquipmentSensorID());
+            String summary = "";
+
+            if(!myRoutines.get(i).getRoutineEq1Id().equals("-1"))
+                summary += MainActivity.hereDB.getMyHereAgent(myRoutines.get(i).getRoutineEq1Id()).getMyeqName();
+            if(!myRoutines.get(i).getRoutineEq2Id().equals("-1"))
+                summary += " - "+MainActivity.hereDB.getMyHereAgent(myRoutines.get(i).getRoutineEq2Id()).getMyeqName();
+            if(!myRoutines.get(i).getRoutineEq3Id().equals("-1"))
+                summary += " - "+MainActivity.hereDB.getMyHereAgent(myRoutines.get(i).getRoutineEq3Id()).getMyeqName();
+            if(!myRoutines.get(i).getRoutineEq4Id().equals("-1"))
+                summary += " - "+MainActivity.hereDB.getMyHereAgent(myRoutines.get(i).getRoutineEq4Id()).getMyeqName();
+            if(!myRoutines.get(i).getRoutineEq5Id().equals("-1"))
+                summary += " - "+MainActivity.hereDB.getMyHereAgent(myRoutines.get(i).getRoutineEq5Id());
+
+            routineSummary.setText(summary);
 
             return view;
         }

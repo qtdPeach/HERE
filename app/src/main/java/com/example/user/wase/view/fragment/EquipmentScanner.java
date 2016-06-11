@@ -41,6 +41,7 @@ import android.widget.Toast;
 import com.example.user.wase.R;
 import com.example.user.wase.deviceLE.DataViewTerminal;
 import com.example.user.wase.model.Equipment;
+import com.example.user.wase.model.MyHereAgent;
 
 import java.util.ArrayList;
 
@@ -58,7 +59,7 @@ public class EquipmentScanner extends Fragment {
 
     private ListView lvEquipList;
 
-    private ArrayList<Equipment> pairedEquipList;
+    private ArrayList<MyHereAgent> pairedEquipList;
 
     private static final int REQUEST_ENABLE_BT = 1;
     // Stops scanning after 10 seconds.
@@ -100,11 +101,11 @@ public class EquipmentScanner extends Fragment {
 
                 scanLeDevice(false);
 
-                final Equipment device = pairedEquipList.get(position);
+                final MyHereAgent device = pairedEquipList.get(position);
                 if (device == null) return;
                 final Intent intent = new Intent(getActivity(), DataViewTerminal.class);
-                intent.putExtra(DataViewTerminal.EXTRAS_DEVICE_NAME, device.getEquipmentName());
-                intent.putExtra(DataViewTerminal.EXTRAS_DEVICE_ADDRESS, device.getEquipmentID());
+                intent.putExtra(DataViewTerminal.EXTRAS_DEVICE_NAME, device.getMyeqName());
+                intent.putExtra(DataViewTerminal.EXTRAS_DEVICE_ADDRESS, device.getMyeqMacId());
                 if (mScanning) {
                     mBluetoothAdapter.stopLeScan(mLeScanCallback);
                     mScanning = false;
@@ -183,7 +184,7 @@ public class EquipmentScanner extends Fragment {
 
         public HERE_DeviceListAdapter() {
             super();
-            pairedEquipList = new ArrayList<Equipment>();
+            pairedEquipList = new ArrayList<MyHereAgent>();
             mLEdeviceList = new ArrayList<BluetoothDevice>();
             mInflator = getActivity().getLayoutInflater();
         }
@@ -192,7 +193,7 @@ public class EquipmentScanner extends Fragment {
             if(!mLEdeviceList.contains(device)) {
                 mLEdeviceList.add(device);
                 if(!pairedEquipList.contains(device.getAddress())){
-                    pairedEquipList.add(new Equipment(device.getAddress(), device.getName(), "Sensor-Q03-87A", "2016-04-18", 2));
+                    pairedEquipList.add(new MyHereAgent(device.getAddress(), device.getName(), MyHereAgent.TYPE_DUMBEL, "2016-04-18", "2"));
                 }
             }
         }
@@ -225,7 +226,7 @@ public class EquipmentScanner extends Fragment {
             // General ListView optimization code.
             if (view == null) {
                 int res = 0;
-                res = R.layout.listitem_equipment;
+                res = R.layout.listitem_equipment_simple;
                 view = mInflator.inflate(res, viewGroup, false);
 
             }
@@ -233,27 +234,29 @@ public class EquipmentScanner extends Fragment {
             ImageView eqTypeImage = (ImageView)view.findViewById(R.id.equiplist_img);
             TextView eqName = (TextView)view.findViewById(R.id.equiplist_name);
             TextView eqId = (TextView)view.findViewById(R.id.equiplist_id);
-            TextView eqSensorId = (TextView)view.findViewById(R.id.equiplist_sensorid);
+            //TextView eqSensorId = (TextView)view.findViewById(R.id.equiplist_sensorid);
 
-            switch (pairedEquipList.get(i).getEquipmentType()) {
-                case 0:
-                    eqTypeImage.setImageResource(R.mipmap.ic_setting_update_alarm);
+            switch (pairedEquipList.get(i).getMyeqType()) {
+                case MyHereAgent.TYPE_DUMBEL:
+                    eqTypeImage.setImageResource(R.drawable.eq_01_dumbbell);
                     break;
-                case 1:
-                    eqTypeImage.setImageResource(R.mipmap.ic_setting_best_interest);
+                case MyHereAgent.TYPE_PUSH_UP:
+                    eqTypeImage.setImageResource(R.drawable.eq_02_pushupbar);
                     break;
-                case 2:
-                    eqTypeImage.setImageResource(R.mipmap.ic_setting_user_information);
+                case MyHereAgent.TYPE_JUMP_ROPE:
+                    eqTypeImage.setImageResource(R.drawable.eq_03_jumprope);
                     break;
-                case 3:
+                case MyHereAgent.TYPE_HOOLA_HOOP:
+                    eqTypeImage.setImageResource(R.drawable.eq_04_hoolahoop);
                     break;
                 default:
+                    eqTypeImage.setImageResource(R.drawable.eq_01_dumbbell);
                     break;
             }
 
-            eqName.setText(pairedEquipList.get(i).getEquipmentName());
-            eqId.setText(pairedEquipList.get(i).getEquipmentID());
-            eqSensorId.setText(pairedEquipList.get(i).getEquipmentSensorID());
+            eqName.setText(pairedEquipList.get(i).getMyeqName());
+            eqId.setText(pairedEquipList.get(i).getMyeqMacId());
+            //eqSensorId.setText(pairedEquipList.get(i).getEquipmentSensorID());
 
             return view;
         }

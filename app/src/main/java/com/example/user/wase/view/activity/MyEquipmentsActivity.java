@@ -102,6 +102,10 @@ public class MyEquipmentsActivity extends AppCompatActivity {
 
         equipListAdapter = new HERE_DeviceListAdapter();
         lvEquipList = (ListView) findViewById(R.id.setting_myeq_list_bluetooth);
+        lvEquipList.setAdapter(equipListAdapter);
+
+        scanLeDevice(true);
+
         lvEquipList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -109,7 +113,7 @@ public class MyEquipmentsActivity extends AppCompatActivity {
                 scanLeDevice(false);
             }
         });
-        lvEquipList.setAdapter(equipListAdapter);
+
     }
 
 
@@ -174,7 +178,7 @@ public class MyEquipmentsActivity extends AppCompatActivity {
 
             if (convertView == null){
                 LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-                convertView = inflater.inflate(R.layout.listitem_equipment,parent,false);
+                convertView = inflater.inflate(R.layout.listitem_equipment_simple,parent,false);
             }
             ImageView eqTypeImage = (ImageView) convertView.findViewById(R.id.equiplist_img);
             TextView eqName = (TextView) convertView.findViewById(R.id.equiplist_name);
@@ -315,13 +319,13 @@ public class MyEquipmentsActivity extends AppCompatActivity {
 
             if (view == null){
                 LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-                view = inflater.inflate(R.layout.listitem_equipment,viewGroup,false);
+                view = inflater.inflate(R.layout.listitem_equipment_simple,viewGroup,false);
             }
 
             ImageView eqTypeImage = (ImageView)view.findViewById(R.id.equiplist_img);
             TextView eqName = (TextView)view.findViewById(R.id.equiplist_name);
             TextView eqId = (TextView)view.findViewById(R.id.equiplist_id);
-            TextView eqSensorId = (TextView)view.findViewById(R.id.equiplist_sensorid);
+            //TextView eqSensorId = (TextView)view.findViewById(R.id.equiplist_sensorid);
 
             switch (pairedEquipList.get(i).getMyeqType()) {
                 case MyHereAgent.TYPE_DUMBEL:

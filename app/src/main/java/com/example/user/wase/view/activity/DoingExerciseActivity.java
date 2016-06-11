@@ -87,6 +87,21 @@ public class DoingExerciseActivity extends AppCompatActivity {
         timer.scheduleAtFixedRate(increaseTimer, 1000);
 
     }
+    public int findImage (int type){
+        switch (type) {
+            case 1:
+                return R.drawable.eq_01_dumbbell;
+            case 2:
+                return R.drawable.eq_02_pushupbar;
+            case 3:
+                return R.drawable.eq_03_jumprope;
+            case 4:
+                return R.drawable.eq_04_hoolahoop;
+            case 5:
+                return R.mipmap.ic_setting_user_information;
+        }
+        return 0;
+    }
 
     private void initWidgets() {
         isTimerRunning = true;
@@ -127,6 +142,7 @@ public class DoingExerciseActivity extends AppCompatActivity {
             tv_eq_order.setText(String.format("%dth", currentOrder + 1) + " Exercise");
         }
 
+        iv_current_eq.setImageResource(findImage(agentRecords.get(currentOrder).getAgentType()));
         tv_eq_name.setText(agentRecords.get(currentOrder).getAgentName());
         tv_eq_goal.setText(agentRecords.get(currentOrder).makeGoalString());
 
