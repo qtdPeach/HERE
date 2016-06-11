@@ -44,8 +44,10 @@ public class MyEquipmentsActivity extends AppCompatActivity {
     public static final String TAG = "MyEquipmentsActivity";
     public static final String TAG_DB = "MyEquipmentsDBTag";
 
+    public List<MyHereAgent> myHereAgents;
     private HERE_DeviceListAdapter equipListAdapter;
     private BluetoothAdapter mBluetoothAdapter;
+    private ListViewAdapter adapter;
     private ArrayList<BluetoothDevice> mLEdeviceList;
     private boolean mScanning;
     private Handler mHandler;
@@ -79,13 +81,14 @@ public class MyEquipmentsActivity extends AppCompatActivity {
 
         final ActionBar actionBar = getSupportActionBar();
 
+        myHereAgents = new ArrayList<MyHereAgent>();
         selectedNewAgent = new MyHereAgent();
 
         actionBar.setTitle("My HERE Agents");
         actionBar.setDefaultDisplayHomeAsUpEnabled(true);
 
         ListView listView = (ListView) findViewById(R.id.setting_myeq_list_registered);
-        ListViewAdapter adapter = new ListViewAdapter();
+        adapter = new ListViewAdapter();
         listView.setAdapter(adapter);
         adapter.notifyDataSetChanged();
         mHandler = new Handler();
@@ -117,12 +120,22 @@ public class MyEquipmentsActivity extends AppCompatActivity {
         lvEquipList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Toast.makeText(getApplicationContext(), "lvEquipList.setOnItemClickListener", Toast.LENGTH_SHORT).show();
+//                Toast.makeText(getApplicationContext(), "lvEquipList.setOnItemClickListener", Toast.LENGTH_SHORT).show();
+
+                String majorId = parseMajorId(mLEdeviceList.get(position).getName());
+                String minorId = parseMinorId(mLEdeviceList.get(position).getName());
+                int eqType = getTypeByMinorId(minorId);
 
                 selectedNewAgent.setMyeqMacId(mLEdeviceList.get(position).getAddress());
-                selectedNewAgent.setMyeqType(1);
-                selectedNewAgent.setMyeqBeaconMajorId("MajorID");
-                selectedNewAgent.setMyeqBeaconMinorId("MinorID");
+                selectedNewAgent.setMyeqType(eqType);
+                selectedNewAgent.setMyeqBeaconMajorId(majorId);
+                selectedNewAgent.setMyeqBeaconMinorId(minorId);
+
+                Log.d("parseIDs", "mLEdeviceList.get(position).getName(): " + mLEdeviceList.get(position).getName());
+
+                Log.d("parseIDs", "Major ID: " + majorId);
+                Log.d("parseIDs", "Major ID: " + minorId);
+                Log.d("parseIDs", "Agent type: " + eqType);
 
                 showAddAgentDialog();
 
@@ -135,9 +148,6 @@ public class MyEquipmentsActivity extends AppCompatActivity {
 
     public void mOnClick(View v) {
         switch (v.getId()) {
-            case R.id.setting_myeq_btn_dialog:
-                showAddAgentDialog();
-                break;
         }
     }
 
@@ -161,7 +171,7 @@ public class MyEquipmentsActivity extends AppCompatActivity {
 
     public class ListViewAdapter extends BaseAdapter{
 
-        public List<MyHereAgent> myHereAgents = new ArrayList<MyHereAgent>();
+
 
         public ListViewAdapter() {
             super();
@@ -393,6 +403,7 @@ public class MyEquipmentsActivity extends AppCompatActivity {
         final View dialogView = inflater.inflate(R.layout.dialog_agent, null);
 
         EditText et_addagent_macid = (EditText) dialogView.findViewById(R.id.dialog_agent_macid);
+        final EditText et_addagent_name = (EditText) dialogView.findViewById(R.id.dialog_agent_name);
         EditText et_addagent_majorid = (EditText) dialogView.findViewById(R.id.dialog_agent_majorid);
         EditText et_addagent_minorid = (EditText) dialogView.findViewById(R.id.dialog_agent_minorid);
 
@@ -407,8 +418,20 @@ public class MyEquipmentsActivity extends AppCompatActivity {
 
             @Override
             public void onClick(DialogInterface dialog, int which) {
+                selectedNewAgent.setMyeqName(et_addagent_name.getText().toString());
                 MainActivity.hereDB.insertHereAgent(selectedNewAgent);
                 Toast.makeText(getApplicationContext(), "An agent is added into DB", Toast.LENGTH_SHORT).show();
+
+                myHereAgents.clear();
+                if(MainActivity.hereDB.getAllMyHereAgents() !=null)
+                    myHereAgents = MainActivity.hereDB.getAllMyHereAgents();
+                adapter.notifyDataSetChanged();
+
+                TextView textView = (TextView) findViewById(R.id.setting_myeq_tv_registered);
+                if (myHereAgents.size() != 0) {
+                    textView.setVisibility(View.GONE);
+                }
+
                 dialog.dismiss();
             }
         });
@@ -422,5 +445,29 @@ public class MyEquipmentsActivity extends AppCompatActivity {
         AlertDialog dialog = builder.create();
         dialog.setCanceledOnTouchOutside(false);
         dialog.show();
+    }
+
+    private String parseMajorId(String deviceName) {
+        int separatorLoc = deviceName.indexOf("-");
+        return deviceName.substring(0, separatorLoc);
+    }
+
+    private String parseMinorId(String deviceName) {
+        int separatorLoc = deviceName.indexOf("-");
+        return deviceName.substring(separatorLoc + 1, deviceName.length());
+    }
+
+    private int getTypeByMinorId(String minorId) {
+        if (minorId.contains("Dumbbell") || minorId.contains("Dumbbel") || minorId.contains("Dumbel")) {
+            return 1;
+        }else if (minorId.contains("Pushupbar")) {
+            return 2;
+        }else if (minorId.contains("Jumprope")) {
+            return 3;
+        }else if (minorId.contains("Hoolahoop")) {
+            return 4;
+        } else {
+            return 1;
+        }
     }
 }
