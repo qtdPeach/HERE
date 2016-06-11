@@ -39,8 +39,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.user.wase.R;
-import com.example.user.wase.deviceLE.DataViewTerminal;
 import com.example.user.wase.model.MyHereAgent;
+import com.example.user.wase.view.activity.DoingExerciseActivity;
 
 import java.util.ArrayList;
 
@@ -99,9 +99,9 @@ public class EquipmentScanner extends Fragment {
 
                 final MyHereAgent device = pairedEquipList.get(position);
                 if (device == null) return;
-                final Intent intent = new Intent(getActivity(), DataViewTerminal.class);
-                intent.putExtra(DataViewTerminal.EXTRAS_DEVICE_NAME, device.getMyeqName());
-                intent.putExtra(DataViewTerminal.EXTRAS_DEVICE_ADDRESS, device.getMyeqMacId());
+                final Intent intent = new Intent(getActivity(), DoingExerciseActivity.class);
+                intent.putExtra(DoingExerciseActivity.EXTRAS_DEVICE_NAME, device.getMyeqName());
+                intent.putExtra(DoingExerciseActivity.EXTRAS_DEVICE_ADDRESS, device.getMyeqMacId());
                 if (mScanning) {
                     mBluetoothAdapter.stopLeScan(mLeScanCallback);
                     mScanning = false;
@@ -191,10 +191,10 @@ public class EquipmentScanner extends Fragment {
                 if(!pairedEquipList.contains(device.getAddress())){
                     if(device.getName().contains("HERE")) {
                         pairedEquipList.add(new MyHereAgent(device.getAddress(), device.getName(), MyHereAgent.TYPE_DUMBEL, "2016-04-18", "2"));
-                        Intent intent = new Intent(getActivity(), DataViewTerminal.class);
-                        intent.putExtra(DataViewTerminal.EXTRAS_DEVICE_NAME , device.getName());
-                        intent.putExtra(DataViewTerminal.EXTRAS_DEVICE_ADDRESS, device.getAddress());
-                        startActivity(intent);
+//                        Intent intent = new Intent(getActivity(), DataViewTerminal.class);
+//                        intent.putExtra(DataViewTerminal.EXTRAS_DEVICE_NAME , device.getName());
+//                        intent.putExtra(DataViewTerminal.EXTRAS_DEVICE_ADDRESS, device.getAddress());
+//                        startActivity(intent);
                     }
                 }
             }
