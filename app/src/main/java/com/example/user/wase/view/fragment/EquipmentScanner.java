@@ -150,7 +150,7 @@ public class EquipmentScanner extends Fragment {
                         mBluetoothLeService.disconnect();
                         mBluetoothLeService.initialize();
                         mBluetoothLeService.connect(mDeviceAddress);
-                    }else{
+                    }else if(count > 30){
 
                         count = 0;
                     }
