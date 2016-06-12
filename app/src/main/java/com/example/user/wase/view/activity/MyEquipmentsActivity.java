@@ -227,13 +227,14 @@ public class MyEquipmentsActivity extends AppCompatActivity {
                     eqTypeImage.setImageResource(R.drawable.eq_04_hoolahoop);
                     break;
                 case 5:
-                    eqTypeImage.setImageResource(R.mipmap.ic_setting_update_alarm);
+                    eqTypeImage.setImageResource(R.drawable.icon_bluetooth_device);
                 default:
                     break;
             }
 
             eqName.setText(myHereAgents.get(pos).getMyeqName());
             eqId.setText(myHereAgents.get(pos).getMyeqMacId());
+            eqSensorType.setText(myHereAgents.get(pos).getMyeqBeaconMajorId() + "-" + myHereAgents.get(pos).getMyeqBeaconMinorId());
             //eqSensorType.setText(registeredAgents.get(pos).getMyeqType());
 
             return convertView;
@@ -312,7 +313,13 @@ public class MyEquipmentsActivity extends AppCompatActivity {
             if(!mLEdeviceList.contains(device)) {
                 mLEdeviceList.add(device);
                 if(!pairedEquipList.contains(device.getAddress())){
-                    pairedEquipList.add(new MyHereAgent(device.getAddress(), device.getName(), MyHereAgent.TYPE_DUMBEL, "2016-04-18", "2"));
+                    String deviceAddress = device.getAddress();
+                    String deviceName = device.getName();
+                    String deviceMajorId = parseMajorId(device.getName());
+                    String deviceMinorId = parseMinorId(device.getName());
+                    int deviceType = getTypeByMinorId(deviceMinorId);
+
+                    pairedEquipList.add(new MyHereAgent(deviceAddress, deviceName, deviceType, deviceMajorId, deviceMinorId));
                 }
             }
         }
@@ -353,7 +360,7 @@ public class MyEquipmentsActivity extends AppCompatActivity {
             ImageView eqTypeImage = (ImageView)view.findViewById(R.id.equiplist_img);
             TextView eqName = (TextView)view.findViewById(R.id.equiplist_name);
             TextView eqId = (TextView)view.findViewById(R.id.equiplist_id);
-            //TextView eqSensorId = (TextView)view.findViewById(R.id.equiplist_sensorid);
+            TextView eqSensorId = (TextView)view.findViewById(R.id.equiplist_sensorid);
 
             switch (pairedEquipList.get(i).getMyeqType()) {
                 case MyHereAgent.TYPE_DUMBEL:
@@ -369,12 +376,13 @@ public class MyEquipmentsActivity extends AppCompatActivity {
                     eqTypeImage.setImageResource(R.drawable.eq_04_hoolahoop);
                     break;
                 default:
-                    eqTypeImage.setImageResource(R.drawable.eq_04_hoolahoop);
+                    eqTypeImage.setImageResource(R.drawable.icon_bluetooth_device);
                     break;
             }
 
             eqName.setText(pairedEquipList.get(i).getMyeqName());
             eqId.setText(pairedEquipList.get(i).getMyeqMacId());
+            eqSensorId.setText(pairedEquipList.get(i).getMyeqBeaconMajorId() + "-" + pairedEquipList.get(i).getMyeqBeaconMinorId());
             //eqSensorId.setText(pairedEquipList.get(i).getEquipmentSensorID());
 
             return view;
@@ -418,19 +426,26 @@ public class MyEquipmentsActivity extends AppCompatActivity {
 
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                selectedNewAgent.setMyeqName(et_addagent_name.getText().toString());
-                MainActivity.hereDB.insertHereAgent(selectedNewAgent);
-                Toast.makeText(getApplicationContext(), "An agent is added into DB", Toast.LENGTH_SHORT).show();
 
-                myHereAgents.clear();
-                if(MainActivity.hereDB.getAllMyHereAgents() !=null)
-                    myHereAgents = MainActivity.hereDB.getAllMyHereAgents();
-                adapter.notifyDataSetChanged();
+                if (selectedNewAgent.getMyeqBeaconMajorId() == "") {
+                    Toast.makeText(getApplicationContext(), "This device is not compatible for HERE", Toast.LENGTH_SHORT).show();
+                } else {
+                    selectedNewAgent.setMyeqName(et_addagent_name.getText().toString());
+                    MainActivity.hereDB.insertHereAgent(selectedNewAgent);
+                    Toast.makeText(getApplicationContext(), "An agent is added into DB", Toast.LENGTH_SHORT).show();
 
-                TextView textView = (TextView) findViewById(R.id.setting_myeq_tv_registered);
-                if (myHereAgents.size() != 0) {
-                    textView.setVisibility(View.GONE);
+                    myHereAgents.clear();
+                    if (MainActivity.hereDB.getAllMyHereAgents() != null)
+                        myHereAgents = MainActivity.hereDB.getAllMyHereAgents();
+                    adapter.notifyDataSetChanged();
+
+                    TextView textView = (TextView) findViewById(R.id.setting_myeq_tv_registered);
+                    if (myHereAgents.size() != 0) {
+                        textView.setVisibility(View.GONE);
+                    }
                 }
+
+
 
                 dialog.dismiss();
             }
@@ -448,26 +463,34 @@ public class MyEquipmentsActivity extends AppCompatActivity {
     }
 
     private String parseMajorId(String deviceName) {
-        int separatorLoc = deviceName.indexOf("-");
-        return deviceName.substring(0, separatorLoc);
+        if (deviceName.contains("-")) {
+            int separatorLoc = deviceName.indexOf("-");
+            return deviceName.substring(0, separatorLoc);
+        } else {
+            return "";
+        }
     }
 
     private String parseMinorId(String deviceName) {
-        int separatorLoc = deviceName.indexOf("-");
-        return deviceName.substring(separatorLoc + 1, deviceName.length());
+        if (deviceName.contains("-")) {
+            int separatorLoc = deviceName.indexOf("-");
+            return deviceName.substring(separatorLoc + 1, deviceName.length());
+        } else {
+            return "";
+        }
     }
 
     private int getTypeByMinorId(String minorId) {
-        if (minorId.contains("Dumbbell") || minorId.contains("Dumbbel") || minorId.contains("Dumbel")) {
+        if (minorId.contains("DB") || minorId.contains("Dumbbell") || minorId.contains("Dumbbel") || minorId.contains("Dumbel")) {
             return 1;
-        }else if (minorId.contains("Pushupbar")) {
+        }else if (minorId.contains("PU") || minorId.contains("Pushupbar")) {
             return 2;
-        }else if (minorId.contains("Jumprope")) {
+        }else if (minorId.contains("JR") || minorId.contains("Jumprope")) {
             return 3;
-        }else if (minorId.contains("Hoolahoop")) {
+        }else if (minorId.contains("HH") || minorId.contains("Hoolahoop")) {
             return 4;
         } else {
-            return 1;
+            return 0;
         }
     }
 }
