@@ -1137,17 +1137,21 @@ public class DoingExerciseActivity extends AppCompatActivity {
     @Override
     protected void onPause() {
         super.onPause();
-        unregisterReceiver(mGattUpdateReceiver);
-        mBluetoothLeService = null;
-        mHandler.removeCallbacks(invalidator);
+        try {
+            unbindService(mServiceConnection);
+            mBluetoothLeService = null;
+            mHandler.removeCallbacks(invalidator);
+        }catch(Exception e){};
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        unbindService(mServiceConnection);
-        mBluetoothLeService = null;
-        mHandler.removeCallbacks(invalidator);
+        try {
+            unbindService(mServiceConnection);
+            mBluetoothLeService = null;
+            mHandler.removeCallbacks(invalidator);
+        }catch(Exception e){};
     }
 
 
