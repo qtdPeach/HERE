@@ -13,6 +13,8 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.ServiceConnection;
 import android.graphics.Color;
+import android.media.AudioManager;
+import android.media.SoundPool;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.os.Handler;
@@ -76,7 +78,7 @@ public class DoingExerciseActivity extends AppCompatActivity {
     private GraphView gv;
 
     ArrayList<RecordAgent> agentRecords;
-    RecordAgent currentAgent;
+    RecordAgent currentAgent = new RecordAgent();
     int numAgents;
     int currentOrder;
 
@@ -248,6 +250,10 @@ public class DoingExerciseActivity extends AppCompatActivity {
 
     }
 
+    SoundPool soundPool;
+    int soundId1;
+    boolean isSoundFirst =true;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -286,10 +292,14 @@ public class DoingExerciseActivity extends AppCompatActivity {
         vib = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
 
         initWidgets();
-        initAgentRecords();
         initAgentValues();
+        initAgentRecords();
+
         initSamplingRateUnit();
         initPreprocessingUnits();
+
+        soundPool = new SoundPool(1, AudioManager.STREAM_MUSIC, 0);
+        soundId1 = soundPool.load(this, R.raw.bell, 1);
 
         increaseTimer = new Runnable() {
             @Override
@@ -297,7 +307,9 @@ public class DoingExerciseActivity extends AppCompatActivity {
 
                 //Obtain a current RecordAgent for recording
                 if (numAgents > 0) {
+
                     currentAgent = agentRecords.get(currentOrder);
+
                 }
 
 
@@ -313,6 +325,20 @@ public class DoingExerciseActivity extends AppCompatActivity {
                 }
                 tv_timer.setText(secondToTimerString(currentRecordTime));
                 tv_eq_count.setText(String.format("%d", currentRecordCount));
+                if(currentAgent != null) {
+                    if (currentAgent.getGoalCount() != -1 && currentRecordCount == currentAgent.getGoalCount() * currentAgent.getGoalSet()) {
+                        if (isSoundFirst) {
+                            soundPool.play(soundId1, 1, 1, 0, 0, 1);
+                            isSoundFirst = false;
+                        }
+                    }
+                    if (currentAgent.getGoalTime() != -1 && currentRecordTime == currentAgent.getGoalTime() * currentAgent.getGoalTime()) {
+                        if (isSoundFirst) {
+                            soundPool.play(soundId1, 1, 1, 0, 0, 1);
+                            isSoundFirst = false;
+                        }
+                    }
+                }
             }
         };
         timer = new TaskScheduler();
@@ -503,7 +529,7 @@ public class DoingExerciseActivity extends AppCompatActivity {
             }
             tv_eq_name.setText(mDeviceName);
             tv_eq_goal.setText("000");
-        }else {
+        } else {
 
             if (currentOrder == 0) {
                 tv_eq_order.setText(String.format("%dst", currentOrder + 1) + " Exercise");
@@ -579,6 +605,14 @@ public class DoingExerciseActivity extends AppCompatActivity {
         boolean isMoreAgent = true;
 
         if(myRoutine == null) {
+//            numAgents++;
+//            RecordAgent tmpAgentRecord1 = new RecordAgent();
+//            tmpAgentRecord1.setAgentMacId(mDeviceAddress);
+//            tmpAgentRecord1.setAgentName(mDeviceName);
+//            tmpAgentRecord1.setAgentType(MyHereAgent.TYPE_DUMBEL);
+//            tmpAgentRecord1.setGoal(1, 10, -1);
+//            tmpAgentRecord1.setRecordCount(10);
+//            agentRecords.add(tmpAgentRecord1);
             return;
         }
         /* EQ1 */
@@ -901,6 +935,7 @@ public class DoingExerciseActivity extends AppCompatActivity {
 
                         //if currentOrder = 2, numAgent = 4
                         currentOrder++;
+                        isSoundFirst = true;
 
                         //TODO: Initialize DoingExerciseActivity
                         //TODO: Restart timer & measuring sensor
