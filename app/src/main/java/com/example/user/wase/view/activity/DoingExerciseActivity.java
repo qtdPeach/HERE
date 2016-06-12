@@ -566,10 +566,7 @@ public class DoingExerciseActivity extends AppCompatActivity {
                 bindService(gattServiceIntent, mServiceConnection, BIND_AUTO_CREATE);
                 mBluetoothLeService.disconnect();
                 mBluetoothLeService.initialize();
-                if (mBluetoothLeService != null) {
-                    final boolean result = mBluetoothLeService.connect(mDeviceAddress);
-                    Log.d(TAG, "Connect request result=" + result);
-                }
+                mBluetoothLeService.connect(mDeviceAddress);
             } catch (Exception e) {
             }
         }
@@ -608,14 +605,14 @@ public class DoingExerciseActivity extends AppCompatActivity {
         boolean isMoreAgent = true;
 
         if(myRoutine == null) {
-//            numAgents++;
-//            RecordAgent tmpAgentRecord1 = new RecordAgent();
-//            tmpAgentRecord1.setAgentMacId(mDeviceAddress);
-//            tmpAgentRecord1.setAgentName(mDeviceName);
-//            tmpAgentRecord1.setAgentType(MyHereAgent.TYPE_DUMBEL);
-//            tmpAgentRecord1.setGoal(1, 10, -1);
-//            tmpAgentRecord1.setRecordCount(10);
-//            agentRecords.add(tmpAgentRecord1);
+            numAgents++;
+            RecordAgent tmpAgentRecord1 = new RecordAgent();
+            tmpAgentRecord1.setAgentMacId(mDeviceAddress);
+            tmpAgentRecord1.setAgentName(mDeviceName);
+            tmpAgentRecord1.setAgentType(MyHereAgent.TYPE_DUMBEL);
+            tmpAgentRecord1.setGoal(1, 10, -1);
+            tmpAgentRecord1.setRecordCount(10);
+            agentRecords.add(tmpAgentRecord1);
             return;
         }
         /* EQ1 */
@@ -977,8 +974,7 @@ public class DoingExerciseActivity extends AppCompatActivity {
                     public void onClick(DialogInterface dialog, int which) {
                         Toast.makeText(getApplicationContext(), "Exercising is stopped.", Toast.LENGTH_SHORT).show();
 
-
-                            //TODO: Store previous exercise record to agentRecords
+                        //TODO: Store previous exercise record to agentRecords
                         agentRecords.get(currentOrder).setRecordCount(currentRecordCount);
                         agentRecords.get(currentOrder).setRecordTime(currentRecordTime);
 
