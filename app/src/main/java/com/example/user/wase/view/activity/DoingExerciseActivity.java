@@ -181,6 +181,7 @@ public class DoingExerciseActivity extends AppCompatActivity {
                 finish();
             }
             // Automatically connects to the device upon successful start-up initialization.
+            mBluetoothLeService.connect(mDeviceAddress);
             final Runnable connection = new Runnable() {
                 @Override
                 public void run() {
@@ -537,6 +538,7 @@ public class DoingExerciseActivity extends AppCompatActivity {
 
         isRisingPeak = false;
         isFallingPeak = false;
+        //startTime = System.currentTimeMillis();
     }
 
     private void initAgentValues() {
@@ -674,15 +676,15 @@ public class DoingExerciseActivity extends AppCompatActivity {
         boolean isMoreAgent = true;
 
         if(myRoutine == null) {
-//            numAgents++;
-//            RecordAgent tmpAgentRecord1 = new RecordAgent();
-//            tmpAgentRecord1.setAgentMacId(mDeviceAddress);
-//            tmpAgentRecord1.setAgentName(mDeviceName);
-//            tmpAgentRecord1.setAgentType(MyHereAgent.TYPE_DUMBEL);
-//            tmpAgentRecord1.setGoal(1, 10, -1);
-//            tmpAgentRecord1.setRecordCount(10);
-//            agentRecords.add(tmpAgentRecord1);
-//            return;
+            numAgents++;
+            RecordAgent tmpAgentRecord1 = new RecordAgent();
+            tmpAgentRecord1.setAgentMacId(mDeviceAddress);
+            tmpAgentRecord1.setAgentName(mDeviceName);
+            tmpAgentRecord1.setAgentType(MyHereAgent.TYPE_DUMBEL);
+            tmpAgentRecord1.setGoal(1, 10, -1);
+            tmpAgentRecord1.setRecordCount(10);
+            agentRecords.add(tmpAgentRecord1);
+            return;
         }
         /* EQ1 */
         if ((myRoutine.getRoutineEq1Id().equals("-1") ||
@@ -1244,7 +1246,7 @@ public class DoingExerciseActivity extends AppCompatActivity {
                 mBluetoothLeService.setCharacteristicNotification(characteristicRX,true);
             }
         }
-        startTime = System.currentTimeMillis();
+        //startTime = System.currentTimeMillis();
     }
 
 
