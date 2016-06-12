@@ -74,7 +74,6 @@ public class EquipmentScanner extends Fragment {
     public String mDeviceAddress;
 
     private BluetoothLeService mBluetoothLeService;
-    private boolean mConnected = false;
     private BluetoothGattCharacteristic characteristicTX;
     private BluetoothGattCharacteristic characteristicRX;
 
@@ -126,36 +125,41 @@ public class EquipmentScanner extends Fragment {
             final String action = intent.getAction();
             if (BluetoothLeService.ACTION_GATT_CONNECTED.equals(action)) {
                 count = 0;
-                mConnected = true;
+                Log.d("BR", "connect");
+                //mConnected = true;
             } else if (BluetoothLeService.ACTION_GATT_DISCONNECTED.equals(action)) {
-                mConnected = false;
+                //mConnected = false;
+                Log.d("BR", "disconnect");
+                Intent gattServiceIntent = new Intent(getActivity(), BluetoothLeService.class);
+                getActivity().bindService(gattServiceIntent, mServiceConnection, getActivity().BIND_AUTO_CREATE);
             } else if (BluetoothLeService.ACTION_GATT_SERVICES_DISCOVERED.equals(action)) {
                 // Show all the supported services and characteristics on the user interface.
+                Log.d("BR", "discover");
                 displayGattServices(mBluetoothLeService.getSupportedGattServices());
             } else if (BluetoothLeService.ACTION_DATA_AVAILABLE.equals(action)) {
+                scanLeDevice(true);
                 if(mBluetoothLeService != null) {
+                    Log.d("BR", "data");
                     count++;
                     if(count == 0){
                         setCommandToHERE_agent((byte) 95);
-                    }if (count < 16) {
+                    }else if (count < 13) {
                         if (setCommandToHERE_agent(count)) {
                             count--;
                         }
                     }
                     else if (count == 18 && pairedEquipList.size() > 1) {
                         found ++;
-                        if(found > pairedEquipList.size()-1)  count = 33;
-                        mDeviceAddress = pairedEquipList.get(found).getMyeqMacId();
-                        Intent gattServiceIntent = new Intent(getActivity(), BluetoothLeService.class);
-                        getActivity().bindService(gattServiceIntent, mServiceConnection, getActivity().BIND_AUTO_CREATE);
-                        mBluetoothLeService.disconnect();
-                        mBluetoothLeService.initialize();
-                        mBluetoothLeService.connect(mDeviceAddress);
-                    }else if(count > 30){
-
-                        count = 0;
+                        if(found > pairedEquipList.size()-1) {
+                            count = 33;
+                        }else {
+                            mDeviceAddress = pairedEquipList.get(found).getMyeqMacId();
+                            if(mBluetoothLeService != null) {
+                                mBluetoothLeService.disconnect();
+                                mBluetoothLeService.initialize();
+                            }
+                        }
                     }
-
                 }
             }
         }
@@ -187,6 +191,7 @@ public class EquipmentScanner extends Fragment {
         getActivity().registerReceiver(mGattUpdateReceiver, makeGattUpdateIntentFilter());
         getActivity().bindService(gattServiceIntent, mServiceConnection, getActivity().BIND_AUTO_CREATE);
 
+        scanLeDevice(true);
 
         equipListAdapter = new HERE_DeviceListAdapter();
         View view = inflater.inflate(R.layout.fragment_devicelist, container, false);
@@ -271,14 +276,14 @@ public class EquipmentScanner extends Fragment {
         byte[] val = new byte[1];
         val[0] = command;
         if(characteristicTX == null){
-            return true;
+            return false;
         }else {
             characteristicTX.setValue(val);
             if (mBluetoothLeService != null) {
                 boolean status = mBluetoothLeService.writeCharacteristic(characteristicTX);
                 return status;
             }
-            return true;
+            return false;
         }
     }
 
@@ -329,8 +334,11 @@ public class EquipmentScanner extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-
-        equipListAdapter.clear();
+        Log.d("aaaa","onResume");
+        //equipListAdapter.clear();
+        pairedEquipList.clear();
+        pairedEquipList = new ArrayList<MyHereAgent>();
+        equipListAdapter.notifyDataSetChanged();
         Log.d(TAG, "onResume");
         // Ensures Bluetooth is enabled on the device.  If Bluetooth is not currently enabled,
         // fire an intent to display a dialog asking the user to grant permission to enable it.
@@ -339,7 +347,12 @@ public class EquipmentScanner extends Fragment {
             startActivityForResult(enableBtIntent, REQUEST_ENABLE_BT);
         }
 
+        Intent gattServiceIntent = new Intent(getActivity(), BluetoothLeService.class);
+        getActivity().registerReceiver(mGattUpdateReceiver, makeGattUpdateIntentFilter());
+        getActivity().bindService(gattServiceIntent, mServiceConnection, getActivity().BIND_AUTO_CREATE);
+
         scanLeDevice(true);
+
     }
 
     @Override
@@ -387,25 +400,26 @@ public class EquipmentScanner extends Fragment {
                 if(!pairedEquipList.contains(device.getAddress())){
                     if(device.getName().contains("HERE")) {
                         if(pairedEquipList.size() == 0){
-                            if (mBluetoothLeService != null) {
-                                mDeviceAddress = device.getAddress();
-                                mBluetoothLeService.initialize();
-                                final boolean result = mBluetoothLeService.connect(mDeviceAddress);
-                                Log.d(TAG, "Connect request result=" + result);
-                            }
+                            Log.d("addDevice", "device");
+                            scanLeDevice(false);
+                            mDeviceAddress = device.getAddress();
+                            Intent gattServiceIntent = new Intent(getActivity(), BluetoothLeService.class);
+                            getActivity().bindService(gattServiceIntent, mServiceConnection, getActivity().BIND_AUTO_CREATE);
+
+
                         }
-                        int connectedAgentType;
-                        if (device.getName().contains("DB")) {
-                            connectedAgentType = MyHereAgent.TYPE_DUMBEL;
-                        } else if (device.getName().contains("PU")) {
-                            connectedAgentType = MyHereAgent.TYPE_PUSH_UP;
-                        } else if (device.getName().contains("HH")) {
-                            connectedAgentType = MyHereAgent.TYPE_HOOLA_HOOP;
-                        } else if (device.getName().contains("JR")) {
-                            connectedAgentType = MyHereAgent.TYPE_JUMP_ROPE;
-                        } else {
-                            connectedAgentType = MyHereAgent.TYPE_OTHERS;
-                        }
+//                        int connectedAgentType;
+//                        if (device.getName().contains("DB")) {
+//                            connectedAgentType = MyHereAgent.TYPE_DUMBEL;
+//                        } else if (device.getName().contains("PU")) {
+//                            connectedAgentType = MyHereAgent.TYPE_PUSH_UP;
+//                        } else if (device.getName().contains("HH")) {
+//                            connectedAgentType = MyHereAgent.TYPE_HOOLA_HOOP;
+//                        } else if (device.getName().contains("JR")) {
+//                            connectedAgentType = MyHereAgent.TYPE_JUMP_ROPE;
+//                        } else {
+//                            connectedAgentType = MyHereAgent.TYPE_OTHERS;
+//                        }
 
                         String deviceAddress = device.getAddress();
                         String deviceName = device.getName();
@@ -414,8 +428,6 @@ public class EquipmentScanner extends Fragment {
                         int deviceType = getTypeByMinorId(deviceMinorId);
 
                         pairedEquipList.add(new MyHereAgent(deviceAddress, deviceName, deviceType, deviceMajorId, deviceMinorId));
-
-
                     }
                 }
             }
