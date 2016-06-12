@@ -143,7 +143,8 @@ public class EquipmentScanner extends Fragment {
 
                     }
                     else if (count == 18 && pairedEquipList.size() > 1) {
-                        found = (found + 1) % (pairedEquipList.size());
+                        found ++;
+                        if(found > pairedEquipList.size()-1)  count = 33;
                         mDeviceAddress = pairedEquipList.get(found).getMyeqMacId();
                         Intent gattServiceIntent = new Intent(getActivity(), BluetoothLeService.class);
                         getActivity().bindService(gattServiceIntent, mServiceConnection, getActivity().BIND_AUTO_CREATE);
@@ -384,7 +385,7 @@ public class EquipmentScanner extends Fragment {
             if(!mLEdeviceList.contains(device)) {
                 mLEdeviceList.add(device);
                 if(!pairedEquipList.contains(device.getAddress())){
-                    if(device.getName()!=null && device.getName().contains("HERE")) {
+                    if(device.getName().contains("HERE")) {
                         if(pairedEquipList.size() == 0){
                             if (mBluetoothLeService != null) {
                                 mDeviceAddress = device.getAddress();

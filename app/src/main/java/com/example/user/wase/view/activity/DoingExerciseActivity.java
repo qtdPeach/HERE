@@ -288,7 +288,7 @@ public class DoingExerciseActivity extends AppCompatActivity {
         currentOrder = 0;
         dumbel = new PeakDetector(0);
         dumbel.setDelta(60);
-        hoop = new SinusoidalDetector(39*25.4, 386*8 );
+        hoop = new SinusoidalDetector(25*25.4, 386*8 );
         vib = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
 
         initWidgets();
@@ -989,6 +989,7 @@ public class DoingExerciseActivity extends AppCompatActivity {
                         intent_finishexercise.putExtra("agentRecords", agentRecords);
                         intent_finishexercise.putExtra("routineName", myRoutine.getRoutineName());
                         startActivity(intent_finishexercise);
+                        DoingExerciseActivity.this.finish();
 
                         dialog.dismiss();
                     }

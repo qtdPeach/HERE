@@ -72,7 +72,6 @@ public class FinishExerciseActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_finishexercise);
-        DoingExerciseActivity.thisActivity.finish();
 
         //Receive the result arraylist
         Intent intent = getIntent();
