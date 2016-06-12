@@ -2,8 +2,6 @@ package com.example.user.wase.view.activity;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.graphics.Color;
-import android.graphics.drawable.AnimationDrawable;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
@@ -83,6 +81,7 @@ public class StartExerciseActivity extends AppCompatActivity {
 
                             Intent intent_doingexercise = new Intent(getApplicationContext(), DoingExerciseActivity.class);
                             startActivity(intent_doingexercise);
+                            StartExerciseActivity.this.finish();
                         } catch (InterruptedException e) {
                             e.printStackTrace();
                         }

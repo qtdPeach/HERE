@@ -253,17 +253,12 @@ public class DoingExerciseActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_doingexercise);
 
-        //Obtain a selected user routine
+
         myRoutine = MainActivity.mySelectedRoutine;
 
 
-
-
-        vib = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
-
-        final Intent intent = getIntent();
-        mDeviceName = intent.getStringExtra(EXTRAS_DEVICE_NAME);
-        mDeviceAddress = intent.getStringExtra(EXTRAS_DEVICE_ADDRESS);
+        //getActionBar().setTitle(mDeviceName);
+        //getActionBar().setDisplayHomeAsUpEnabled(true);
         /*
         ***Device Name List***
         HERE-Dumbbell
@@ -279,37 +274,16 @@ public class DoingExerciseActivity extends AppCompatActivity {
     public final static int TYPE_HOOLA_HOOP = 4;
     public final static int TYPE_OTHERS = 5;
     */
-        if(mDeviceName.contains("DB")){
-            connectedAgentType = MyHereAgent.TYPE_DUMBEL;
-            startBit = INDEX_GYRO_Y;
-        }else if(mDeviceName.contains("PU")){
-            startBit = INDEX_FORCE;
-            connectedAgentType = MyHereAgent.TYPE_PUSH_UP;
-        }else if(mDeviceName.contains("HH")){
-            startBit = INDEX_GYRO_Y;
-            connectedAgentType = MyHereAgent.TYPE_HOOLA_HOOP;
-        }else if(mDeviceName.contains("JR")){
-            connectedAgentType = MyHereAgent.TYPE_JUMP_ROPE;
-        }else{
-            connectedAgentType = MyHereAgent.TYPE_OTHERS;
-            Toast.makeText(this, "Uncompatible Equipment", Toast.LENGTH_SHORT).show();
-        }
 
-        //getActionBar().setTitle(mDeviceName);
-        //getActionBar().setDisplayHomeAsUpEnabled(true);
-        Intent gattServiceIntent = new Intent(this, BluetoothLeService.class);
-        bindService(gattServiceIntent, mServiceConnection, BIND_AUTO_CREATE);
-
-
-        if (mBluetoothLeService != null) {
-            final boolean result = mBluetoothLeService.connect(mDeviceAddress);
-            Log.d(TAG, "Connect request result=" + result);
-        }
 
         //Arraylist to save the user's records
         agentRecords = new ArrayList<>();
         numAgents = 0;
         currentOrder = 0;
+        dumbel = new PeakDetector(0);
+        dumbel.setDelta(60);
+        hoop = new SinusoidalDetector(39*25.4, 386*8 );
+        vib = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
 
         initWidgets();
         initAgentRecords();
@@ -338,7 +312,7 @@ public class DoingExerciseActivity extends AppCompatActivity {
                     //currentRecordCount += randNum;
                 }
                 tv_timer.setText(secondToTimerString(currentRecordTime));
-                tv_eq_count.setText(String.format("%d", countCurrentEq));
+                tv_eq_count.setText(String.format("%d", currentRecordCount));
             }
         };
         timer = new TaskScheduler();
@@ -405,20 +379,6 @@ public class DoingExerciseActivity extends AppCompatActivity {
         gv.getGridLabelRenderer().setGridColor(Color.GRAY);
         gv.getGridLabelRenderer().reloadStyles();
         gv.getViewport().setYAxisBoundsManual(true);
-        switch (connectedAgentType){
-            case MyHereAgent.TYPE_DUMBEL:
-                gv.getViewport().setMinY(-150);
-                gv.getViewport().setMaxY(150);
-                break;
-            case MyHereAgent.TYPE_PUSH_UP:
-                gv.getViewport().setMinY(-1000);
-                gv.getViewport().setMaxY(5000);
-                break;
-            case MyHereAgent.TYPE_HOOLA_HOOP:
-                gv.getViewport().setMinY(-150);
-                gv.getViewport().setMaxY(150);
-                break;
-        }
 
         isTimerRunning = true;
 
@@ -523,25 +483,87 @@ public class DoingExerciseActivity extends AppCompatActivity {
     }
 
     private void initAgentValues() {
-        if (currentOrder == 0) {
-            tv_eq_order.setText(String.format("%dst",currentOrder + 1) + " Exercise");
-        }else if (currentOrder == 1) {
-            tv_eq_order.setText(String.format("%dnd",currentOrder + 1) + " Exercise");
-        }else if (currentOrder == 2) {
-            tv_eq_order.setText(String.format("%drd", currentOrder + 1) + " Exercise");
-        } else {
-            tv_eq_order.setText(String.format("%dth", currentOrder + 1) + " Exercise");
-        }
-        try {
-            iv_current_eq.setImageResource(findImage(agentRecords.get(currentOrder).getAgentType()));
-            tv_eq_name.setText(agentRecords.get(currentOrder).getAgentName());
-            tv_eq_goal.setText(agentRecords.get(currentOrder).makeGoalString());
-        }catch (Exception e){
-            currentOrder = connectedAgentType;
+        if(myRoutine == null){
+
+            final Intent intent = getIntent();
+            mDeviceName = intent.getStringExtra(EXTRAS_DEVICE_NAME);
+            mDeviceAddress = intent.getStringExtra(EXTRAS_DEVICE_ADDRESS);
+
+            if (mDeviceName.contains("DB")) {
+                connectedAgentType = MyHereAgent.TYPE_DUMBEL;
+            } else if (mDeviceName.contains("PU")) {
+                connectedAgentType = MyHereAgent.TYPE_PUSH_UP;
+            } else if (mDeviceName.contains("HH")) {
+                connectedAgentType = MyHereAgent.TYPE_HOOLA_HOOP;
+            } else if (mDeviceName.contains("JR")) {
+                connectedAgentType = MyHereAgent.TYPE_JUMP_ROPE;
+            } else {
+                connectedAgentType = MyHereAgent.TYPE_OTHERS;
+                Toast.makeText(this, "Uncompatible Equipment", Toast.LENGTH_SHORT).show();
+            }
             tv_eq_name.setText(mDeviceName);
             tv_eq_goal.setText("000");
+        }else {
+
+            if (currentOrder == 0) {
+                tv_eq_order.setText(String.format("%dst", currentOrder + 1) + " Exercise");
+
+            } else if (currentOrder == 1) {
+                tv_eq_order.setText(String.format("%dnd", currentOrder + 1) + " Exercise");
+            } else if (currentOrder == 2) {
+                tv_eq_order.setText(String.format("%drd", currentOrder + 1) + " Exercise");
+            } else {
+                tv_eq_order.setText(String.format("%dth", currentOrder + 1) + " Exercise");
+            }
+            try {
+                iv_current_eq.setImageResource(findImage(agentRecords.get(currentOrder).getAgentType()));
+                tv_eq_name.setText(agentRecords.get(currentOrder).getAgentName());
+                tv_eq_goal.setText(agentRecords.get(currentOrder).makeGoalString());
+                connectedAgentType =  agentRecords.get(currentOrder).getAgentType();
+                mDeviceName = "HERE-";
+                switch (connectedAgentType){
+                    case MyHereAgent.TYPE_DUMBEL:
+                        mDeviceName += "DB";
+                        break;
+                    case MyHereAgent.TYPE_PUSH_UP:
+                        mDeviceName += "PU";
+                        break;
+                    case MyHereAgent.TYPE_HOOLA_HOOP:
+                        mDeviceName += "HH";
+                        break;
+                    case MyHereAgent.TYPE_JUMP_ROPE:
+                        mDeviceName += "JR";
+                        break;
+                }
+                mDeviceAddress = agentRecords.get(currentOrder).getAgentMacId();
+            } catch (Exception e) {
+            }
         }
 
+        switch (connectedAgentType){
+            case MyHereAgent.TYPE_DUMBEL:
+                startBit = INDEX_GYRO_Y;
+                gv.getViewport().setMinY(-250);
+                gv.getViewport().setMaxY(250);
+                break;
+            case MyHereAgent.TYPE_PUSH_UP:
+                startBit = INDEX_FORCE;
+                gv.getViewport().setMinY(-1000);
+                gv.getViewport().setMaxY(5000);
+                break;
+            case MyHereAgent.TYPE_HOOLA_HOOP:
+                startBit = INDEX_GYRO_Y;
+                gv.getViewport().setMinY(-250);
+                gv.getViewport().setMaxY(250);
+                break;
+            case MyHereAgent.TYPE_JUMP_ROPE:
+                startBit = INDEX_GYRO_X;
+                gv.getViewport().setMinY(-250);
+                gv.getViewport().setMaxY(250);
+                break;
+        }
+        Intent gattServiceIntent = new Intent(this, BluetoothLeService.class);
+        bindService(gattServiceIntent, mServiceConnection, BIND_AUTO_CREATE);
     }
 
 
@@ -553,10 +575,9 @@ public class DoingExerciseActivity extends AppCompatActivity {
 
         boolean isMoreAgent = true;
 
-        if (myRoutine == null) {
+        if(myRoutine == null) {
             return;
         }
-
         /* EQ1 */
         if ((myRoutine.getRoutineEq1Id().equals("-1") ||
                         myRoutine.getRoutineEq1Id().equals("") ||
@@ -800,6 +821,7 @@ public class DoingExerciseActivity extends AppCompatActivity {
 
         //Restart exercising -> Run timer
         isTimerRunning = true;
+
     }
 
     public void mOnClick(View v) {
@@ -963,7 +985,7 @@ public class DoingExerciseActivity extends AppCompatActivity {
             isFallingPeak = true;
             exercisePhase.setText("Rising");
             if (isRisingPeak) {
-                countCurrentEq++;
+                currentRecordCount++;
                 setCommandToHERE_agent((byte) 'a');
                 vib.vibrate(100);
             }
@@ -979,13 +1001,13 @@ public class DoingExerciseActivity extends AppCompatActivity {
     public int dumbbellMonitor(float value) {
         values[connectedAgentType] = LPF(value, connectedAgentType) - longTermAvg(value, connectedAgentType);
         if (values[connectedAgentType] > 20) {
-            exercisePhase.setText(countCurrentEq / 2 + ":  Rising");
+            exercisePhase.setText(currentRecordCount / 2 + ":  Rising");
             dumbel.setDetectingMode(1);
         } else if (values[connectedAgentType] < -20) {
-            exercisePhase.setText(countCurrentEq / 2 + ":  Falling");
+            exercisePhase.setText(currentRecordCount / 2 + ":  Falling");
             dumbel.setDetectingMode(-1);
         } else {
-            exercisePhase.setText(countCurrentEq / 2 + ":  Static");
+            exercisePhase.setText(currentRecordCount / 2 + ":  Static");
             dumbel.setDetectingMode(0);
         }
         switch (dumbel.peakDetection(new DataPoint(0, values[connectedAgentType]))) {
@@ -999,7 +1021,7 @@ public class DoingExerciseActivity extends AppCompatActivity {
             case -1:
                 isFallingPeak = true;
                 if (isRisingPeak) {
-                    countCurrentEq++;
+                    currentRecordCount++;
                     setCommandToHERE_agent((byte) 'a');
                     vib.vibrate(100);
                 }
@@ -1014,7 +1036,7 @@ public class DoingExerciseActivity extends AppCompatActivity {
         values[connectedAgentType] = LPF(value, connectedAgentType) - longTermAvg(value, connectedAgentType);
         if (hoop.periodMonitor(new DataPoint((double) (System.currentTimeMillis() - startTime), value))) {
             exercisePhase.setText("Hooping");
-            countCurrentEq = hoop.getCount();
+            currentRecordCount = hoop.getCount();
             return  1;
         } else {
             exercisePhase.setText("is not Periodic");
