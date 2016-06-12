@@ -536,6 +536,11 @@ public class DoingExerciseActivity extends AppCompatActivity {
                         break;
                 }
                 mDeviceAddress = agentRecords.get(currentOrder).getAgentMacId();
+                Intent gattServiceIntent = new Intent(this, BluetoothLeService.class);
+                bindService(gattServiceIntent, mServiceConnection, BIND_AUTO_CREATE);
+                mBluetoothLeService.disconnect();
+                mBluetoothLeService.initialize();
+                mBluetoothLeService.connect(mDeviceAddress);
             } catch (Exception e) {
             }
         }
@@ -562,8 +567,6 @@ public class DoingExerciseActivity extends AppCompatActivity {
                 gv.getViewport().setMaxY(250);
                 break;
         }
-        Intent gattServiceIntent = new Intent(this, BluetoothLeService.class);
-        bindService(gattServiceIntent, mServiceConnection, BIND_AUTO_CREATE);
     }
 
 
