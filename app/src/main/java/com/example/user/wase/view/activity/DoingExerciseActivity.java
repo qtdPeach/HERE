@@ -566,7 +566,10 @@ public class DoingExerciseActivity extends AppCompatActivity {
                 bindService(gattServiceIntent, mServiceConnection, BIND_AUTO_CREATE);
                 mBluetoothLeService.disconnect();
                 mBluetoothLeService.initialize();
-                mBluetoothLeService.connect(mDeviceAddress);
+                if (mBluetoothLeService != null) {
+                    final boolean result = mBluetoothLeService.connect(mDeviceAddress);
+                    Log.d(TAG, "Connect request result=" + result);
+                }
             } catch (Exception e) {
             }
         }
@@ -974,7 +977,8 @@ public class DoingExerciseActivity extends AppCompatActivity {
                     public void onClick(DialogInterface dialog, int which) {
                         Toast.makeText(getApplicationContext(), "Exercising is stopped.", Toast.LENGTH_SHORT).show();
 
-                        //TODO: Store previous exercise record to agentRecords
+
+                            //TODO: Store previous exercise record to agentRecords
                         agentRecords.get(currentOrder).setRecordCount(currentRecordCount);
                         agentRecords.get(currentOrder).setRecordTime(currentRecordTime);
 
