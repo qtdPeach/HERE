@@ -39,9 +39,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.user.wase.R;
-import com.example.user.wase.deviceLE.DataViewTerminal;
-import com.example.user.wase.model.Equipment;
 import com.example.user.wase.model.MyHereAgent;
+import com.example.user.wase.view.activity.DoingExerciseActivity;
 
 import java.util.ArrayList;
 
@@ -70,9 +69,6 @@ public class EquipmentScanner extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mHandler = new Handler();
-
-
-
 
         // Use this check to determine whether BLE is supported on the device.  Then you can
         // selectively disable BLE-related features.
@@ -103,9 +99,9 @@ public class EquipmentScanner extends Fragment {
 
                 final MyHereAgent device = pairedEquipList.get(position);
                 if (device == null) return;
-                final Intent intent = new Intent(getActivity(), DataViewTerminal.class);
-                intent.putExtra(DataViewTerminal.EXTRAS_DEVICE_NAME, device.getMyeqName());
-                intent.putExtra(DataViewTerminal.EXTRAS_DEVICE_ADDRESS, device.getMyeqMacId());
+                final Intent intent = new Intent(getActivity(), DoingExerciseActivity.class);
+                intent.putExtra(DoingExerciseActivity.EXTRAS_DEVICE_NAME, device.getMyeqName());
+                intent.putExtra(DoingExerciseActivity.EXTRAS_DEVICE_ADDRESS, device.getMyeqMacId());
                 if (mScanning) {
                     mBluetoothAdapter.stopLeScan(mLeScanCallback);
                     mScanning = false;
@@ -193,7 +189,13 @@ public class EquipmentScanner extends Fragment {
             if(!mLEdeviceList.contains(device)) {
                 mLEdeviceList.add(device);
                 if(!pairedEquipList.contains(device.getAddress())){
-                    pairedEquipList.add(new MyHereAgent(device.getAddress(), device.getName(), MyHereAgent.TYPE_DUMBEL, "2016-04-18", "2"));
+                    if(device.getName().contains("HERE")) {
+                        pairedEquipList.add(new MyHereAgent(device.getAddress(), device.getName(), MyHereAgent.TYPE_DUMBEL, "2016-04-18", "2"));
+//                        Intent intent = new Intent(getActivity(), DataViewTerminal.class);
+//                        intent.putExtra(DataViewTerminal.EXTRAS_DEVICE_NAME , device.getName());
+//                        intent.putExtra(DataViewTerminal.EXTRAS_DEVICE_ADDRESS, device.getAddress());
+//                        startActivity(intent);
+                    }
                 }
             }
         }
@@ -203,17 +205,17 @@ public class EquipmentScanner extends Fragment {
         }
 
         public void clear() {
-            mLEdeviceList.clear();
+            pairedEquipList.clear();
         }
 
         @Override
         public int getCount() {
-            return mLEdeviceList.size();
+            return pairedEquipList.size();
         }
 
         @Override
         public Object getItem(int i) {
-            return mLEdeviceList.get(i);
+            return pairedEquipList.get(i);
         }
 
         @Override

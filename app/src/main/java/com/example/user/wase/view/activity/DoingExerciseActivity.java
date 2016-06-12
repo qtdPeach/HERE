@@ -2,9 +2,22 @@ package com.example.user.wase.view.activity;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.bluetooth.BluetoothGattCharacteristic;
+import android.bluetooth.BluetoothGattDescriptor;
+import android.bluetooth.BluetoothGattService;
+import android.content.BroadcastReceiver;
+import android.content.ComponentName;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentFilter;
+import android.content.ServiceConnection;
+import android.graphics.Color;
 import android.os.Bundle;
+import android.os.CountDownTimer;
+import android.os.Handler;
+import android.os.IBinder;
+import android.os.Vibrator;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
@@ -14,19 +27,30 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.user.wase.R;
-import com.example.user.wase.model.RecordAgent;
+import com.example.user.wase.deviceLE.BluetoothLeService;
+import com.example.user.wase.deviceLE.HERE_GattAttributes;
+import com.example.user.wase.model.MyHereAgent;
 import com.example.user.wase.model.MyRoutine;
+import com.example.user.wase.model.RecordAgent;
+import com.example.user.wase.utility.PeakDetector;
+import com.example.user.wase.utility.SinusoidalDetector;
 import com.example.user.wase.utility.TaskScheduler;
+import com.jjoe64.graphview.GraphView;
+import com.jjoe64.graphview.series.DataPoint;
+import com.jjoe64.graphview.series.LineGraphSeries;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Random;
 import java.util.StringTokenizer;
+import java.util.UUID;
 
 /**
  * Created by user on 2016-06-07.
  */
 public class DoingExerciseActivity extends AppCompatActivity {
-
+    public static final String TAG = "DoingExerciseActivity";
     private static final int GOAL_SET = 51;
     private static final int GOAL_COUNT = 52;
     private static final int GOAL_TIME = 53;
@@ -42,72 +66,325 @@ public class DoingExerciseActivity extends AppCompatActivity {
     TextView tv_timer;
 
     LinearLayout layout_title;
+    TextView exercisePhase;
     ImageView iv_current_eq;
     TextView tv_eq_order;
     TextView tv_eq_name;
     TextView tv_eq_goal;
     TextView tv_eq_count;
+    TextView tv_eq_samplingRate;
+    private GraphView gv;
 
     ArrayList<RecordAgent> agentRecords;
     RecordAgent currentAgent;
     int numAgents;
     int currentOrder;
 
-    int countCurrentEq;
 
     int currentRecordCount;
     int currentRecordTime;
+    private Runnable increaseTimer;
 
     TaskScheduler timer;
     boolean isTimerRunning;
 
+    Vibrator vib;
+    private Runnable invalidator;
+    private final Handler mHandler = new Handler();
+
+    //device components
+    private int connectedAgentType;
+
+    //data components
+    private char startBit;
+
+    public static final char INDEX_ACC_X = 'a';
+    public static final char INDEX_GYRO_X = 'g';
+    public static final char INDEX_MAG_X = 'm';
+    public static final char INDEX_ACC_Y= 'a';
+    public static final char INDEX_GYRO_Y = 'g';
+    public static final char INDEX_MAG_Y = 'm';
+    public static final char INDEX_ACC_Z = 'a';
+    public static final char INDEX_GYRO_Z = 'g';
+    public static final char INDEX_MAG_Z = 'm';
+    public static final char INDEX_FORCE = 'f';
+    public static final String END_BIT = "@"; // do not use
+    //number of measurements typs
+    /*
+    3 Axis Accelerometer
+    3 Axis Gyroscope
+    3 Axis Magnetometer
+    1 Force Sensor - Load cell
+     */
+    public PeakDetector dumbel;
+    public PeakDetector pushup;
+    public SinusoidalDetector hoop;
+    private final int numberOfMeasures = 10;
+    private long startTime;
+    private float[] values;
+    private int usingValue;
+
+    float[] offsets;
+
+    boolean isSetOffset;
+    CountDownTimer cdt, srChecker;
+    float[] roughLPF;
+    float[][] LPFbuffer;
+    final int LPFwindow = 20;
+    int[] latestIdx;
+    private final float radToDeg = (float)(180/ Math.PI);
+    private int countGyro = 0;
+    private int countAcc = 0;
+
+    private int samplingCount;
+    private float samplingRate;
+    private float[][] longtermAverageBuffer;
+    private float[] longtermAverage;
+    private int[] longTermIndex;
+    private final int longterm = 3*100; //approx. 3s
+
+    private int countCurrentEq = 0;
+    private boolean isRisingPeak, isFallingPeak;
+
+    private int prevForce = 0;
+    private int pushUpThreshold = 2800;
+
+
+    //Bluetooth components
+    public static final String EXTRAS_DEVICE_NAME = "DEVICE_NAME";
+    public static final String EXTRAS_DEVICE_ADDRESS = "DEVICE_ADDRESS";
+    private String mDeviceName;
+    private String mDeviceAddress;
+
+    private BluetoothLeService mBluetoothLeService;
+    private boolean mConnected = false;
+    private BluetoothGattCharacteristic characteristicTX;
+    private BluetoothGattCharacteristic characteristicRX;
+
+    private final String LIST_NAME = "NAME";
+    private final String LIST_UUID = "UUID";
+    LineGraphSeries<DataPoint> series;
+
+    public final static UUID HM_RX_TX =
+            UUID.fromString(HERE_GattAttributes.HM_RX_TX);
+
+    // Code to manage Service lifecycle.
+    private final ServiceConnection mServiceConnection = new ServiceConnection() {
+
+        @Override
+        public void onServiceConnected(ComponentName componentName, IBinder service) {
+            mBluetoothLeService = ((BluetoothLeService.LocalBinder) service).getService();
+            if (!mBluetoothLeService.initialize()) {
+                Log.e(TAG, "Unable to initialize Bluetooth");
+                finish();
+            }
+            // Automatically connects to the device upon successful start-up initialization.
+            mBluetoothLeService.connect(mDeviceAddress);
+        }
+
+        @Override
+        public void onServiceDisconnected(ComponentName componentName) {
+            mBluetoothLeService = null;
+        }
+    };
+    // Handles various events fired by the Service.
+    // ACTION_GATT_CONNECTED: connected to a GATT server.
+    // ACTION_GATT_DISCONNECTED: disconnected from a GATT server.
+    // ACTION_GATT_SERVICES_DISCOVERED: discovered GATT services.
+    // ACTION_DATA_AVAILABLE: received data from the device.  This can be a result of read
+    //                        or notification operations.
+    private final BroadcastReceiver mGattUpdateReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            final String action = intent.getAction();
+            if (BluetoothLeService.ACTION_GATT_CONNECTED.equals(action)) {
+                mConnected = true;
+                invalidateOptionsMenu();
+            } else if (BluetoothLeService.ACTION_GATT_DISCONNECTED.equals(action)) {
+                mConnected = false;
+                invalidateOptionsMenu();
+            } else if (BluetoothLeService.ACTION_GATT_SERVICES_DISCOVERED.equals(action)) {
+                // Show all the supported services and characteristics on the user interface.
+                displayGattServices(mBluetoothLeService.getSupportedGattServices());
+            } else if (BluetoothLeService.ACTION_DATA_AVAILABLE.equals(action)) {
+
+                appendData(intent.getStringExtra(mBluetoothLeService.EXTRA_DATA));
+            }
+        }
+    };
+    // Demonstrates how to iterate through the supported GATT Services/Characteristics.
+    // In this sample, we populate the data structure that is bound to the ExpandableListView
+    // on the UI.
+    private void displayGattServices(List<BluetoothGattService> gattServices) {
+        if (gattServices == null) return;
+        String uuid = null;
+        ArrayList<HashMap<String, String>> gattServiceData = new ArrayList<HashMap<String, String>>();
+
+
+        // Loops through available GATT Services.
+        for (BluetoothGattService gattService : gattServices) {
+            HashMap<String, String> currentServiceData = new HashMap<String, String>();
+            uuid = gattService.getUuid().toString();
+            currentServiceData.put(
+                    LIST_NAME, HERE_GattAttributes.lookup(uuid, "unknown"));
+
+            // If the service exists for HM 10 Serial, say so.
+            if(HERE_GattAttributes.lookup(uuid, "unknown") == "HM 10 Serial") {
+            } else {
+            }
+            currentServiceData.put(LIST_UUID, uuid);
+            gattServiceData.add(currentServiceData);
+
+            // get characteristic when UUID matches RX/TX UUID
+            characteristicTX = gattService.getCharacteristic(BluetoothLeService.UUID_HM_RX_TX);
+            characteristicRX = gattService.getCharacteristic(BluetoothLeService.UUID_HM_RX_TX);
+
+            if(characteristicTX != null && mBluetoothLeService != null) {
+                characteristicRX.setValue(BluetoothGattDescriptor.ENABLE_NOTIFICATION_VALUE);
+                mBluetoothLeService.writeCharacteristic(characteristicTX);
+                mBluetoothLeService.setCharacteristicNotification(characteristicRX,true);
+            }
+        }
+
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_doingexercise);
 
-        StartExerciseActivity.thisActivity.finish();
-        thisActivity = this;
 
-        //Obtain a selected user routine
         myRoutine = MainActivity.mySelectedRoutine;
+
+
+        //getActionBar().setTitle(mDeviceName);
+        //getActionBar().setDisplayHomeAsUpEnabled(true);
+        /*
+        ***Device Name List***
+        HERE-Dumbbell
+        HERE-Pushupbar
+        HERE-Hoolahoop
+
+    /*
+    *******Equipment type -> defined at the model.MyHereAgent
+    //0: NO NAME, 1: Dumbbells, 2: Pushup bars, 3: Jumprope, 4: Hoola-hoop, 5: Others
+    public final static int TYPE_DUMBEL = 1;
+    public final static int TYPE_PUSH_UP = 2;
+    public final static int TYPE_JUMP_ROPE = 3;
+    public final static int TYPE_HOOLA_HOOP = 4;
+    public final static int TYPE_OTHERS = 5;
+    */
+
 
         //Arraylist to save the user's records
         agentRecords = new ArrayList<>();
         numAgents = 0;
         currentOrder = 0;
+        dumbel = new PeakDetector(0);
+        dumbel.setDelta(60);
+        hoop = new SinusoidalDetector(39*25.4, 386*8 );
+        vib = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
 
         initWidgets();
         initAgentRecords();
         initAgentValues();
+        initSamplingRateUnit();
+        initPreprocessingUnits();
+
+        increaseTimer = new Runnable() {
+            @Override
+            public void run() {
+
+                //Obtain a current RecordAgent for recording
+                if (numAgents > 0) {
+                    currentAgent = agentRecords.get(currentOrder);
+                }
 
 
+
+                Random rand = new Random();
+                int randNum;
+
+                //TODO: tv_eq_count와 currentRecordCount는 성근이형 코드로 대체
+                if (isTimerRunning) {
+                    currentRecordTime++;
+                    randNum = rand.nextInt((RAND_MAX - RAND_MIN) + 1) + RAND_MIN;
+                    //currentRecordCount += randNum;
+                }
+                tv_timer.setText(secondToTimerString(currentRecordTime));
+                tv_eq_count.setText(String.format("%d", currentRecordCount));
+            }
+        };
         timer = new TaskScheduler();
         timer.scheduleAtFixedRate(increaseTimer, 1000);
 
+        invalidator = new Runnable() {
+            @Override
+            public void run() {
+                double x = (double) (System.currentTimeMillis() - startTime)/1000;
+                //series[vf.getDisplayedChild()].appendData(new DataPoint((double) (System.currentTimeMillis() - startTime) / 1000, (double) values[vf.getDisplayedChild()]), true, 1000);
+                series.appendData(new DataPoint(x, (double) values[connectedAgentType]), true, 300);
+            }
+        };
+        //mHandler.postDelayed(invalidator, 1500);
+        isRisingPeak = false;
+        isFallingPeak = false;
+        startTime = System.currentTimeMillis();
     }
     public int findImage (int type){
         switch (type) {
-            case 1:
+            case MyHereAgent.TYPE_DUMBEL:
                 return R.drawable.eq_01_dumbbell;
-            case 2:
+            case MyHereAgent.TYPE_PUSH_UP:
                 return R.drawable.eq_02_pushupbar;
-            case 3:
+            case MyHereAgent.TYPE_JUMP_ROPE:
                 return R.drawable.eq_03_jumprope;
-            case 4:
+            case MyHereAgent.TYPE_HOOLA_HOOP:
                 return R.drawable.eq_04_hoolahoop;
-            case 5:
+            case MyHereAgent.TYPE_OTHERS:
+                return R.mipmap.ic_setting_user_information;
+        }
+        return 0;
+    }
+    public int findImage (){
+        switch (connectedAgentType) {
+            case MyHereAgent.TYPE_DUMBEL:
+                return R.drawable.eq_01_dumbbell;
+            case MyHereAgent.TYPE_PUSH_UP:
+                return R.drawable.eq_02_pushupbar;
+            case MyHereAgent.TYPE_JUMP_ROPE:
+                return R.drawable.eq_03_jumprope;
+            case MyHereAgent.TYPE_HOOLA_HOOP:
+                return R.drawable.eq_04_hoolahoop;
+            case MyHereAgent.TYPE_OTHERS:
                 return R.mipmap.ic_setting_user_information;
         }
         return 0;
     }
 
     private void initWidgets() {
+        gv = (GraphView) findViewById(R.id.graphX);
+        series = new LineGraphSeries();
+
+        series= new LineGraphSeries<DataPoint>();
+        series.setColor(Color.RED);
+
+        gv.addSeries(series);
+        gv.getViewport().setScrollable(true);
+
+        gv.getViewport().setXAxisBoundsManual(true);
+        gv.getViewport().setMinX(0);
+        gv.getViewport().setMaxX(5); //second
+        gv.getViewport().setBackgroundColor(Color.WHITE);
+        gv.getGridLabelRenderer().setGridColor(Color.GRAY);
+        gv.getGridLabelRenderer().reloadStyles();
+        gv.getViewport().setYAxisBoundsManual(true);
+
         isTimerRunning = true;
 
         layout_whole = (LinearLayout) findViewById(R.id.doingexercise_layout_whole);
         layout_title = (LinearLayout) findViewById(R.id.doingexercise_layout_title);
+        exercisePhase = (TextView) findViewById(R.id.state);
 
         tv_timer = (TextView) findViewById(R.id.doingexercise_tv_timer);
 
@@ -116,10 +393,81 @@ public class DoingExerciseActivity extends AppCompatActivity {
         tv_eq_name = (TextView) findViewById(R.id.doingexercise_tv_eq_name);
         tv_eq_goal = (TextView) findViewById(R.id.doingexercise_tv_eq_goal);
         tv_eq_count = (TextView) findViewById(R.id.doingexercise_tv_eq_count);
-
+        tv_eq_samplingRate = (TextView) findViewById(R.id.sampling_rate);
         initMeasureValues();
 
     }
+
+    private void initSamplingRateUnit(){
+
+        samplingCount = 0;
+        samplingRate = 0;
+        srChecker = new CountDownTimer(5000, 1000) {
+            @Override
+            public void onTick(long millisUntilFinished) {
+                samplingRate = (float)samplingCount;
+                tv_eq_samplingRate.setText("");
+                samplingCount = 0;
+
+            }
+
+            @Override
+            public void onFinish() {
+                isFallingPeak = false;
+                isRisingPeak = false;
+            }
+        };
+        srChecker.start();
+    }
+
+
+    private void initPreprocessingUnits(){
+
+        longtermAverageBuffer = new float[numberOfMeasures][longterm];
+        longtermAverage = new float[longterm];
+        longTermIndex= new int[numberOfMeasures];
+        for(int i = 0; i < numberOfMeasures; i++){
+            longTermIndex[i] = 0;
+            longtermAverage[i] = 0;
+            for(int k = 0; k <longterm; k++){
+                longtermAverageBuffer[i][k] = 0;
+            }
+        }
+
+
+        roughLPF = new float[numberOfMeasures];
+        LPFbuffer= new float[numberOfMeasures][LPFwindow];
+        latestIdx = new int[numberOfMeasures];
+        for(int i = 0; i < numberOfMeasures; i++){
+            latestIdx[i] = 0;
+            roughLPF[i] = 0;
+            for(int k = 0; k < LPFwindow; k++){
+                LPFbuffer[i][k] = 0;
+            }
+        }
+
+        values = new float[numberOfMeasures];
+        offsets = new float[numberOfMeasures];
+        isSetOffset = false;
+        cdt = new CountDownTimer(1000, 1000) {
+            @Override
+            public void onTick(long millisUntilFinished) {
+
+            }
+
+            @Override
+            public void onFinish() {
+                isSetOffset = false;
+                for(int i = 0; i < 3; i++){
+                    offsets[i] = offsets[i]/countAcc;
+                }
+                for(int i = 3; i < 6; i++){
+                    offsets[i] = offsets[i]/countGyro;
+                }
+            }
+        };
+    }
+
 
     private void initMeasureValues() {
         currentRecordTime = 0;
@@ -129,23 +477,93 @@ public class DoingExerciseActivity extends AppCompatActivity {
 
         tv_timer.setText(secondToTimerString(currentRecordTime));
         tv_eq_count.setText(String.format("%d", currentRecordCount));
+
+        isRisingPeak = false;
+        isFallingPeak = false;
     }
 
     private void initAgentValues() {
-        if (currentOrder == 0) {
-            tv_eq_order.setText(String.format("%dst",currentOrder + 1) + " Exercise");
-        }else if (currentOrder == 1) {
-            tv_eq_order.setText(String.format("%dnd",currentOrder + 1) + " Exercise");
-        }else if (currentOrder == 2) {
-            tv_eq_order.setText(String.format("%drd", currentOrder + 1) + " Exercise");
-        } else {
-            tv_eq_order.setText(String.format("%dth", currentOrder + 1) + " Exercise");
+        if(myRoutine == null){
+
+            final Intent intent = getIntent();
+            mDeviceName = intent.getStringExtra(EXTRAS_DEVICE_NAME);
+            mDeviceAddress = intent.getStringExtra(EXTRAS_DEVICE_ADDRESS);
+
+            if (mDeviceName.contains("DB")) {
+                connectedAgentType = MyHereAgent.TYPE_DUMBEL;
+            } else if (mDeviceName.contains("PU")) {
+                connectedAgentType = MyHereAgent.TYPE_PUSH_UP;
+            } else if (mDeviceName.contains("HH")) {
+                connectedAgentType = MyHereAgent.TYPE_HOOLA_HOOP;
+            } else if (mDeviceName.contains("JR")) {
+                connectedAgentType = MyHereAgent.TYPE_JUMP_ROPE;
+            } else {
+                connectedAgentType = MyHereAgent.TYPE_OTHERS;
+                Toast.makeText(this, "Uncompatible Equipment", Toast.LENGTH_SHORT).show();
+            }
+            tv_eq_name.setText(mDeviceName);
+            tv_eq_goal.setText("000");
+        }else {
+
+            if (currentOrder == 0) {
+                tv_eq_order.setText(String.format("%dst", currentOrder + 1) + " Exercise");
+
+            } else if (currentOrder == 1) {
+                tv_eq_order.setText(String.format("%dnd", currentOrder + 1) + " Exercise");
+            } else if (currentOrder == 2) {
+                tv_eq_order.setText(String.format("%drd", currentOrder + 1) + " Exercise");
+            } else {
+                tv_eq_order.setText(String.format("%dth", currentOrder + 1) + " Exercise");
+            }
+            try {
+                iv_current_eq.setImageResource(findImage(agentRecords.get(currentOrder).getAgentType()));
+                tv_eq_name.setText(agentRecords.get(currentOrder).getAgentName());
+                tv_eq_goal.setText(agentRecords.get(currentOrder).makeGoalString());
+                connectedAgentType =  agentRecords.get(currentOrder).getAgentType();
+                mDeviceName = "HERE-";
+                switch (connectedAgentType){
+                    case MyHereAgent.TYPE_DUMBEL:
+                        mDeviceName += "DB";
+                        break;
+                    case MyHereAgent.TYPE_PUSH_UP:
+                        mDeviceName += "PU";
+                        break;
+                    case MyHereAgent.TYPE_HOOLA_HOOP:
+                        mDeviceName += "HH";
+                        break;
+                    case MyHereAgent.TYPE_JUMP_ROPE:
+                        mDeviceName += "JR";
+                        break;
+                }
+                mDeviceAddress = agentRecords.get(currentOrder).getAgentMacId();
+            } catch (Exception e) {
+            }
         }
 
-        iv_current_eq.setImageResource(findImage(agentRecords.get(currentOrder).getAgentType()));
-        tv_eq_name.setText(agentRecords.get(currentOrder).getAgentName());
-        tv_eq_goal.setText(agentRecords.get(currentOrder).makeGoalString());
-
+        switch (connectedAgentType){
+            case MyHereAgent.TYPE_DUMBEL:
+                startBit = INDEX_GYRO_Y;
+                gv.getViewport().setMinY(-250);
+                gv.getViewport().setMaxY(250);
+                break;
+            case MyHereAgent.TYPE_PUSH_UP:
+                startBit = INDEX_FORCE;
+                gv.getViewport().setMinY(-1000);
+                gv.getViewport().setMaxY(5000);
+                break;
+            case MyHereAgent.TYPE_HOOLA_HOOP:
+                startBit = INDEX_GYRO_Y;
+                gv.getViewport().setMinY(-250);
+                gv.getViewport().setMaxY(250);
+                break;
+            case MyHereAgent.TYPE_JUMP_ROPE:
+                startBit = INDEX_GYRO_X;
+                gv.getViewport().setMinY(-250);
+                gv.getViewport().setMaxY(250);
+                break;
+        }
+        Intent gattServiceIntent = new Intent(this, BluetoothLeService.class);
+        bindService(gattServiceIntent, mServiceConnection, BIND_AUTO_CREATE);
     }
 
 
@@ -153,13 +571,13 @@ public class DoingExerciseActivity extends AppCompatActivity {
 
         agentRecords.clear();
         numAgents = 0;
+        currentRecordCount = 0;
 
         boolean isMoreAgent = true;
 
-        if (myRoutine == null) {
+        if(myRoutine == null) {
             return;
         }
-
         /* EQ1 */
         if ((myRoutine.getRoutineEq1Id().equals("-1") ||
                         myRoutine.getRoutineEq1Id().equals("") ||
@@ -327,7 +745,29 @@ public class DoingExerciseActivity extends AppCompatActivity {
 
     }
 
-
+    private void setOffset(){
+        isSetOffset = true;
+        countAcc = 0;
+        countGyro = 0;
+        for(int i = 0; i < 6; i++){
+            offsets[i] = 0;
+        }
+        cdt.start();
+    }
+    private float LPF(float raw, int what){
+        latestIdx[what] = (latestIdx[what]+1) % LPFwindow;
+        roughLPF[what] -= LPFbuffer[what][latestIdx[what]];
+        LPFbuffer[what][latestIdx[what]] = raw;
+        roughLPF[what] += raw;
+        return roughLPF[what]/LPFwindow;
+    }
+    private float longTermAvg(float raw, int what){
+        longTermIndex[what] = (longTermIndex[what]+1) % longterm;
+        longtermAverage[what] -= longtermAverageBuffer[what][longTermIndex[what]];
+        longtermAverageBuffer[what][longTermIndex[what]] = raw;
+        longtermAverage[what] += raw;
+        return longtermAverage[what]/longterm;
+    }
     private int getIntFromGoal(int target, String rawGoal) {
 
         //Type 1. 3|15|-1
@@ -373,30 +813,6 @@ public class DoingExerciseActivity extends AppCompatActivity {
 
 
 
-    private Runnable increaseTimer = new Runnable() {
-        @Override
-        public void run() {
-
-            //Obtain a current RecordAgent for recording
-            if (numAgents > 0) {
-                currentAgent = agentRecords.get(currentOrder);
-            }
-
-
-
-            Random rand = new Random();
-            int randNum;
-
-            //TODO: tv_eq_count와 currentRecordCount는 성근이형 코드로 대체
-            if (isTimerRunning) {
-                currentRecordTime++;
-                randNum = rand.nextInt((RAND_MAX - RAND_MIN) + 1) + RAND_MIN;
-                currentRecordCount += randNum;
-            }
-            tv_timer.setText(secondToTimerString(currentRecordTime));
-            tv_eq_count.setText(String.format("%d", currentRecordCount));
-        }
-    };
 
 
     private void initializeRecord() {
@@ -405,6 +821,7 @@ public class DoingExerciseActivity extends AppCompatActivity {
 
         //Restart exercising -> Run timer
         isTimerRunning = true;
+
     }
 
     public void mOnClick(View v) {
@@ -554,10 +971,181 @@ public class DoingExerciseActivity extends AppCompatActivity {
         return myFinishDialogBox;
     }
 
+    public int pushUpMonitor(float value){
+        values[connectedAgentType] =  value ;
+        if(value > pushUpThreshold){
+            exercisePhase.setText("Falling");
+            isRisingPeak = true;
+            if (isFallingPeak) {
+                vib.vibrate(100);
+            }
+            isFallingPeak = false;
+            return 1;
+        }else if(value < pushUpThreshold) {
+            isFallingPeak = true;
+            exercisePhase.setText("Rising");
+            if (isRisingPeak) {
+                currentRecordCount++;
+                setCommandToHERE_agent((byte) 'a');
+                vib.vibrate(100);
+            }
+            isRisingPeak = false;
+            return -1;
+        }else{
+
+            exercisePhase.setText("Static");
+            return 0;
+        }
+    }
+
+    public int dumbbellMonitor(float value) {
+        values[connectedAgentType] = LPF(value, connectedAgentType) - longTermAvg(value, connectedAgentType);
+        if (values[connectedAgentType] > 20) {
+            exercisePhase.setText(currentRecordCount / 2 + ":  Rising");
+            dumbel.setDetectingMode(1);
+        } else if (values[connectedAgentType] < -20) {
+            exercisePhase.setText(currentRecordCount / 2 + ":  Falling");
+            dumbel.setDetectingMode(-1);
+        } else {
+            exercisePhase.setText(currentRecordCount / 2 + ":  Static");
+            dumbel.setDetectingMode(0);
+        }
+        switch (dumbel.peakDetection(new DataPoint(0, values[connectedAgentType]))) {
+            case 1:
+                isRisingPeak = true;
+                if (isFallingPeak) {
+                    vib.vibrate(100);
+                }
+                isFallingPeak = false;
+                return 1;
+            case -1:
+                isFallingPeak = true;
+                if (isRisingPeak) {
+                    currentRecordCount++;
+                    setCommandToHERE_agent((byte) 'a');
+                    vib.vibrate(100);
+                }
+                isRisingPeak = false;
+                return -1;
+            default:
+                return 0;
+        }
+    }
+
+    public int hoopMonitor(float value) {
+        values[connectedAgentType] = LPF(value, connectedAgentType) - longTermAvg(value, connectedAgentType);
+        if (hoop.periodMonitor(new DataPoint((double) (System.currentTimeMillis() - startTime), value))) {
+            exercisePhase.setText("Hooping");
+            currentRecordCount = hoop.getCount();
+            return  1;
+        } else {
+            exercisePhase.setText("is not Periodic");
+            return -1;
+        }
+    }
+
+    private void appendData(String raw) {
+        float value;
+        int what = -1;
+        if (raw != null) {
+            String[] data = raw.split(" ");
+            try {
+                for (int i = 0; i < data.length; i++) {
+                    switch (connectedAgentType){
+                        case MyHereAgent.TYPE_DUMBEL:
+                            if (data[i].charAt(0) == startBit) {
+                                i++;
+                                value = (float) Integer.parseInt(data[++i]) - offsets[connectedAgentType];
+                                dumbbellMonitor(value);
+                                samplingCount++;
+                            }
+
+                            break;
+                        case MyHereAgent.TYPE_PUSH_UP:
+                            if (data[i].charAt(0) == startBit) {
+                                value = (float) Integer.parseInt(data[++i]);
+                                pushUpMonitor(value);
+                                samplingCount++;
+                            }
+                            break;
+                        case MyHereAgent.TYPE_HOOLA_HOOP:
+                            if (data[i].charAt(0) == startBit) {
+                                i++;
+                                value = (float) Integer.parseInt(data[++i]) - offsets[connectedAgentType];
+                                hoopMonitor(value);
+                                samplingCount++;
+                            }
+                            break;
+                        default:
+                            break;
+
+                    }
+                }
+            }catch(NumberFormatException e){
+                Log.e(TAG, e.getMessage());
+            };
+            invalidator.run();
+        }
+    }
+
+    private static IntentFilter makeGattUpdateIntentFilter() {
+        final IntentFilter intentFilter = new IntentFilter();
+        intentFilter.addAction(BluetoothLeService.ACTION_GATT_CONNECTED);
+        intentFilter.addAction(BluetoothLeService.ACTION_GATT_DISCONNECTED);
+        intentFilter.addAction(BluetoothLeService.ACTION_GATT_SERVICES_DISCOVERED);
+        intentFilter.addAction(BluetoothLeService.ACTION_DATA_AVAILABLE);
+        return intentFilter;
+    }
+
+    public boolean setCommandToHERE_agent(byte command){
+        byte[] val = new byte[1];
+        val[0] = command;
+        characteristicTX.setValue(val);
+        boolean status =  mBluetoothLeService.writeCharacteristic(characteristicTX);
+        return status;
+    }
+
+
     @Override
     public void onBackPressed() {
         AlertDialog quitExercisingAlert = askQuitExercising();
         quitExercisingAlert.show();
         //super.onBackPressed();
     }
+
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        registerReceiver(mGattUpdateReceiver, makeGattUpdateIntentFilter());
+        if (mBluetoothLeService != null) {
+            final boolean result = mBluetoothLeService.connect(mDeviceAddress);
+            Log.d(TAG, "Connect request result=" + result);
+
+            if(mConnected) {
+                mBluetoothLeService.writeCharacteristic(characteristicTX);
+                mBluetoothLeService.setCharacteristicNotification(characteristicRX,true);
+            }
+        }
+        startTime = System.currentTimeMillis();
+    }
+
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        unregisterReceiver(mGattUpdateReceiver);
+        mBluetoothLeService = null;
+        mHandler.removeCallbacks(invalidator);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        unbindService(mServiceConnection);
+        mBluetoothLeService = null;
+        mHandler.removeCallbacks(invalidator);
+    }
+
+
 }
