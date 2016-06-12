@@ -1,5 +1,6 @@
 package com.example.user.wase.view.fragment;
 
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -10,9 +11,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.BaseAdapter;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.user.wase.R;
 import com.example.user.wase.model.MyHereAgent;
@@ -23,6 +26,7 @@ import com.example.user.wase.model.RecordEqDateDone;
 import com.example.user.wase.model.RecordForGraph;
 import com.example.user.wase.utility.CalorieCalculator;
 import com.example.user.wase.view.activity.MainActivity;
+import com.example.user.wase.view.activity.MyRecordsActivity;
 import com.jjoe64.graphview.DefaultLabelFormatter;
 import com.jjoe64.graphview.ValueDependentColor;
 import com.jjoe64.graphview.helper.StaticLabelsFormatter;
@@ -43,6 +47,7 @@ public class MyRecordsFragment extends Fragment{
 
     private static final String TAG_RECORD_DATA = "MyRecordsFragment";
 
+    private View currentView;
 
     private GraphView gv;
 
@@ -53,6 +58,7 @@ public class MyRecordsFragment extends Fragment{
     private ImageView iv_character_img;
     private TextView tv_nick_name;
     private TextView tv_msg;
+    private Button btn_seemore;
 
     private ArrayList<MyRecord> arrMyRecords;
     private ArrayList<RecordForGraph> arrGraphElements;
@@ -66,7 +72,7 @@ public class MyRecordsFragment extends Fragment{
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
-        View currentView = inflater.inflate(R.layout.fragment_myrecords, container, false);
+        currentView = inflater.inflate(R.layout.fragment_myrecords, container, false);
 
         /**
          * Youngmin
@@ -145,6 +151,13 @@ public class MyRecordsFragment extends Fragment{
         super.onResume();
     }
 
+
+    /**
+     * Check if
+     */
+    private void checkPrizeAchievement() {
+
+    }
 
 
     private void drawDailyCalorieGraph(View fragmentView) {
@@ -608,6 +621,15 @@ public class MyRecordsFragment extends Fragment{
         //Initialize GraphView
         gv = (GraphView) fragmentView.findViewById(R.id.week_bar_graph);
 
+        btn_seemore = (Button) fragmentView.findViewById(R.id.record_btn_seemore);
+        btn_seemore.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent_myrecords = new Intent(getContext(), MyRecordsActivity.class);
+                startActivity(intent_myrecords);
+            }
+        });
+
         iv_character_img = (ImageView) fragmentView.findViewById(R.id.record_character_img);
         tv_nick_name = (TextView) fragmentView.findViewById(R.id.record_nick_name);
         tv_msg = (TextView) fragmentView.findViewById(R.id.record_msg);
@@ -825,4 +847,6 @@ public class MyRecordsFragment extends Fragment{
 
         return Integer.parseInt(dayString);
     }
+
+
 }

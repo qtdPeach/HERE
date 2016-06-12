@@ -66,17 +66,47 @@
             </LinearLayout>
 
 
-            <TextView
+            <LinearLayout
+                android:orientation="horizontal"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:paddingLeft="15dp"
-                android:paddingTop="5dp"
-                android:paddingBottom="5dp"
-                android:layout_marginTop="10dp"
-                android:textColor="@color/colorSkyBlue"
-                android:textStyle="bold"
-                android:textSize="18dp"
-                android:text="Weekly Records"/>
+                android:layout_height="wrap_content">
+
+
+                <TextView
+                    android:layout_width="0px"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="4"
+                    android:paddingLeft="15dp"
+                    android:paddingTop="5dp"
+                    android:paddingBottom="5dp"
+                    android:layout_marginTop="10dp"
+                    android:textColor="@color/colorSkyBlue"
+                    android:textStyle="bold"
+                    android:textSize="18dp"
+                    android:text="Weekly Records"/>
+
+                <LinearLayout
+                    android:orientation="horizontal"
+                    android:layout_width="0px"
+                    android:layout_height="match_parent"
+                    android:gravity="right|bottom"
+                    android:layout_weight="1">
+
+                    <Button
+                        android:id="@+id/record_btn_seemore"
+                        android:layout_width="30dp"
+                        android:layout_height="30dp"
+                        android:background="@drawable/icon_seemore_threelines"
+                        android:layout_marginRight="12dp"
+                        android:layout_marginBottom="3dp"
+                        android:onClick="mOnClick"
+                        />
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+
 
             <View
                 android:layout_width="match_parent"

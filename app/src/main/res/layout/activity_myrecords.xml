@@ -20,7 +20,7 @@
         android:background="@color/colorPrimaryDark"
         android:textColor="#ffffff"
         android:textStyle="bold"
-        android:text="My Prizes"/>
+        android:text="My Prizes in This Week"/>
 
     <LinearLayout
         android:orientation="horizontal"
@@ -35,15 +35,16 @@
             android:layout_weight="1">
 
             <ImageView
+                android:id="@+id/setting_myrecord_prize_p"
                 android:layout_width="100dp"
                 android:layout_height="100dp"
                 android:padding="10dp"
-                android:src="@drawable/prize_p"/>
+                android:src="@drawable/prize_p_bw"/>
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Prize 1"
+                android:text="PATIENCE"
                 android:textSize="18dp"
                 android:textColor="@color/colorSkyBlue"
                 android:textStyle="bold"
@@ -53,7 +54,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_margin="5dp"
-                android:text="Achieve more than something!"
+                android:text="Do your exercise with HERE more than one hour!"
                 android:gravity="center"
                 android:layout_gravity="center"/>
         </LinearLayout>
@@ -65,15 +66,16 @@
             android:layout_weight="1">
 
             <ImageView
+                android:id="@+id/setting_myrecord_prize_e"
                 android:layout_width="100dp"
                 android:layout_height="100dp"
                 android:padding="10dp"
-                android:src="@drawable/prize_e"/>
+                android:src="@drawable/prize_e_bw"/>
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Prize 2"
+                android:text="ENERGY"
                 android:textSize="18dp"
                 android:textColor="@color/colorSkyBlue"
                 android:textStyle="bold"
@@ -83,7 +85,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_margin="5dp"
-                android:text="Achieve more than something!"
+                android:text="Hit your past history records for all agents!"
                 android:gravity="center"
                 android:layout_gravity="center"/>
         </LinearLayout>
@@ -95,15 +97,16 @@
             android:layout_weight="1">
 
             <ImageView
+                android:id="@+id/setting_myrecord_prize_d"
                 android:layout_width="100dp"
                 android:layout_height="100dp"
                 android:padding="10dp"
-                android:src="@drawable/prize_d"/>
+                android:src="@drawable/prize_d_bw"/>
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Prize 3"
+                android:text="DILIGENCE"
                 android:textSize="18dp"
                 android:textColor="@color/colorSkyBlue"
                 android:textStyle="bold"
@@ -113,7 +116,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_margin="5dp"
-                android:text="Achieve more than something!"
+                android:text="Do exercise more than a week straight!"
                 android:gravity="center"
                 android:layout_gravity="center"/>
         </LinearLayout>

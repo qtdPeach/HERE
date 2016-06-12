@@ -55,6 +55,10 @@ public class MainActivity extends AppCompatActivity
     public static MyRoutine mySelectedRoutine;              //My currently selected routine
     public static MyRecord myCurrentRecord;                   //My today's record (start-end)
 
+    public static boolean achievePrizeP;
+    public static boolean achievePrizeE;
+    public static boolean achievePrizeD;
+
     private TabLayout tabLayout;
     private ViewPager viewPager;
 
@@ -78,6 +82,10 @@ public class MainActivity extends AppCompatActivity
         mySelectedAgent = null;         //My currently selected agent (exercising)
         mySelectedRoutine = null;       //My currently selected routine
         myCurrentRecord = null;         //My today's record (start-end)
+
+        achievePrizeP = false;
+        achievePrizeD = false;
+        achievePrizeE = false;
 
         /* Initialize Database */
         hereDB = new DatabaseHelper(getApplicationContext());
@@ -267,67 +275,49 @@ public class MainActivity extends AppCompatActivity
         switch (item.getItemId()) {
             //Test page
             case R.id.nav_dbtest:
-                //TODO: Bluetooth test activity
                 //Move to test page
                 Intent dbtestIntent = new Intent(this, DatabaseTestActivity.class);
                 startActivity(dbtestIntent);
                 break;
             //Test page
             case R.id.nav_testpage:
-                //TODO: Bluetooth test activity
                 //Move to test page
                 Intent testIntent = new Intent(this, WorkoutRecords.class);
                 startActivity(testIntent);
                 break;
             //My exercise equipments
             case R.id.nav_myequipments:
-                Toast.makeText(getApplicationContext(), "MY EXERCISE EQUIPMENTS", Toast.LENGTH_SHORT).show();
-                //TODO: Activity transition (EquipmentsActivity)
-
+//                Toast.makeText(getApplicationContext(), "MY EXERCISE EQUIPMENTS", Toast.LENGTH_SHORT).show();
                 Intent intent_myequipments = new Intent(getApplicationContext(), MyEquipmentsActivity.class);
                 startActivity(intent_myequipments);
                 break;
             //My exercise routines
             case R.id.nav_myroutine:
-                Toast.makeText(getApplicationContext(), "MY EXERCISE ROUTINES", Toast.LENGTH_SHORT).show();
-                //TODO: Activity transition (RoutinesActivity)
-
+//                Toast.makeText(getApplicationContext(), "MY EXERCISE ROUTINES", Toast.LENGTH_SHORT).show();
                 Intent intent_myroutines = new Intent(getApplicationContext(), MyRoutinesActivity.class);
                 startActivity(intent_myroutines);
                 break;
             //My exercise record
             case R.id.nav_myrecord:
-                Toast.makeText(getApplicationContext(), "MY EXERCISE RECORDS", Toast.LENGTH_SHORT).show();
-                //TODO: Activity transition (RecordActivity)
-
+//                Toast.makeText(getApplicationContext(), "MY EXERCISE RECORDS", Toast.LENGTH_SHORT).show();
                 Intent intent_myrecords = new Intent(getApplicationContext(), MyRecordsActivity.class);
                 startActivity(intent_myrecords);
                 break;
-//            //My alarm
-//            case R.id.nav_alarm_myalarm:
-//                Toast.makeText(getApplicationContext(), "MY ALARM LIST", Toast.LENGTH_SHORT).show();
-//                //TODO: Activity transition (AlarmActivity)
-//                break;
             //My information setting
             case R.id.nav_mng_myinfo:
-                Toast.makeText(getApplicationContext(), "MY INFORMATION SETTING", Toast.LENGTH_SHORT).show();
-                //TODO: Activity transition (MyInfoActivity)
-
+//                Toast.makeText(getApplicationContext(), "MY INFORMATION SETTING", Toast.LENGTH_SHORT).show();
                 Intent intent_settingmyinfo = new Intent(getApplicationContext(), SettingMyInfoActivity.class);
                 startActivity(intent_settingmyinfo);
                 break;
             //App setting
             case R.id.nav_mng_appsetting:
-                Toast.makeText(getApplicationContext(), "APPLICATION SETTING", Toast.LENGTH_SHORT).show();
-                //TODO: Activity transition (AppSettingActivity)
-
+//                Toast.makeText(getApplicationContext(), "APPLICATION SETTING", Toast.LENGTH_SHORT).show();
                 Intent intent_settingappinfo = new Intent(getApplicationContext(), SettingAppInfoActivity.class);
                 startActivity(intent_settingappinfo);
                 break;
             //Help
             case R.id.nav_mng_showhelp:
-                Toast.makeText(getApplicationContext(), "SHOW HELP DIALOG", Toast.LENGTH_SHORT).show();
-                //TODO: Dialog (HelpDialog)
+//                Toast.makeText(getApplicationContext(), "SHOW HELP DIALOG", Toast.LENGTH_SHORT).show();
 
                 SupportHelpFragment fragment = new SupportHelpFragment();
                 FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
@@ -343,8 +333,7 @@ public class MainActivity extends AppCompatActivity
                 break;
             //Application information
             case R.id.nav_mng_showappinfo:
-                Toast.makeText(getApplicationContext(), "SHOW APP INFO DIALOG", Toast.LENGTH_SHORT).show();
-                //TODO: Dialog (AppInfoDialog)
+//                Toast.makeText(getApplicationContext(), "SHOW APP INFO DIALOG", Toast.LENGTH_SHORT).show();
 
                 Intent intent_supportappinfo = new Intent(getApplicationContext(), SupportAppInfoActivity.class);
                 startActivity(intent_supportappinfo);
