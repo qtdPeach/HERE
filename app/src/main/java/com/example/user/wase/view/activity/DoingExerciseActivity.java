@@ -332,7 +332,7 @@ public class DoingExerciseActivity extends AppCompatActivity {
                             isSoundFirst = false;
                         }
                     }
-                    if (currentAgent.getGoalTime() != -1 && currentRecordTime == currentAgent.getGoalTime() * currentAgent.getGoalTime()) {
+                    if (currentAgent.getGoalTime() != -1 && currentRecordTime == currentAgent.getGoalTime() * currentAgent.getGoalSet()) {
                         if (isSoundFirst) {
                             soundPool.play(soundId1, 1, 1, 0, 0, 1);
                             isSoundFirst = false;
