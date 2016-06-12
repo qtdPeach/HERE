@@ -384,7 +384,7 @@ public class EquipmentScanner extends Fragment {
             if(!mLEdeviceList.contains(device)) {
                 mLEdeviceList.add(device);
                 if(!pairedEquipList.contains(device.getAddress())){
-                    if(device.getName()!=null && device.getName().contains("HERE")) {
+                    if(device.getName().contains("HERE")) {
                         if(pairedEquipList.size() == 0){
                             if (mBluetoothLeService != null) {
                                 mDeviceAddress = device.getAddress();
