@@ -135,12 +135,12 @@ public class EquipmentScanner extends Fragment {
             } else if (BluetoothLeService.ACTION_DATA_AVAILABLE.equals(action)) {
                 if(mBluetoothLeService != null) {
                     count++;
-                    if (count < 16) {
-                        setCommandToHERE_agent((byte)(80 + count));
+                    if(count == 0){
+                        setCommandToHERE_agent((byte) 95);
+                    }if (count < 16) {
                         if (setCommandToHERE_agent(count)) {
                             count--;
                         }
-
                     }
                     else if (count == 18 && pairedEquipList.size() > 1) {
                         found ++;
@@ -406,7 +406,15 @@ public class EquipmentScanner extends Fragment {
                         } else {
                             connectedAgentType = MyHereAgent.TYPE_OTHERS;
                         }
-                        pairedEquipList.add(new MyHereAgent(device.getAddress(), device.getName(), connectedAgentType, "2016-04-18", "2"));
+
+                        String deviceAddress = device.getAddress();
+                        String deviceName = device.getName();
+                        String deviceMajorId = parseMajorId(device.getName());
+                        String deviceMinorId = parseMinorId(device.getName());
+                        int deviceType = getTypeByMinorId(deviceMinorId);
+
+                        pairedEquipList.add(new MyHereAgent(deviceAddress, deviceName, deviceType, deviceMajorId, deviceMinorId));
+
 
                     }
                 }
@@ -449,7 +457,7 @@ public class EquipmentScanner extends Fragment {
             ImageView eqTypeImage = (ImageView)view.findViewById(R.id.equiplist_img);
             TextView eqName = (TextView)view.findViewById(R.id.equiplist_name);
             TextView eqId = (TextView)view.findViewById(R.id.equiplist_id);
-            //TextView eqSensorId = (TextView)view.findViewById(R.id.equiplist_sensorid);
+            TextView eqSensorId = (TextView)view.findViewById(R.id.equiplist_sensorid);
 
             switch (pairedEquipList.get(i).getMyeqType()) {
                 case MyHereAgent.TYPE_DUMBEL:
@@ -472,7 +480,9 @@ public class EquipmentScanner extends Fragment {
 
             eqName.setText(pairedEquipList.get(i).getMyeqName());
             eqId.setText(pairedEquipList.get(i).getMyeqMacId());
-            //eqSensorId.setText(pairedEquipList.get(i).getEquipmentSensorID());
+            eqSensorId.setText(pairedEquipList.get(i).getMyeqBeaconMajorId() + "-" + pairedEquipList.get(i).getMyeqBeaconMinorId());
+
+
 
             return view;
         }
@@ -495,5 +505,37 @@ public class EquipmentScanner extends Fragment {
             }catch (Exception e){};
         }
     };
+
+    private String parseMajorId(String deviceName) {
+        if (deviceName.contains("-")) {
+            int separatorLoc = deviceName.indexOf("-");
+            return deviceName.substring(0, separatorLoc);
+        } else {
+            return "";
+        }
+    }
+
+    private String parseMinorId(String deviceName) {
+        if (deviceName.contains("-")) {
+            int separatorLoc = deviceName.indexOf("-");
+            return deviceName.substring(separatorLoc + 1, deviceName.length());
+        } else {
+            return "";
+        }
+    }
+
+    private int getTypeByMinorId(String minorId) {
+        if (minorId.contains("DB") || minorId.contains("Dumbbell") || minorId.contains("Dumbbel") || minorId.contains("Dumbel")) {
+            return 1;
+        }else if (minorId.contains("PU") || minorId.contains("Pushupbar")) {
+            return 2;
+        }else if (minorId.contains("JR") || minorId.contains("Jumprope")) {
+            return 3;
+        }else if (minorId.contains("HH") || minorId.contains("Hoolahoop")) {
+            return 4;
+        } else {
+            return 0;
+        }
+    }
 
 }

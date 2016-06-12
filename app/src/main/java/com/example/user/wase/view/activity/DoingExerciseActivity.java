@@ -181,7 +181,20 @@ public class DoingExerciseActivity extends AppCompatActivity {
                 finish();
             }
             // Automatically connects to the device upon successful start-up initialization.
-            mBluetoothLeService.connect(mDeviceAddress);
+            final Runnable connection = new Runnable() {
+                @Override
+                public void run() {
+                    final boolean state = mBluetoothLeService.connect(mDeviceAddress);
+                    if(!state){
+                        try {
+                            wait(100);
+                        }catch (Exception e){}
+                        run();
+                    }else{
+                    }
+                }
+            };
+            connection.run();
         }
 
         @Override
@@ -529,6 +542,15 @@ public class DoingExerciseActivity extends AppCompatActivity {
             }
             tv_eq_name.setText(mDeviceName);
             tv_eq_goal.setText("000");
+
+            Intent gattServiceIntent = new Intent(this, BluetoothLeService.class);
+            bindService(gattServiceIntent, mServiceConnection, BIND_AUTO_CREATE);
+            if(mBluetoothLeService != null) {
+                mBluetoothLeService.initialize();
+                mBluetoothLeService.disconnect();
+                mBluetoothLeService.connect(mDeviceAddress);
+            }
+
         } else {
 
             if (currentOrder == 0) {
@@ -561,12 +583,16 @@ public class DoingExerciseActivity extends AppCompatActivity {
                         mDeviceName += "JR";
                         break;
                 }
-                mDeviceAddress = agentRecords.get(currentOrder).getAgentMacId();
-                Intent gattServiceIntent = new Intent(this, BluetoothLeService.class);
-                bindService(gattServiceIntent, mServiceConnection, BIND_AUTO_CREATE);
-                mBluetoothLeService.disconnect();
-                mBluetoothLeService.initialize();
-                mBluetoothLeService.connect(mDeviceAddress);
+
+                if(mDeviceAddress != agentRecords.get(currentOrder).getAgentMacId()){
+                    mDeviceAddress = agentRecords.get(currentOrder).getAgentMacId();
+                    Intent gattServiceIntent = new Intent(this, BluetoothLeService.class);
+                    bindService(gattServiceIntent, mServiceConnection, BIND_AUTO_CREATE);
+                    mBluetoothLeService.disconnect();
+                    mBluetoothLeService.initialize();
+                    mBluetoothLeService.connect(mDeviceAddress);
+
+                }
             } catch (Exception e) {
             }
         }
@@ -970,39 +996,48 @@ public class DoingExerciseActivity extends AppCompatActivity {
                 .setTitle("Finish exercising")
                 .setMessage("This is the last step of your routine.\nDo you want to finish exercising?")
                 .setPositiveButton("Finish", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        Toast.makeText(getApplicationContext(), "Exercising is stopped.", Toast.LENGTH_SHORT).show();
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                Toast.makeText(getApplicationContext(), "Exercising is stopped.", Toast.LENGTH_SHORT).show();
 
-                        //TODO: Store previous exercise record to agentRecords
-                        agentRecords.get(currentOrder).setRecordCount(currentRecordCount);
-                        agentRecords.get(currentOrder).setRecordTime(currentRecordTime);
+                                //TODO: Store previous exercise record to agentRecords
+                                agentRecords.get(currentOrder).setRecordCount(currentRecordCount);
+                                agentRecords.get(currentOrder).setRecordTime(currentRecordTime);
 
-                        Log.d("agentRecords", "Exercise is finished.");
-                        for (int i = 0; i < numAgents; i++) {
-                            Log.d("agentRecords", "agentRecords[" + i + "]: " + agentRecords.get(i).getRecordCount() + " / " + agentRecords.get(i).getRecordTime());
+                                Log.d("agentRecords", "Exercise is finished.");
+                                for (int i = 0; i < numAgents; i++) {
+                                    Log.d("agentRecords", "agentRecords[" + i + "]: " + agentRecords.get(i).getRecordCount() + " / " + agentRecords.get(i).getRecordTime());
+                                }
+
+
+                                //Go to FinishExerciseActivity
+                                Intent intent_finishexercise = new Intent(getApplicationContext(), FinishExerciseActivity.class);
+                                intent_finishexercise.putExtra("agentRecords", agentRecords);
+                                if (myRoutine == null) {
+                                    intent_finishexercise.putExtra("routineName", "No routine");
+
+                                } else {
+                                    intent_finishexercise.putExtra("routineName", myRoutine.getRoutineName());
+                                }
+                                startActivity(intent_finishexercise);
+                                DoingExerciseActivity.this.finish();
+
+                                dialog.dismiss();
+                            }
                         }
 
+                )
+                            .
 
-                        //Go to FinishExerciseActivity
-                        Intent intent_finishexercise = new Intent(getApplicationContext(), FinishExerciseActivity.class);
-                        intent_finishexercise.putExtra("agentRecords", agentRecords);
-                        intent_finishexercise.putExtra("routineName", myRoutine.getRoutineName());
-                        startActivity(intent_finishexercise);
-                        DoingExerciseActivity.this.finish();
-
-                        dialog.dismiss();
-                    }
-                })
-                .setNegativeButton("Do more!", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        if (!isTimerRunning) {
-                            isTimerRunning = true;
+                    setNegativeButton("Do more!", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            if (!isTimerRunning) {
+                                isTimerRunning = true;
+                            }
+                            dialog.dismiss();
                         }
-                        dialog.dismiss();
-                    }
-                })
+                    })
                 .create();
 
         myFinishDialogBox.setCanceledOnTouchOutside(false);
