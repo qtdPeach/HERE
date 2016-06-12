@@ -186,6 +186,7 @@ public class DoingExerciseActivity extends AppCompatActivity {
                 public void run() {
                     final boolean state = mBluetoothLeService.connect(mDeviceAddress);
                     if(!state){
+                        Log.d("", "connect fail");
                         try {
                             wait(100);
                         }catch (Exception e){}
@@ -274,6 +275,22 @@ public class DoingExerciseActivity extends AppCompatActivity {
 
 
         myRoutine = MainActivity.mySelectedRoutine;
+
+        Log.d("mySelectedRoutine", "myRoutine id" + myRoutine.getRoutineId());
+        Log.d("mySelectedRoutine", "myRoutine name" + myRoutine.getRoutineName());
+        Log.d("mySelectedRoutine", "myRoutine eq1-id" + myRoutine.getRoutineEq1Id());
+        Log.d("mySelectedRoutine", "myRoutine eq1-goal" + myRoutine.getRoutineEq1Goal());
+        Log.d("mySelectedRoutine", "myRoutine eq2-id" + myRoutine.getRoutineEq2Id());
+        Log.d("mySelectedRoutine", "myRoutine eq2-goal" + myRoutine.getRoutineEq2Goal());
+        Log.d("mySelectedRoutine", "myRoutine eq3-id" + myRoutine.getRoutineEq3Id());
+        Log.d("mySelectedRoutine", "myRoutine eq3-goal" + myRoutine.getRoutineEq3Goal());
+        Log.d("mySelectedRoutine", "myRoutine eq4" + myRoutine.getRoutineEq4Id());
+        Log.d("mySelectedRoutine", "myRoutine eq4" + myRoutine.getRoutineEq4Goal());
+        Log.d("mySelectedRoutine", "myRoutine eq5" + myRoutine.getRoutineEq5Id());
+        Log.d("mySelectedRoutine", "myRoutine eq5" + myRoutine.getRoutineEq5Goal());
+
+
+
 
 
         //getActionBar().setTitle(mDeviceName);
@@ -433,6 +450,7 @@ public class DoingExerciseActivity extends AppCompatActivity {
         tv_eq_goal = (TextView) findViewById(R.id.doingexercise_tv_eq_goal);
         tv_eq_count = (TextView) findViewById(R.id.doingexercise_tv_eq_count);
         tv_eq_samplingRate = (TextView) findViewById(R.id.sampling_rate);
+
         initMeasureValues();
 
     }
@@ -524,6 +542,9 @@ public class DoingExerciseActivity extends AppCompatActivity {
     private void initAgentValues() {
         if(myRoutine == null){
 
+            Log.d("mySelectedRoutine", "myRoutine is null");
+
+
             final Intent intent = getIntent();
             mDeviceName = intent.getStringExtra(EXTRAS_DEVICE_NAME);
             mDeviceAddress = intent.getStringExtra(EXTRAS_DEVICE_ADDRESS);
@@ -538,37 +559,59 @@ public class DoingExerciseActivity extends AppCompatActivity {
                 connectedAgentType = MyHereAgent.TYPE_JUMP_ROPE;
             } else {
                 connectedAgentType = MyHereAgent.TYPE_OTHERS;
-                Toast.makeText(this, "Uncompatible Equipment", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "Incompatible Equipment", Toast.LENGTH_SHORT).show();
             }
             tv_eq_name.setText(mDeviceName);
             tv_eq_goal.setText("000");
 
-            Intent gattServiceIntent = new Intent(this, BluetoothLeService.class);
-            bindService(gattServiceIntent, mServiceConnection, BIND_AUTO_CREATE);
-            if(mBluetoothLeService != null) {
-                mBluetoothLeService.initialize();
-                mBluetoothLeService.disconnect();
-                mBluetoothLeService.connect(mDeviceAddress);
-            }
-
         } else {
+
+            Log.d("mySelectedRoutine", "myRoutine is not null");
+
+            String currentAgentMacId;
+            String currentAgentGoal;
 
             if (currentOrder == 0) {
                 tv_eq_order.setText(String.format("%dst", currentOrder + 1) + " Exercise");
-
+                currentAgentMacId = myRoutine.getRoutineEq1Id();
+                currentAgentGoal = myRoutine.getRoutineEq1Goal();
             } else if (currentOrder == 1) {
                 tv_eq_order.setText(String.format("%dnd", currentOrder + 1) + " Exercise");
+                currentAgentMacId = myRoutine.getRoutineEq2Id();
+                currentAgentGoal = myRoutine.getRoutineEq2Goal();
             } else if (currentOrder == 2) {
                 tv_eq_order.setText(String.format("%drd", currentOrder + 1) + " Exercise");
+                currentAgentMacId = myRoutine.getRoutineEq3Id();
+                currentAgentGoal = myRoutine.getRoutineEq3Goal();
+            } else if (currentOrder == 3) {
+                tv_eq_order.setText(String.format("%dth", currentOrder + 1) + " Exercise");
+                currentAgentMacId = myRoutine.getRoutineEq4Id();
+                currentAgentGoal = myRoutine.getRoutineEq4Goal();
             } else {
                 tv_eq_order.setText(String.format("%dth", currentOrder + 1) + " Exercise");
+                currentAgentMacId = myRoutine.getRoutineEq5Id();
+                currentAgentGoal = myRoutine.getRoutineEq5Goal();
             }
+
+            MyHereAgent currentAgent = MainActivity.hereDB.getMyHereAgent(currentAgentMacId);
+
+
+
             try {
-                iv_current_eq.setImageResource(findImage(agentRecords.get(currentOrder).getAgentType()));
-                tv_eq_name.setText(agentRecords.get(currentOrder).getAgentName());
-                tv_eq_goal.setText(agentRecords.get(currentOrder).makeGoalString());
-                connectedAgentType =  agentRecords.get(currentOrder).getAgentType();
+                iv_current_eq.setImageResource(findImage(currentAgent.getMyeqType()));
+                tv_eq_name.setText(currentAgent.getMyeqName());
+                tv_eq_goal.setText(makeGoalString(currentAgentGoal));
+
+                connectedAgentType =  currentAgent.getMyeqType();
+
+                Log.d("mySelectedRoutine", "currentAgent-Name: " + currentAgent.getMyeqName());
+                Log.d("mySelectedRoutine", "currentAgent-Type: " + currentAgent.getMyeqType());
+                Log.d("mySelectedRoutine", "currentAgent-MacId: " + currentAgent.getMyeqMacId());
+                Log.d("mySelectedRoutine", "currentAgent-Goal: " + makeGoalString(currentAgentGoal));
+
+
                 mDeviceName = "HERE-";
+
                 switch (connectedAgentType){
                     case MyHereAgent.TYPE_DUMBEL:
                         mDeviceName += "DB";
@@ -584,8 +627,8 @@ public class DoingExerciseActivity extends AppCompatActivity {
                         break;
                 }
 
-                if(mDeviceAddress != agentRecords.get(currentOrder).getAgentMacId()){
-                    mDeviceAddress = agentRecords.get(currentOrder).getAgentMacId();
+                if(mDeviceAddress != currentAgent.getMyeqMacId()){
+                    mDeviceAddress = currentAgent.getMyeqMacId();
                     Intent gattServiceIntent = new Intent(this, BluetoothLeService.class);
                     bindService(gattServiceIntent, mServiceConnection, BIND_AUTO_CREATE);
                     mBluetoothLeService.disconnect();
@@ -631,15 +674,15 @@ public class DoingExerciseActivity extends AppCompatActivity {
         boolean isMoreAgent = true;
 
         if(myRoutine == null) {
-            numAgents++;
-            RecordAgent tmpAgentRecord1 = new RecordAgent();
-            tmpAgentRecord1.setAgentMacId(mDeviceAddress);
-            tmpAgentRecord1.setAgentName(mDeviceName);
-            tmpAgentRecord1.setAgentType(MyHereAgent.TYPE_DUMBEL);
-            tmpAgentRecord1.setGoal(1, 10, -1);
-            tmpAgentRecord1.setRecordCount(10);
-            agentRecords.add(tmpAgentRecord1);
-            return;
+//            numAgents++;
+//            RecordAgent tmpAgentRecord1 = new RecordAgent();
+//            tmpAgentRecord1.setAgentMacId(mDeviceAddress);
+//            tmpAgentRecord1.setAgentName(mDeviceName);
+//            tmpAgentRecord1.setAgentType(MyHereAgent.TYPE_DUMBEL);
+//            tmpAgentRecord1.setGoal(1, 10, -1);
+//            tmpAgentRecord1.setRecordCount(10);
+//            agentRecords.add(tmpAgentRecord1);
+//            return;
         }
         /* EQ1 */
         if ((myRoutine.getRoutineEq1Id().equals("-1") ||
@@ -1225,5 +1268,74 @@ public class DoingExerciseActivity extends AppCompatActivity {
         }catch(Exception e){};
     }
 
+
+    /**
+     * @return              Parsed/Refined String
+     */
+    public String makeGoalString(String rawGoal) {
+
+
+        String goalSentence = "";
+
+        int goalType = 0;   //1: count times, 2: count secs, 3: count times & secs
+
+        String set = "";    //sets
+        String count = "";  //times
+        String time = "";   //secs
+
+        StringTokenizer tokens = new StringTokenizer(rawGoal, "|");
+        set = tokens.nextToken();
+        count = tokens.nextToken();
+        time = tokens.nextToken();
+
+        Log.d("TokenizerExercise", "set[" + set + "], count[" + count + "], time[" + "]");
+
+        //Single or multiple
+        int intSet = Integer.parseInt(set);
+        int intCount = Integer.parseInt(count);
+        int intTime = Integer.parseInt(time);
+
+        set += " SET";
+        count += " TIME";
+        time += " SEC";
+
+        //Check goal type
+        if (intCount == -1) {
+            goalType = 2;
+        }
+        if (intTime == -1) {
+            goalType = 1;
+        }
+        if (intTime != -1 && intCount != -1) {
+            goalType = 3;
+        }
+
+        if (intSet > 1) {
+            set += "S";
+        }
+        if (intCount > 1) {
+            count += "S";
+        }
+        if (intTime > 1) {
+            time += "S";
+        }
+
+        switch (goalType) {
+            //Count times (회수)
+            case 1:
+                goalSentence = count + " X " + set;
+                break;
+            //Count secs (시간)
+            case 2:
+                goalSentence = time + " X " + set;
+                break;
+            // Count both times & secs
+            case 3:
+                goalSentence = count + " X " + set + " (" + time + ")";
+                break;
+        }
+
+        return goalSentence;
+    }
 
 }

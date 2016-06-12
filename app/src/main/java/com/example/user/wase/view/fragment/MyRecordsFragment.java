@@ -320,11 +320,6 @@ public class MyRecordsFragment extends Fragment{
         Log.d("HashMapEq", "mapGroupByEq.values().size(): " +  mapGroupByEq.values().size());
         Log.d("HashMapEq", "mapGroupByEq.size(): " + mapGroupByEq.size());
         Log.d("HashMapEq", "mapGroupByEq.keySet().size(): " + mapGroupByEq.keySet().size());
-        if(mapGroupByEq.keySet().size()>0) {
-            Log.d("HashMapEq", "mapGroupByEq.keySet().toArray()[0]: " + mapGroupByEq.keySet().toArray()[0]);
-            Log.d("HashMapEq", "mapGroupByEq.keySet().toArray()[1]: " + mapGroupByEq.keySet().toArray()[1]);
-            Log.d("HashMapEq", "mapGroupByEq.keySet().toArray()[2]: " + mapGroupByEq.keySet().toArray()[2]);
-        }
 
         ArrayList<MyHereAgent> myAllAgents = new ArrayList<MyHereAgent>();
         if(MainActivity.hereDB.getAllMyHereAgents() != null)
