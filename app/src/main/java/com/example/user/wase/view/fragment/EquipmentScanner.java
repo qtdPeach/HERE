@@ -125,6 +125,7 @@ public class EquipmentScanner extends Fragment {
         public void onReceive(Context context, Intent intent) {
             final String action = intent.getAction();
             if (BluetoothLeService.ACTION_GATT_CONNECTED.equals(action)) {
+                count = 0;
                 mConnected = true;
             } else if (BluetoothLeService.ACTION_GATT_DISCONNECTED.equals(action)) {
                 mConnected = false;
@@ -134,17 +135,26 @@ public class EquipmentScanner extends Fragment {
             } else if (BluetoothLeService.ACTION_DATA_AVAILABLE.equals(action)) {
                 if(mBluetoothLeService != null) {
                     count++;
-                    if(count < 16)
-                        if(setCommandToHERE_agent(count))count--;
-                    else if(count < 17)
-                        if(setCommandToHERE_agent((byte) 0x67));
-                    else if(count == 18) {
-                            found = (found+1)%(pairedEquipList.size());
-                            mBluetoothLeService.initialize();
-                            mDeviceAddress = pairedEquipList.get(found).getMyeqMacId();
-                            final boolean result = mBluetoothLeService.connect(mDeviceAddress);
-                            if(!result) count--;
+                    if (count < 16) {
+                        setCommandToHERE_agent((byte)(80 + count));
+                        if (setCommandToHERE_agent(count)) {
+                            count--;
+                        }
+
                     }
+                    else if (count == 18 && pairedEquipList.size() > 1) {
+                        found = (found + 1) % (pairedEquipList.size());
+                        mDeviceAddress = pairedEquipList.get(found).getMyeqMacId();
+                        Intent gattServiceIntent = new Intent(getActivity(), BluetoothLeService.class);
+                        getActivity().bindService(gattServiceIntent, mServiceConnection, getActivity().BIND_AUTO_CREATE);
+                        mBluetoothLeService.disconnect();
+                        mBluetoothLeService.initialize();
+                        mBluetoothLeService.connect(mDeviceAddress);
+                    }else{
+
+                        count = 0;
+                    }
+
                 }
             }
         }
@@ -192,7 +202,13 @@ public class EquipmentScanner extends Fragment {
                 intent.putExtra(DoingExerciseActivity.EXTRAS_DEVICE_NAME, device.getMyeqName());
                 intent.putExtra(DoingExerciseActivity.EXTRAS_DEVICE_ADDRESS, device.getMyeqMacId());
                 if (mScanning) {
-                    scanLeDevice(false);
+                    mBluetoothAdapter.stopLeScan(mLeScanCallback);
+                    mScanning = false;
+                }
+                if(mBluetoothLeService != null){
+                    mBluetoothLeService.disconnect();
+                    mBluetoothLeService.close();
+                    mBluetoothLeService = null;
                 }
                 startActivity(intent);
             }
@@ -281,8 +297,10 @@ public class EquipmentScanner extends Fragment {
         super.onPause();
         Log.d(TAG, "onPause");
         scanLeDevice(false);
-        mBluetoothLeService.disconnect();
-        mBluetoothLeService.close();
+        if(mBluetoothLeService != null) {
+            mBluetoothLeService.disconnect();
+            mBluetoothLeService.close();
+        }
         try {
             getActivity().unregisterReceiver(mGattUpdateReceiver);
             getActivity().unbindService(mServiceConnection);
@@ -294,8 +312,10 @@ public class EquipmentScanner extends Fragment {
     @Override
     public void onDestroy() {
         super.onDestroy();
-        mBluetoothLeService.disconnect();
-        mBluetoothLeService.close();
+        if(mBluetoothLeService != null) {
+            mBluetoothLeService.disconnect();
+            mBluetoothLeService.close();
+        }
         try {
             getActivity().unregisterReceiver(mGattUpdateReceiver);
             getActivity().unbindService(mServiceConnection);
