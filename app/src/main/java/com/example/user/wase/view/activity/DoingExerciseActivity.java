@@ -605,14 +605,14 @@ public class DoingExerciseActivity extends AppCompatActivity {
         boolean isMoreAgent = true;
 
         if(myRoutine == null) {
-//            numAgents++;
-//            RecordAgent tmpAgentRecord1 = new RecordAgent();
-//            tmpAgentRecord1.setAgentMacId(mDeviceAddress);
-//            tmpAgentRecord1.setAgentName(mDeviceName);
-//            tmpAgentRecord1.setAgentType(MyHereAgent.TYPE_DUMBEL);
-//            tmpAgentRecord1.setGoal(1, 10, -1);
-//            tmpAgentRecord1.setRecordCount(10);
-//            agentRecords.add(tmpAgentRecord1);
+            numAgents++;
+            RecordAgent tmpAgentRecord1 = new RecordAgent();
+            tmpAgentRecord1.setAgentMacId(mDeviceAddress);
+            tmpAgentRecord1.setAgentName(mDeviceName);
+            tmpAgentRecord1.setAgentType(MyHereAgent.TYPE_DUMBEL);
+            tmpAgentRecord1.setGoal(1, 10, -1);
+            tmpAgentRecord1.setRecordCount(10);
+            agentRecords.add(tmpAgentRecord1);
             return;
         }
         /* EQ1 */
