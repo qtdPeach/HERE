@@ -57,6 +57,7 @@ public class MyRoutinesActivity extends AppCompatActivity {
     ImageView iv_delete_routine;
 
     RoutineListViewAdapter routineListViewAdapter;
+    List<MyRoutine> myRoutines;
 
     int routinePosition = -1;
 
@@ -81,6 +82,7 @@ public class MyRoutinesActivity extends AppCompatActivity {
         actionBar.setTitle("My Exercise Routines");
         actionBar.setDefaultDisplayHomeAsUpEnabled(true);
 
+        myRoutines = new ArrayList<MyRoutine>();
 
         scrollView.setVisibility(View.GONE);
 
@@ -159,6 +161,7 @@ public class MyRoutinesActivity extends AppCompatActivity {
                         } else {
                             int count = np_count.getValue();
                             int time = np_time.getValue();
+
                             if (count == 0){
                                 count = -1;
                             }
@@ -415,23 +418,28 @@ public class MyRoutinesActivity extends AppCompatActivity {
                                 addedRoutine.setRoutineEq1Goal(addRoutine.get(3));
                             }
                             if(addRoutine.size()>4) {
-                                addedRoutine.setRoutineEq1Id(addRoutine.get(4));
-                                addedRoutine.setRoutineEq1Goal(addRoutine.get(5));
+                                addedRoutine.setRoutineEq2Id(addRoutine.get(4));
+                                addedRoutine.setRoutineEq2Goal(addRoutine.get(5));
                             }
                             if(addRoutine.size()>6) {
-                                addedRoutine.setRoutineEq1Id(addRoutine.get(6));
-                                addedRoutine.setRoutineEq1Goal(addRoutine.get(7));
+                                addedRoutine.setRoutineEq3Id(addRoutine.get(6));
+                                addedRoutine.setRoutineEq3Goal(addRoutine.get(7));
                             }
                             if(addRoutine.size()>8) {
-                                addedRoutine.setRoutineEq1Id(addRoutine.get(8));
-                                addedRoutine.setRoutineEq1Goal(addRoutine.get(9));
+                                addedRoutine.setRoutineEq4Id(addRoutine.get(8));
+                                addedRoutine.setRoutineEq4Goal(addRoutine.get(9));
                             }
                             if(addRoutine.size()>10) {
-                                addedRoutine.setRoutineEq1Id(addRoutine.get(10));
-                                addedRoutine.setRoutineEq1Goal(addRoutine.get(11));
+                                addedRoutine.setRoutineEq5Id(addRoutine.get(10));
+                                addedRoutine.setRoutineEq5Goal(addRoutine.get(11));
                             }
 
                             MainActivity.hereDB.insertRoutine(addedRoutine);
+                            myRoutines = MainActivity.hereDB.getAllMyRoutines();
+
+                            routineTextView.setVisibility(View.GONE);
+                            routineListView.setVisibility(View.VISIBLE);
+
                             routineListViewAdapter.setRoutine(MainActivity.hereDB.getAllMyRoutines());
                             routineListViewAdapter.notifyDataSetChanged();
                             addRoutine.clear();
@@ -527,7 +535,7 @@ public class MyRoutinesActivity extends AppCompatActivity {
     }
 
     private class RoutineListViewAdapter extends BaseAdapter {
-        private List<MyRoutine> myRoutines = new ArrayList<MyRoutine>();
+
 
         public List<MyRoutine> getRoutine(){
             return myRoutines;
@@ -535,7 +543,7 @@ public class MyRoutinesActivity extends AppCompatActivity {
 
         public void setRoutine(List<MyRoutine> routines){
             myRoutines.clear();
-            this.myRoutines = routines;
+            myRoutines = routines;
         }
 
         public RoutineListViewAdapter() {

@@ -601,6 +601,11 @@ public class DatabaseTestActivity extends AppCompatActivity {
                 MainActivity.hereDB.dropAllTables();
                 Toast.makeText(getApplicationContext(), "All tables are dropped.", Toast.LENGTH_SHORT).show();
 
+                printMyInfoTable();
+                printMyHereAgentTable();
+                printMyRoutineTable();
+                printMyRecordTable();
+
                 //Toast.makeText(getApplicationContext(), "Check the code", Toast.LENGTH_SHORT).show();
                 break;
         }

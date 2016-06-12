@@ -63,7 +63,7 @@ public class MyRoutinesFragment extends Fragment{
                 List<MyRoutine> routines = listViewAdapter.getRoutine();
                 TextView routineName = (TextView) viewFragmentRoutine.findViewById(R.id.selected_routine_name);
                 boolean isRoutineOk = true;
-                routineName.setText("Selected routine: " + routines.get(position).getRoutineId());
+                routineName.setText("Selected routine: " + routines.get(position).getRoutineName());
 
                 goals.clear();
 

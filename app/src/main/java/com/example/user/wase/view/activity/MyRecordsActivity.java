@@ -32,6 +32,8 @@ public class MyRecordsActivity extends AppCompatActivity {
 
     private Toolbar toolbar;
 
+    private ListViewAdapter adapter;
+
     //Change
     int i = 0;
 
@@ -56,9 +58,9 @@ public class MyRecordsActivity extends AppCompatActivity {
         actionBar.setTitle("My Exercise Records");
         actionBar.setDefaultDisplayHomeAsUpEnabled(true);
 
-         textView = (TextView) findViewById(R.id.setting_myrecord_tv_myrecord);
-         listView = (ListView) findViewById(R.id.daily_record_list);
-        ListViewAdapter adapter = new ListViewAdapter();
+        textView = (TextView) findViewById(R.id.setting_myrecord_tv_myrecord);
+        listView = (ListView) findViewById(R.id.daily_record_list);
+        adapter = new ListViewAdapter();
         listView.setAdapter(adapter);
         adapter.notifyDataSetChanged();
 

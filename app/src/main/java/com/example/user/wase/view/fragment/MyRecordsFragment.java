@@ -151,11 +151,11 @@ public class MyRecordsFragment extends Fragment{
 
         //Calendar for date
         Calendar calendar = Calendar.getInstance();
-        if(arrDateCalorie.size() >0 ) {
-            Log.d("arrDateCalorie", "arrDateCalorie-gap(0): " + arrDateCalorie.get(0).getDaysGap());
-            Log.d("arrDateCalorie", "arrDateCalorie-gap(1): " + arrDateCalorie.get(1).getDaysGap());
-            Log.d("arrDateCalorie", "arrDateCalorie-gap(2): " + arrDateCalorie.get(2).getDaysGap());
-        }
+//        if(arrDateCalorie.size() >0 ) {
+//            Log.d("arrDateCalorie", "arrDateCalorie-gap(0): " + arrDateCalorie.get(0).getDaysGap());
+//            Log.d("arrDateCalorie", "arrDateCalorie-gap(1): " + arrDateCalorie.get(1).getDaysGap());
+//            Log.d("arrDateCalorie", "arrDateCalorie-gap(2): " + arrDateCalorie.get(2).getDaysGap());
+//        }
 
         //If we redraw, we first remove all series
         gv.removeAllSeries();
