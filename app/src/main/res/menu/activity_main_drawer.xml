@@ -1,32 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <group android:checkableBehavior="single">
-        <item
-            android:id="@+id/nav_testpage"
-            android:icon="@drawable/ic_menu_manage"
-            android:title="테스트용(지영)" />
 
-        <item
-            android:id="@+id/nav_dbtest"
-            android:icon="@drawable/ic_menu_manage"
-            android:title="테스트용(영민)" />
-    </group>
-
-    <item android:title="나의 운동 관리">
+    <item android:title="Exercise Management">
         <menu>
             <item
                 android:id="@+id/nav_myequipments"
                 android:icon="@drawable/nav_icon_myagents"
-                android:title="내 운동 기구 관리" />
+                android:title="My HERE Agents" />
             <item
                 android:id="@+id/nav_myroutine"
                 android:icon="@drawable/nav_icon_myroutines"
-                android:title="내 운동 루틴 관리" />
+                android:title="My Exercise Routines" />
             <item
                 android:id="@+id/nav_myrecord"
                 android:icon="@drawable/nav_icon_myrecords"
-                android:title="내 운동 기록 관리" />
+                android:title="My Exercise Records" />
         </menu>
     </item>
 
@@ -39,49 +28,25 @@
         <!--</menu>-->
     <!--</item>-->
 
-    <item android:title="설정">
+    <item android:title="Setting">
         <menu>
             <item
                 android:id="@+id/nav_mng_myinfo"
                 android:icon="@drawable/nav_icon_setting_myinfo"
-                android:title="내 정보 관리" />
-            <item
-                android:id="@+id/nav_mng_appsetting"
-                android:icon="@drawable/ic_menu_share"
-                android:title="어플리케이션 관리" />
+                android:title="My Information" />
+
             </menu>
     </item>
-    <item android:title="지원">
+    <item android:title="Support">
         <menu>
             <item
                 android:id="@+id/nav_mng_showhelp"
                 android:icon="@drawable/nav_icon_info_help"
-                android:title="도움말" />
+                android:title="Help" />
             <item
                 android:id="@+id/nav_mng_showappinfo"
                 android:icon="@drawable/nav_icon_info_appinfo"
-                android:title="어플리케이션 정보" />
-        </menu>
-    </item>
-
-    <item android:title="데이터베이스">
-        <menu>
-            <item
-                android:id="@+id/nav_db_add_myinformation"
-                android:icon="@drawable/nav_icon_myagents"
-                android:title="Insert my information (1)" />
-            <item
-                android:id="@+id/nav_db_add_myagents"
-                android:icon="@drawable/nav_icon_myroutines"
-                android:title="Insert agents (3)" />
-            <item
-                android:id="@+id/nav_db_add_myroutines"
-                android:icon="@drawable/nav_icon_myrecords"
-                android:title="Insert routines (2)" />
-            <item
-                android:id="@+id/nav_db_add_myrecords"
-                android:icon="@drawable/nav_icon_myrecords"
-                android:title="Insert records (5)" />
+                android:title="Application Info" />
         </menu>
     </item>
 

@@ -80,6 +80,8 @@ public class EquipmentScanner extends Fragment {
     private final String LIST_NAME = "NAME";
     private final String LIST_UUID = "UUID";
 
+    private TextView tv_numagents;
+
     public final static UUID HM_RX_TX =
             UUID.fromString(HERE_GattAttributes.HM_RX_TX);
 
@@ -137,7 +139,6 @@ public class EquipmentScanner extends Fragment {
                 Log.d("BR", "discover");
                 displayGattServices(mBluetoothLeService.getSupportedGattServices());
             } else if (BluetoothLeService.ACTION_DATA_AVAILABLE.equals(action)) {
-                scanLeDevice(true);
                 if(mBluetoothLeService != null) {
                     Log.d("BR", "data");
                     count++;
@@ -220,6 +221,9 @@ public class EquipmentScanner extends Fragment {
             }
         });
         lvEquipList.setAdapter(equipListAdapter);
+
+        tv_numagents = (TextView) view.findViewById(R.id.equiplist_numagents);
+        tv_numagents.setText(String.format("%d", equipListAdapter.getCount()));
 
 
         //getActionBar().setTitle(mDeviceName);
@@ -334,10 +338,12 @@ public class EquipmentScanner extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-        Log.d("aaaa","onResume");
+        Log.d("aaaa", "onResume");
         //equipListAdapter.clear();
         pairedEquipList.clear();
         pairedEquipList = new ArrayList<MyHereAgent>();
+//        tv_numagents = (TextView) view.findViewById(R.id.equiplist_numagents);
+        tv_numagents.setText(String.format("%d", equipListAdapter.getCount()));
         equipListAdapter.notifyDataSetChanged();
         Log.d(TAG, "onResume");
         // Ensures Bluetooth is enabled on the device.  If Bluetooth is not currently enabled,
@@ -511,6 +517,8 @@ public class EquipmentScanner extends Fragment {
                     @Override
                     public void run() {
                         equipListAdapter.addDevice(device);
+//                        tv_numagents = (TextView) view.findViewById(R.id.equiplist_numagents);
+                        tv_numagents.setText(String.format("%d", equipListAdapter.getCount()));
                         equipListAdapter.notifyDataSetChanged();
                     }
                 });

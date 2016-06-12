@@ -277,116 +277,100 @@ public class DoingExerciseActivity extends AppCompatActivity {
 
         myRoutine = MainActivity.mySelectedRoutine;
 
-        Log.d("mySelectedRoutine", "myRoutine id" + myRoutine.getRoutineId());
-        Log.d("mySelectedRoutine", "myRoutine name" + myRoutine.getRoutineName());
-        Log.d("mySelectedRoutine", "myRoutine eq1-id" + myRoutine.getRoutineEq1Id());
-        Log.d("mySelectedRoutine", "myRoutine eq1-goal" + myRoutine.getRoutineEq1Goal());
-        Log.d("mySelectedRoutine", "myRoutine eq2-id" + myRoutine.getRoutineEq2Id());
-        Log.d("mySelectedRoutine", "myRoutine eq2-goal" + myRoutine.getRoutineEq2Goal());
-        Log.d("mySelectedRoutine", "myRoutine eq3-id" + myRoutine.getRoutineEq3Id());
-        Log.d("mySelectedRoutine", "myRoutine eq3-goal" + myRoutine.getRoutineEq3Goal());
-        Log.d("mySelectedRoutine", "myRoutine eq4" + myRoutine.getRoutineEq4Id());
-        Log.d("mySelectedRoutine", "myRoutine eq4" + myRoutine.getRoutineEq4Goal());
-        Log.d("mySelectedRoutine", "myRoutine eq5" + myRoutine.getRoutineEq5Id());
-        Log.d("mySelectedRoutine", "myRoutine eq5" + myRoutine.getRoutineEq5Goal());
+        if (myRoutine == null) {
+
+        } else {
+//            Log.d("mySelectedRoutine", "myRoutine id" + myRoutine.getRoutineId());
+//            Log.d("mySelectedRoutine", "myRoutine name" + myRoutine.getRoutineName());
+//            Log.d("mySelectedRoutine", "myRoutine eq1-id" + myRoutine.getRoutineEq1Id());
+//            Log.d("mySelectedRoutine", "myRoutine eq1-goal" + myRoutine.getRoutineEq1Goal());
+//            Log.d("mySelectedRoutine", "myRoutine eq2-id" + myRoutine.getRoutineEq2Id());
+//            Log.d("mySelectedRoutine", "myRoutine eq2-goal" + myRoutine.getRoutineEq2Goal());
+//            Log.d("mySelectedRoutine", "myRoutine eq3-id" + myRoutine.getRoutineEq3Id());
+//            Log.d("mySelectedRoutine", "myRoutine eq3-goal" + myRoutine.getRoutineEq3Goal());
+//            Log.d("mySelectedRoutine", "myRoutine eq4" + myRoutine.getRoutineEq4Id());
+//            Log.d("mySelectedRoutine", "myRoutine eq4" + myRoutine.getRoutineEq4Goal());
+//            Log.d("mySelectedRoutine", "myRoutine eq5" + myRoutine.getRoutineEq5Id());
+//            Log.d("mySelectedRoutine", "myRoutine eq5" + myRoutine.getRoutineEq5Goal());
 
 
+            //Arraylist to save the user's records
+            agentRecords = new ArrayList<>();
+            numAgents = 0;
+            currentOrder = 0;
+            dumbel = new PeakDetector(0);
+            dumbel.setDelta(60);
+            hoop = new SinusoidalDetector(51*25.4, 386*8 );
+            vib = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
 
+            initWidgets();
+            initAgentValues();
+            initAgentRecords();
 
+            initSamplingRateUnit();
+            initPreprocessingUnits();
 
-        //getActionBar().setTitle(mDeviceName);
-        //getActionBar().setDisplayHomeAsUpEnabled(true);
-        /*
-        ***Device Name List***
-        HERE-Dumbbell
-        HERE-Pushupbar
-        HERE-Hoolahoop
+            soundPool = new SoundPool(1, AudioManager.STREAM_MUSIC, 0);
+            soundId1 = soundPool.load(this, R.raw.bell, 1);
 
-    /*
-    *******Equipment type -> defined at the model.MyHereAgent
-    //0: NO NAME, 1: Dumbbells, 2: Pushup bars, 3: Jumprope, 4: Hoola-hoop, 5: Others
-    public final static int TYPE_DUMBEL = 1;
-    public final static int TYPE_PUSH_UP = 2;
-    public final static int TYPE_JUMP_ROPE = 3;
-    public final static int TYPE_HOOLA_HOOP = 4;
-    public final static int TYPE_OTHERS = 5;
-    */
+            increaseTimer = new Runnable() {
+                @Override
+                public void run() {
 
+                    //Obtain a current RecordAgent for recording
+                    if (numAgents > 0) {
 
-        //Arraylist to save the user's records
-        agentRecords = new ArrayList<>();
-        numAgents = 0;
-        currentOrder = 0;
-        dumbel = new PeakDetector(0);
-        dumbel.setDelta(60);
-        hoop = new SinusoidalDetector(25*25.4, 386*8 );
-        vib = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
+                        currentAgent = agentRecords.get(currentOrder);
 
-        initWidgets();
-        initAgentValues();
-        initAgentRecords();
-
-        initSamplingRateUnit();
-        initPreprocessingUnits();
-
-        soundPool = new SoundPool(1, AudioManager.STREAM_MUSIC, 0);
-        soundId1 = soundPool.load(this, R.raw.bell, 1);
-
-        increaseTimer = new Runnable() {
-            @Override
-            public void run() {
-
-                //Obtain a current RecordAgent for recording
-                if (numAgents > 0) {
-
-                    currentAgent = agentRecords.get(currentOrder);
-
-                }
-
-
-
-                Random rand = new Random();
-                int randNum;
-
-                //TODO: tv_eq_count와 currentRecordCount는 성근이형 코드로 대체
-                if (isTimerRunning) {
-                    currentRecordTime++;
-                    randNum = rand.nextInt((RAND_MAX - RAND_MIN) + 1) + RAND_MIN;
-                    //currentRecordCount += randNum;
-                }
-                tv_timer.setText(secondToTimerString(currentRecordTime));
-                tv_eq_count.setText(String.format("%d", currentRecordCount));
-                if(currentAgent != null) {
-                    if (currentAgent.getGoalCount() != -1 && currentRecordCount == currentAgent.getGoalCount() * currentAgent.getGoalSet()) {
-                        if (isSoundFirst) {
-                            soundPool.play(soundId1, 1, 1, 0, 0, 1);
-                            isSoundFirst = false;
-                        }
                     }
-                    if (currentAgent.getGoalTime() != -1 && currentRecordTime == currentAgent.getGoalTime() * currentAgent.getGoalSet()) {
-                        if (isSoundFirst) {
-                            soundPool.play(soundId1, 1, 1, 0, 0, 1);
-                            isSoundFirst = false;
+
+
+
+                    Random rand = new Random();
+                    int randNum;
+
+                    //TODO: tv_eq_count와 currentRecordCount는 성근이형 코드로 대체
+                    if (isTimerRunning) {
+                        currentRecordTime++;
+                        randNum = rand.nextInt((RAND_MAX - RAND_MIN) + 1) + RAND_MIN;
+                        //currentRecordCount += randNum;
+                    }
+                    tv_timer.setText(secondToTimerString(currentRecordTime));
+                    tv_eq_count.setText(String.format("%d", currentRecordCount));
+                    if(currentAgent != null) {
+                        if (currentAgent.getGoalCount() != -1 && currentRecordCount == currentAgent.getGoalCount() * currentAgent.getGoalSet()) {
+                            if (isSoundFirst) {
+                                soundPool.play(soundId1, 1, 1, 0, 0, 1);
+                                isSoundFirst = false;
+                            }
+                        }
+                        if (currentAgent.getGoalTime() != -1 && currentRecordTime == currentAgent.getGoalTime() * currentAgent.getGoalSet()) {
+                            if (isSoundFirst) {
+                                soundPool.play(soundId1, 1, 1, 0, 0, 1);
+                                isSoundFirst = false;
+                            }
                         }
                     }
                 }
-            }
-        };
-        timer = new TaskScheduler();
-        timer.scheduleAtFixedRate(increaseTimer, 1000);
+            };
+            timer = new TaskScheduler();
+            timer.scheduleAtFixedRate(increaseTimer, 1000);
 
-        invalidator = new Runnable() {
-            @Override
-            public void run() {
-                double x = (double) (System.currentTimeMillis() - startTime)/1000;
-                //series[vf.getDisplayedChild()].appendData(new DataPoint((double) (System.currentTimeMillis() - startTime) / 1000, (double) values[vf.getDisplayedChild()]), true, 1000);
-                series.appendData(new DataPoint(x, (double) values[connectedAgentType]), true, 300);
-            }
-        };
-        //mHandler.postDelayed(invalidator, 1500);
-        isRisingPeak = false;
-        isFallingPeak = false;
-        startTime = System.currentTimeMillis();
+            invalidator = new Runnable() {
+                @Override
+                public void run() {
+                    double x = (double) (System.currentTimeMillis() - startTime)/1000;
+                    //series[vf.getDisplayedChild()].appendData(new DataPoint((double) (System.currentTimeMillis() - startTime) / 1000, (double) values[vf.getDisplayedChild()]), true, 1000);
+                    series.appendData(new DataPoint(x, (double) values[connectedAgentType]), true, 300);
+                }
+            };
+            //mHandler.postDelayed(invalidator, 1500);
+            isRisingPeak = false;
+            isFallingPeak = false;
+            startTime = System.currentTimeMillis();
+
+        }
+
     }
     public int findImage (int type){
         switch (type) {
@@ -688,8 +672,8 @@ public class DoingExerciseActivity extends AppCompatActivity {
         }
         /* EQ1 */
         if ((myRoutine.getRoutineEq1Id().equals("-1") ||
-                        myRoutine.getRoutineEq1Id().equals("") ||
-                        myRoutine.getRoutineEq1Id() == null)) {
+                myRoutine.getRoutineEq1Id().equals("") ||
+                myRoutine.getRoutineEq1Id() == null)) {
             isMoreAgent = false;
             return;
         } else {
@@ -721,8 +705,8 @@ public class DoingExerciseActivity extends AppCompatActivity {
 
         /* EQ2 */
         if ((myRoutine.getRoutineEq2Id().equals("-1") ||
-                        myRoutine.getRoutineEq2Id().equals("") ||
-                        myRoutine.getRoutineEq2Id() == null)) {
+                myRoutine.getRoutineEq2Id().equals("") ||
+                myRoutine.getRoutineEq2Id() == null)) {
             isMoreAgent = false;
             return;
         } else {
@@ -754,8 +738,8 @@ public class DoingExerciseActivity extends AppCompatActivity {
 
         /* EQ3 */
         if ((myRoutine.getRoutineEq3Id().equals("-1") ||
-                        myRoutine.getRoutineEq3Id().equals("") ||
-                        myRoutine.getRoutineEq3Id() == null)) {
+                myRoutine.getRoutineEq3Id().equals("") ||
+                myRoutine.getRoutineEq3Id() == null)) {
             isMoreAgent = false;
             return;
         } else {
@@ -787,8 +771,8 @@ public class DoingExerciseActivity extends AppCompatActivity {
 
         /* EQ4 */
         if ((myRoutine.getRoutineEq4Id().equals("-1") ||
-                        myRoutine.getRoutineEq4Id().equals("") ||
-                        myRoutine.getRoutineEq4Id() == null)) {
+                myRoutine.getRoutineEq4Id().equals("") ||
+                myRoutine.getRoutineEq4Id() == null)) {
             isMoreAgent = false;
             return;
         } else {
@@ -820,8 +804,8 @@ public class DoingExerciseActivity extends AppCompatActivity {
 
         /* EQ5 */
         if ((myRoutine.getRoutineEq5Id().equals("-1") ||
-                        myRoutine.getRoutineEq5Id().equals("") ||
-                        myRoutine.getRoutineEq5Id() == null)) {
+                myRoutine.getRoutineEq5Id().equals("") ||
+                myRoutine.getRoutineEq5Id() == null)) {
             isMoreAgent = false;
             return;
         } else {
@@ -1072,17 +1056,17 @@ public class DoingExerciseActivity extends AppCompatActivity {
                         }
 
                 )
-                            .
+                .
 
-                    setNegativeButton("Do more!", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            if (!isTimerRunning) {
-                                isTimerRunning = true;
+                        setNegativeButton("Do more!", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                if (!isTimerRunning) {
+                                    isTimerRunning = true;
+                                }
+                                dialog.dismiss();
                             }
-                            dialog.dismiss();
-                        }
-                    })
+                        })
                 .create();
 
         myFinishDialogBox.setCanceledOnTouchOutside(false);

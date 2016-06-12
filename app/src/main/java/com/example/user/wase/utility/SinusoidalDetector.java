@@ -33,6 +33,7 @@ public class SinusoidalDetector {
     private double count; //
     private boolean modeChangeable;
     private CountDownTimer periodTimer;
+    private CountDownTimer counter;
     private int periodChecker;
 
     private double prevValue;
@@ -55,6 +56,21 @@ public class SinusoidalDetector {
         modeChangeable = false;
         periodChecker = 0;
         prevValue = 0;
+        counter = new CountDownTimer(34900, 698)     {
+            @Override
+            public void onTick(long millisUntilFinished) {
+                if(isPeriodic)
+                    count++;
+            }
+
+            @Override
+            public void onFinish() {
+                counter.start();
+                if(isPeriodic)
+                    count++;
+
+            }
+        }.start();
 
     }
 
@@ -62,7 +78,6 @@ public class SinusoidalDetector {
         period = 0;
         isPeriodic = false;
         amplitude = 0;
-        count = 0;
         peak.reset();
         maxPosition = 0;
         minPosition = 0;
@@ -79,7 +94,6 @@ public class SinusoidalDetector {
         amplitude = 0;
         unit = hoopLength / waistMeasurement;
 
-        count = 0;
         peak.reset();
         maxPosition = 0;
         minPosition = 0;
@@ -119,15 +133,13 @@ public class SinusoidalDetector {
         if(isPeriodic){
             double temp = point.getX() - previousCountPosition;
             if(previousCountPosition == 0){
-                count = count + unit;
+                //count = count + unit;
                 previousCountPosition = point.getX();
             }
             else{
-                count += (temp) / unitLength;
+                //count += (temp) / unitLength;
                 previousCountPosition = point.getX();
             }
-        }else{
-            count = 0;
         }
 
         switch (peak.peakDetection(point)) {

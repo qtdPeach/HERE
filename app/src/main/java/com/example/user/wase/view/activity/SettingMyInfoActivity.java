@@ -63,7 +63,7 @@ public class SettingMyInfoActivity extends AppCompatActivity {
 
         toolbar = (Toolbar) findViewById(R.id.toolbar);
 
-        toolbar.setTitle("내 정보 설정");
+        toolbar.setTitle("My Information");
         toolbar.setNavigationIcon(R.mipmap.ic_menu_arrow_back);
         toolbar.setTitleTextColor(Color.WHITE);
 
@@ -71,7 +71,7 @@ public class SettingMyInfoActivity extends AppCompatActivity {
 
         final ActionBar actionBar = getSupportActionBar();
 
-        actionBar.setTitle("내 정보 설정");
+        actionBar.setTitle("My Information");
         actionBar.setDefaultDisplayHomeAsUpEnabled(true);
 
         initWidgets();
@@ -117,6 +117,10 @@ public class SettingMyInfoActivity extends AppCompatActivity {
         int img_id_man = getResources().getIdentifier(imgSrc_uri_man, null, getPackageName());
         int img_id_woman = getResources().getIdentifier(imgSrc_uri_woman, null, getPackageName());
 
+        mSpinnerAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item,
+                (String[])getResources().getStringArray(R.array.spinner_list));
+        mSpinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        settingMyInfo_spinner_sex.setAdapter(mSpinnerAdapter);
 
         //Toast.makeText(getApplicationContext(), "img_id: " + img_id, Toast.LENGTH_SHORT).show();
 
@@ -125,6 +129,8 @@ public class SettingMyInfoActivity extends AppCompatActivity {
         if (myInformation == null) {
             Toast.makeText(getApplicationContext(), "There is no my information", Toast.LENGTH_SHORT).show();
             settingMyInfo_iv_img.setImageResource(img_id_man);
+            settingMyInfo_spinner_sex.setSelection(0);
+
         } else {
             settingMyInfo_tv_nick.setText(myInformation.getUserNick());
             settingMyInfo_tv_id.setText(myInformation.getUserId());
@@ -137,10 +143,9 @@ public class SettingMyInfoActivity extends AppCompatActivity {
             settingMyInfo_et_age.setText(String.valueOf(myInformation.getUserAge()));
 //            settingMyInfo_et_sex.setText(String.valueOf(myInformation.getUserSex()));
 
-            mSpinnerAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item,
-                    (String[])getResources().getStringArray(R.array.spinner_list));
-            mSpinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-            settingMyInfo_spinner_sex.setAdapter(mSpinnerAdapter);
+            settingMyInfo_spinner_sex.setSelection(0);
+
+
 
             if (myInformation.getUserSex() == 1) {
                 settingMyInfo_spinner_sex.setSelection(0);
