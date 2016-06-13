@@ -142,7 +142,7 @@ public class EquipmentScanner extends Fragment {
                 if(mBluetoothLeService != null) {
                     Log.d("BR", "data");
                     count++;
-                    if(count == 0){
+                    if(count == 1){
                         setCommandToHERE_agent((byte) 95);
                     }else if (count < 13) {
                         if (setCommandToHERE_agent(count)) {
