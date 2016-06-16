@@ -463,32 +463,47 @@ public class MyEquipmentsActivity extends AppCompatActivity {
     }
 
     private String parseMajorId(String deviceName) {
-        if (deviceName.contains("-")) {
-            int separatorLoc = deviceName.indexOf("-");
-            return deviceName.substring(0, separatorLoc);
+        if (deviceName != null) {
+            if (deviceName.contains("-")) {
+                int separatorLoc = deviceName.indexOf("-");
+                return deviceName.substring(0, separatorLoc);
+            } else {
+                return "";
+            }
+
         } else {
             return "";
         }
     }
 
     private String parseMinorId(String deviceName) {
-        if (deviceName.contains("-")) {
-            int separatorLoc = deviceName.indexOf("-");
-            return deviceName.substring(separatorLoc + 1, deviceName.length());
+        if (deviceName != null) {
+            if (deviceName.contains("-")) {
+                int separatorLoc = deviceName.indexOf("-");
+                return deviceName.substring(separatorLoc + 1, deviceName.length());
+            } else {
+                return "";
+            }
+
         } else {
             return "";
         }
     }
 
     private int getTypeByMinorId(String minorId) {
-        if (minorId.contains("DB") || minorId.contains("Dumbbell") || minorId.contains("Dumbbel") || minorId.contains("Dumbel")) {
-            return 1;
-        }else if (minorId.contains("PU") || minorId.contains("Pushupbar")) {
-            return 2;
-        }else if (minorId.contains("JR") || minorId.contains("Jumprope")) {
-            return 3;
-        }else if (minorId.contains("HH") || minorId.contains("Hoolahoop")) {
-            return 4;
+        if (minorId != null) {
+            if (minorId.contains("DB") || minorId.contains("Dumbbell") || minorId.contains("Dumbbel") || minorId.contains("Dumbel")) {
+                return 1;
+            }else if (minorId.contains("PU") || minorId.contains("Pushupbar")) {
+                return 2;
+            }else if (minorId.contains("JR") || minorId.contains("Jumprope")) {
+                return 3;
+            }else if (minorId.contains("HH") || minorId.contains("Hoolahoop")) {
+                return 4;
+            } else {
+                return 0;
+            }
+
         } else {
             return 0;
         }

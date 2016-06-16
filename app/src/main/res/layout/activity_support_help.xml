@@ -10,6 +10,12 @@
         android:background="@android:color/black"
         android:alpha="0.5">
 
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textColor="#ffffff"
+            android:text="This is help"/>
+
     </FrameLayout>
 
     <ImageView

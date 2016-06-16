@@ -70,7 +70,7 @@
                 android:layout_width="100dp"
                 android:layout_height="100dp"
                 android:padding="10dp"
-                android:src="@drawable/prize_e_bw"/>
+                android:src="@drawable/prize_e"/>
 
             <TextView
                 android:layout_width="wrap_content"
@@ -101,7 +101,7 @@
                 android:layout_width="100dp"
                 android:layout_height="100dp"
                 android:padding="10dp"
-                android:src="@drawable/prize_d_bw"/>
+                android:src="@drawable/prize_d"/>
 
             <TextView
                 android:layout_width="wrap_content"

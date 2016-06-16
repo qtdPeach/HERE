@@ -83,7 +83,7 @@
                     android:textColor="@color/colorSkyBlue"
                     android:textStyle="bold"
                     android:textSize="18dp"
-                    android:text="Weekly Records"/>
+                    android:text="Weekly Calorie Report"/>
 
                 <LinearLayout
                     android:orientation="horizontal"
@@ -151,7 +151,7 @@
                 android:textColor="@color/colorSkyBlue"
                 android:textStyle="bold"
                 android:textSize="18dp"
-                android:text="Equipment Records"/>
+                android:text="Equipment Usage Report"/>
 
             <View
                 android:layout_width="match_parent"

@@ -10,19 +10,210 @@
         android:background="@android:color/black"
         android:alpha="0.7">
 
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="?attr/actionBarSize">
+
+                <View
+                    android:layout_width="?attr/actionBarSize"
+                    android:layout_height="match_parent"/>
+
+                <ImageView
+                    android:layout_width="40dp"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:adjustViewBounds="true"
+                    android:src="@drawable/help_arrow_left"/>
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:textColor="#ffffff"
+                    android:paddingLeft="10dp"
+                    android:textSize="14dp"
+                    android:text="Open a navigation menu\nif you want to manage something!"/>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingLeft="5dp"
+                android:paddingRight="5dp">
+
+                <LinearLayout
+                    android:orientation="vertical"
+                    android:layout_width="0px"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1">
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="?attr/actionBarSize"/>
+
+                    <ImageView
+                        android:layout_width="match_parent"
+                        android:layout_height="50dp"
+                        android:layout_gravity="center_horizontal"
+                        android:adjustViewBounds="true"
+                        android:src="@drawable/help_arrow_up"/>
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:textColor="#ffffff"
+                        android:paddingTop="10dp"
+                        android:paddingLeft="3dp"
+                        android:paddingRight="3dp"
+                        android:textSize="14dp"
+                        android:text="You can check which agents are connected with your HERE app"/>
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:orientation="vertical"
+                    android:layout_width="0px"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1">
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="?attr/actionBarSize"/>
+
+                    <ImageView
+                        android:layout_width="match_parent"
+                        android:layout_height="50dp"
+                        android:layout_gravity="center_horizontal"
+                        android:adjustViewBounds="true"
+                        android:src="@drawable/help_arrow_up"/>
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:textColor="#ffffff"
+                        android:paddingTop="10dp"
+                        android:paddingLeft="3dp"
+                        android:paddingRight="3dp"
+                        android:textSize="14dp"
+                        android:text="You can select a custom exercise routine you made"/>
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:orientation="vertical"
+                    android:layout_width="0px"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1">
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="?attr/actionBarSize"/>
+
+                    <ImageView
+                        android:layout_width="match_parent"
+                        android:layout_height="50dp"
+                        android:layout_gravity="center_horizontal"
+                        android:adjustViewBounds="true"
+                        android:src="@drawable/help_arrow_up"/>
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:textColor="#ffffff"
+                        android:paddingTop="10dp"
+                        android:paddingLeft="3dp"
+                        android:paddingRight="3dp"
+                        android:textSize="14dp"
+                        android:text="You can see your exercise record with a calorie report and an equipment usage history"/>
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColor="@color/colorSkyBlue"
+                android:textStyle="bold"
+                android:layout_marginTop="40dp"
+                android:layout_marginBottom="40dp"
+                android:gravity="center_horizontal"
+                android:text="Press back if you want to leave this screen"/>
+
+            <LinearLayout
+                android:orientation="vertical"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="bottom">
+
+                <LinearLayout
+                    android:orientation="horizontal"
+                    android:layout_width="match_parent"
+                    android:layout_height="100dp"
+                    android:gravity="right"
+                    android:paddingBottom="20dp"
+                    android:paddingLeft="5dp"
+                    android:paddingRight="80dp">
+
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:textColor="#ffffff"
+                        android:paddingTop="10dp"
+                        android:paddingLeft="3dp"
+                        android:paddingRight="3dp"
+                        android:textSize="14dp"
+                        android:gravity="right"
+                        android:text="Start exercise\nwith your custom\nexercise routine!"/>
+
+                    <ImageView
+                        android:layout_width="50dp"
+                        android:layout_height="50dp"
+                        android:layout_gravity="center_horizontal|center_vertical"
+                        android:adjustViewBounds="true"
+                        android:src="@drawable/help_arrow_right"/>
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+
+
+        </LinearLayout>
+
+        <!--<TextView-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:textColor="#ffffff"-->
+        <!--android:text="This is help"/>-->
+
     </FrameLayout>
 
-    <ImageView
-        android:layout_width="150dp"
-        android:layout_height="150dp"
-        android:src="@mipmap/here_app_icon_circle"
-        android:scaleType="fitStart"/>
+    <!--<ImageView-->
+    <!--android:layout_width="150dp"-->
+    <!--android:layout_height="150dp"-->
+    <!--android:src="@mipmap/here_app_icon_circle"-->
+    <!--android:scaleType="fitStart"/>-->
 
-    <TextView
-        android:gravity="center"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="help"/>
+    <!--<TextView-->
+    <!--android:gravity="center"-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--android:text="help"/>-->
 
 
 
